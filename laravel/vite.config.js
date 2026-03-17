@@ -12,6 +12,8 @@ export default defineConfig({
     ],
     server: {
         host: "0.0.0.0", // Allow connections from outside the container
+        port: 5173, // Default Vite port
+        strictPort: true, // Fail if the port is already in use
         hmr: {
             host: "localhost",
         },
