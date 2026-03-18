@@ -1,7 +1,7 @@
 <template>
     <!-- hero section -->
     <section
-        class="min-h-screen py-20 px-6 flex flex items-center justify-center items-start bg-slate-800"
+        class="min-h-screen py-20 px-6 flex flex items-center justify-center items-start bg-gray-800"
     >
         <div class="mt-2 max-w-2xl">
             <h1 class="text-4xl font-bold text-white mb-6">
@@ -9,11 +9,7 @@
             </h1>
             <p class="text-lg text-gray-300 mb-8">
                 Welcome to IMAQ, the ultimate gym management system designed to
-                streamline your fitness center's operations. With our powerful
-                features and user-friendly interface, you can easily manage
-                memberships, track attendance, schedule classes, and handle
-                billing with ease. Join us today and experience the future of
-                gym management!
+                streamline your fitness center's operations.
             </p>
             <div
                 class="flex flex-col justify-center min-h-full space-y-4 bg-white py-15 px-20 rounded-lg shadow-md"
