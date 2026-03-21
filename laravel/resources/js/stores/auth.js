@@ -33,13 +33,24 @@ export const useAuthStore = defineStore('alerts', {
          /* API call & set user */
          try {
             
-
+            //get csrf cookie
             api.get('/sanctum/csrf-cookie');//intialize csrf protection
 
-            await api.post('/login',credentials)
+            //make the login call to the backend
+            const response = await api.post('/login', credentials);
+
+            //fetch user data after successful login to update store state
+            await this.fetchUser();
+
+            //persist data to localstorage
+            this.saveUserToStorage()
+            
             
          } catch (error) {
-            
+            this.error = err.response?.data?.message || "Login failed";
+         }
+         finally{
+            this.loading = false
          }
      },
 
