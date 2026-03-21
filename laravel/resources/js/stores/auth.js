@@ -56,7 +56,7 @@ export const useAuthStore = defineStore('alerts', {
          }
      },
 
-     async fetchUser(){
+    async fetchUser(){
         try {
             const response = await api.get("/user")
             this.user = response
@@ -68,8 +68,23 @@ export const useAuthStore = defineStore('alerts', {
             console.error("Failed to fetch user:", error);
             this.logout(); // clear invalid session
         }
-     }
-
+     },
+     
+    async logout() {
+        try {
+            await api.post('/logout');
+            this.user = null;
+            this.isAuthenticated = false;
+        } catch (error) {
+            console.error("Logout failed:", error);
+        }
+        finally{
+            localStorage.removeItem('user');
+            this.user = null;
+            this.error = null;
+            this.loading = false;
+        }
+    },
   },
 
 })
