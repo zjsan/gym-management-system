@@ -30,6 +30,7 @@ export const useAuthStore = defineStore('alerts', {
     async login(credentials) {
         this.loading = true
         this.error = null
+
          /* API call & set user */
          try {
             
@@ -37,14 +38,15 @@ export const useAuthStore = defineStore('alerts', {
             api.get('/sanctum/csrf-cookie');//intialize csrf protection
 
             //make the login call to the backend
-            const response = await api.post('/login', credentials);
+            await api.post('/login', credentials);
 
             //fetch user data after successful login to update store state
             await this.fetchUser();
 
-            //persist data to localstorage
-            this.saveUserToStorage()
-            
+            //persist data to localstorage if successful fetch
+            if(this.user && this.isAuthenticated){
+                 this.saveUserToStorage();
+            }  
             
          } catch (error) {
             this.error = err.response?.data?.message || "Login failed";
@@ -53,6 +55,20 @@ export const useAuthStore = defineStore('alerts', {
             this.loading = false
          }
      },
+
+     async fetchUser(){
+        try {
+            const response = await api.get("/user")
+            this.user = response
+            this.isAuthenticated = true;
+            this.error = null;
+        } catch (error) {
+            this.user = null
+            this.isAuthenticated = false
+            console.error("Failed to fetch user:", error);
+            this.logout(); // clear invalid session
+        }
+     }
 
   },
 
