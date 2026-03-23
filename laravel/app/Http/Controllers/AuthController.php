@@ -12,8 +12,8 @@ class AuthController extends Controller
     public function login(Request $request): RedirectResponse
     {
         $credentials = $request->validate([
-            'email' => ['required', 'email'],
-            'password' => ['required'],
+            'email' => ['required', 'email', 'max:255'],
+            'password' => 'required|string|min:8',
         ]);
  
         if (Auth::attempt($credentials)) {
