@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Hash;
 class AuthController extends Controller
 {
     //
-    public function login(Request $request): RedirectResponse
+    public function login(Request $request)
     {
         //validate the incoming request data
         $credentials = $request->validate([
@@ -20,7 +20,7 @@ class AuthController extends Controller
         ]);
  
         //check if the user exists in the database
-        $user = User::where($loginField, $request->login)->first();
+        $user = User::where($credentials, $request->login)->first();
 
         //if the user does not exist or the password is incorrect, return an error response
         if (! $user || ! Hash::check($request->password, $user->password)) 
