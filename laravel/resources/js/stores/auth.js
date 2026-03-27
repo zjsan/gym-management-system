@@ -5,7 +5,7 @@ import { ref } from 'vue';
 export const useAuthStore = defineStore('alerts', {
   // other options...
   state: () => {
-    user = ref(null) || JSON.parse(localStorage.getItem("user")) || null, // stores logged-in user object
+    user = JSON.parse(localStorage.getItem("user")) || null, // stores logged-in user object
     loading = false
     error = null
   },
@@ -35,7 +35,7 @@ export const useAuthStore = defineStore('alerts', {
          try {
             
             //get csrf cookie
-            api.get('/sanctum/csrf-cookie');//intialize csrf protection
+            await api.get('/sanctum/csrf-cookie');//intialize csrf protection
 
             //make the login call to the backend
             await api.post('/login', credentials);
@@ -59,7 +59,7 @@ export const useAuthStore = defineStore('alerts', {
     async fetchUser(){
         try {
             const response = await api.get("/user")
-            this.user = response
+            this.user = response.data
             this.isAuthenticated = true;
             this.error = null;
         } catch (error) {
