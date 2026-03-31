@@ -6,7 +6,7 @@
             authentication.
         </p>
 
-        <button class="bg-red-500 text-white font-semibold rounded-lg shadow hover:bg-red-600 transition">
+        <button @click="logout" class="bg-red-500 text-white font-semibold rounded-lg shadow hover:bg-red-600 transition">
             Logout
         </button>
     </div>
