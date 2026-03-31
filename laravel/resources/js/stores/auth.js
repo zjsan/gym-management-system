@@ -48,7 +48,7 @@ export const useAuthStore = defineStore("alerts", {
 
                 //if successfully logged in, redirect to dashboard
                 if (this.user && this.isAuthenticated) {
-                    router.replace("/dashboard");
+                    router.replace({ name: "Dashboard" });
                 }
             } catch (error) {
                 this.error = err.response?.data?.message || "Login failed";
