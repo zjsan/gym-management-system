@@ -83,6 +83,11 @@ export const useAuthStore = defineStore("alerts", {
                 this.user = null;
                 this.error = null;
                 this.loading = false;
+                
+                //redirect to login after hitting logout
+                if (router.currentRoute.value.name !== "Login") {
+                    router.push({ name: "Login" });
+                }
             }
         },
     },
