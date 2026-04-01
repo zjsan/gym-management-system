@@ -4,11 +4,11 @@ import router from '../router/router.js';
 
 export const useAuthStore = defineStore("alerts", {
     // other options...
-    state: () => {
-        ((user = JSON.parse(localStorage.getItem("user")) || null), // stores logged-in user object
-            (loading = false));
-        error = null;   
-    },
+    state: () => ({
+        user: JSON.parse(localStorage.getItem("user")) || null, // stores logged-in user object
+        loading: false, // tracks async requests
+        error: null, // for error handling
+    }),
 
     /**
      * 
