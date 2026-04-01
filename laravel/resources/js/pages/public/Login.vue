@@ -52,3 +52,10 @@
         </div>
     </section>
 </template> 
+<script setup>
+import { useAuthStore } from '../../stores/auth';
+
+const auth = useAuthStore();
+
+const login = () => auth.login();//call login function from auth store
+ </script>
