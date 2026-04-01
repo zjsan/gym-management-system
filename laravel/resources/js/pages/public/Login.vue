@@ -14,7 +14,7 @@
             <div
                 class="flex flex-col justify-center min-h-full space-y-4 bg-white py-15 px-20 rounded-lg shadow-md"
             >
-                <form action="">
+                <form @submit.prevent="login">
                     <input
                         type="email"
                         id="email"
@@ -51,4 +51,4 @@
             </div>
         </div>
     </section>
-</template>
+</template> 

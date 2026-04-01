@@ -7,7 +7,7 @@ export const useAuthStore = defineStore("alerts", {
     state: () => {
         ((user = JSON.parse(localStorage.getItem("user")) || null), // stores logged-in user object
             (loading = false));
-        error = null;
+        error = null;   
     },
 
     /**
