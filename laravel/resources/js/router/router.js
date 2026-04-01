@@ -8,7 +8,7 @@ const routes = [
     { path: "/dashboard", component: Dashboard, name: "Dashboard" },
 ];
 
-export const router = createRouter({
+const router = createRouter({
     history: createWebHashHistory(),
     routes,
 });

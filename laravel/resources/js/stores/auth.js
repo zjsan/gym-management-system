@@ -1,6 +1,6 @@
 import { defineStore } from "pinia";
 import api from "../api/api";
-import router from "/router.js";
+import router from '../router/router.js';
 
 export const useAuthStore = defineStore("alerts", {
     // other options...
