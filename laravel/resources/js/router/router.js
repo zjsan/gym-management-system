@@ -1,4 +1,4 @@
-import { createWebHashHistory, createRouter } from "vue-router";
+import { createWebHistory, createRouter } from "vue-router";
 
 import Login from "../pages/public/Login.vue";
 import Dashboard from "../pages/protected/Dashboard.vue";
@@ -9,6 +9,8 @@ const routes = [
 ];
 
 const router = createRouter({
-    history: createWebHashHistory(),
+    history: createWebHistory(),
     routes,
 });
+
+export default router;
