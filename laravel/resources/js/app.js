@@ -2,7 +2,7 @@ import "./bootstrap";
 import "./bootstrap";
 import { createApp } from "vue";
 import { createPinia } from "pinia"; // Import createPinia
-import router from "./router"
+import router from "./router/router.js";
 import App from "./pages/App.vue";
 
 const pinia = createPinia(); // Create the Pinia instance
