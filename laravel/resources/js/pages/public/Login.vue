@@ -64,6 +64,7 @@ const auth = useAuthStore();
 const email = ref('');
 const password = ref('');
 
+//call login function from auth store
 const login = () => {
     try {
         auth.login({
@@ -76,5 +77,5 @@ const login = () => {
             console.log('Validation Errors:', error.response.data.errors);
         }
     }
-};//call login function from auth store
+};
  </script>

@@ -42,12 +42,12 @@ export const useAuthStore = defineStore("alerts", {
                 await this.fetchUser();
 
                 //persist data to localstorage if successful fetch
-                if (this.user && this.isAuthenticated) {
+                if (this.user) {
                     this.saveUserToStorage();
                 }
 
                 //if successfully logged in, redirect to dashboard
-                if (this.user && this.isAuthenticated) {
+                if (this.user) {
                     router.replace({ name: "Dashboard" });
                 }
             } catch (error) {
@@ -62,7 +62,6 @@ export const useAuthStore = defineStore("alerts", {
             try {
                 const response = await api.get("/user");
                 this.user = response.data;
-                this.isAuthenticated = true;
                 this.error = null;
             } catch (error) {
                 this.user = null;
@@ -76,7 +75,6 @@ export const useAuthStore = defineStore("alerts", {
             try {
                 await api.post("/logout");
                 this.user = null;
-                this.isAuthenticated = false;
             } catch (error) {
                 console.error("Logout failed:", error);
             } finally {
