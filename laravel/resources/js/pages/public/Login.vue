@@ -16,16 +16,20 @@
             >
                 <form @submit.prevent="login">
                     <input
-                        type="email"
                         id="email"
+                        type="email"
+                        v-model="email"
                         placeholder="Email"
                         class="px-4 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white border border-gray-700"
+                        required
                     />
                     <input
-                        type="password"
                         id="password"
+                        type="password"
+                        v-model="password"
                         placeholder="Password"
                         class="px-4 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white mt-4 border border-gray-700"
+                        required
                     />
                     <button
                         type="submit"
@@ -57,5 +61,11 @@ import { useAuthStore } from '../../stores/auth';
 
 const auth = useAuthStore();
 
-const login = () => auth.login();//call login function from auth store
+const login = () => {
+    try {
+        auth.login();
+    } catch (error) {
+        console.log(error);
+    }
+};//call login function from auth store
  </script>
