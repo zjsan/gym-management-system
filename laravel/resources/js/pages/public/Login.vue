@@ -65,7 +65,10 @@ const login = () => {
     try {
         auth.login();
     } catch (error) {
-        console.log(error);
+        
+        if (error.response && error.response.status === 422) {
+            console.log('Validation Errors:', error.response.data.errors);
+        }
     }
 };//call login function from auth store
  </script>
