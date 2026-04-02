@@ -51,7 +51,8 @@ export const useAuthStore = defineStore("alerts", {
                     router.replace({ name: "Dashboard" });
                 }
             } catch (error) {
-                this.error = err.response?.data?.message || "Login failed";
+                this.error = error.response?.data?.message || "Login failed";
+                console.log(this.error);
             } finally {
                 this.loading = false;
             }
