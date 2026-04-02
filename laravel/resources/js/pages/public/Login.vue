@@ -61,11 +61,15 @@ import { useAuthStore } from '../../stores/auth';
 import { ref } from 'vue';
 
 const auth = useAuthStore();
-const email 
+const email = ref('');
+const password = ref('');
 
 const login = () => {
     try {
-        auth.login();
+        auth.login({
+            email: email.value,
+            password: password.value
+        });
     } catch (error) {
 
         if (error.response && error.response.status === 422) {
