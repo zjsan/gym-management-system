@@ -58,14 +58,16 @@
 </template> 
 <script setup>
 import { useAuthStore } from '../../stores/auth';
+import { ref } from 'vue';
 
 const auth = useAuthStore();
+const email 
 
 const login = () => {
     try {
         auth.login();
     } catch (error) {
-        
+
         if (error.response && error.response.status === 422) {
             console.log('Validation Errors:', error.response.data.errors);
         }
