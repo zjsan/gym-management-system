@@ -60,14 +60,15 @@ class UserSeeder extends Seeder
         }, $users);
 
         foreach ($cleaned_users as $user) {
-            DB::table('users')->updateOrInsert(
+            User::updateOrInsert(
                 ['email' => $user['email']], // where condition
                 [
                     'first_name' => $user['first_name'],
                     'last_name' => $user['last_name'],
+                    'password' => $user['password'],
                     'role_id' => $user['role_id'],
-                    'updated_at' => now(),
                     'created_at' => now(),
+                    'updated_at' => now(),
                 ]
             );
         }
