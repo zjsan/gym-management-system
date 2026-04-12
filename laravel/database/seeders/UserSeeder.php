@@ -66,7 +66,6 @@ class UserSeeder extends Seeder
                     'first_name' => $user['first_name'],
                     'last_name' => $user['last_name'],
                     'role_id' => $user['role_id'],
-                    'is_active' => $user['is_active'],
                     'updated_at' => now(),
                     'created_at' => now(),
                 ]
