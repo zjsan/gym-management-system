@@ -53,8 +53,8 @@ class UserSeeder extends Seeder
                 'email' => $cleanEmail,
                 'first_name' => $cleanFirstName,
                 'last_name' => $cleanLastName,
+                'password' => $item['password'],
                 'role_id' => $item['role_id'],
-                'is_active' => $item['is_active'],
             ];
 
         }, $users);
