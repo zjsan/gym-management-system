@@ -40,5 +40,37 @@ class UserSeeder extends Seeder
                 'role_id'=> $staffRole
             ],
         ];
+
+         //cleaning the emails table before seeding
+        $cleaned_users = array_map(function($item){
+
+            $cleanEmail = strtolower(trim($item['email']));
+            $cleanEmail = filter_var($cleanEmail, FILTER_SANITIZE_EMAIL);
+            $cleanFirstName = trim($item['first_name']);
+            $cleanLastName = trim($item['last_name']);
+
+            return [
+                'email' => $cleanEmail,
+                'first_name' => $cleanFirstName,
+                'last_name' => $cleanLastName,
+                'organization_id' => $item['organization_id'],
+                'role_id' => $item['role_id'],
+                'is_active' => $item['is_active'],
+            ];
+
+        }, $users);
+
+        foreach ($cleaned_users as $user) {
+            DB::table('users')->updateOrInsert(
+                ['email' => $user['email']], // where condition
+                [
+                    'organization_id' => $user['organization_id'],
+                    'role_id' => $user['role_id'],
+                    'is_active' => $user['is_active'],
+                    'updated_at' => now(),
+                    'created_at' => now(),
+                ]
+            );
+        }
     }
 }
