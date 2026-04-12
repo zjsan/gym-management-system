@@ -53,7 +53,6 @@ class UserSeeder extends Seeder
                 'email' => $cleanEmail,
                 'first_name' => $cleanFirstName,
                 'last_name' => $cleanLastName,
-                'organization_id' => $item['organization_id'],
                 'role_id' => $item['role_id'],
                 'is_active' => $item['is_active'],
             ];
@@ -64,7 +63,8 @@ class UserSeeder extends Seeder
             DB::table('users')->updateOrInsert(
                 ['email' => $user['email']], // where condition
                 [
-                    'organization_id' => $user['organization_id'],
+                    'first_name' => $user['first_name'],
+                    'last_name' => $user['last_name'],
                     'role_id' => $user['role_id'],
                     'is_active' => $user['is_active'],
                     'updated_at' => now(),
