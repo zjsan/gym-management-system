@@ -1,6 +1,6 @@
 import { defineStore } from "pinia";
 import api from "../api/api";
-import router from '../router/router.js';
+import router from "../router/router.js";
 
 export const useAuthStore = defineStore("alerts", {
     // other options...
@@ -17,6 +17,14 @@ export const useAuthStore = defineStore("alerts", {
      */
     getters: {
         isAuthenticated: (state) => !!state.user,
+        isAdmin: (state) => {
+            console.log("Checking role:", state.user?.role?.slug);
+            return state.user?.role?.slug === "admin";
+        },
+        isStaff: (state) => {
+            console.log("Checking role:", state.user?.role?.slug);
+            return state.user?.role?.slug === "staff";
+        },
     },
 
     actions: {
@@ -82,7 +90,7 @@ export const useAuthStore = defineStore("alerts", {
                 this.user = null;
                 this.error = null;
                 this.loading = false;
-                
+
                 //redirect to login after hitting logout
                 if (router.currentRoute.value.name !== "Login") {
                     router.push({ name: "Login" });
