@@ -56,9 +56,9 @@ export const useAuthStore = defineStore("alerts", {
                     this.saveUserToStorage();
                 }
                 //if successfully logged in, redirect to dashboard
-                // if (this.user) {
-                //     router.replace({ name: "Dashboard" });
-                // }
+                if (this.user) {
+                    router.replace({ name: "Dashboard" });
+                }
             } catch (error) {
                 this.error = error.response?.data?.message || "Login failed";
                 console.log(this.error);
@@ -72,6 +72,7 @@ export const useAuthStore = defineStore("alerts", {
                 const response = await api.get("/user");
                 this.user = response.data;
                 this.error = null;
+                console.log(this.user);
             } catch (error) {
                 this.user = null;
                 this.isAuthenticated = false;
@@ -91,7 +92,7 @@ export const useAuthStore = defineStore("alerts", {
                 this.user = null;
                 this.error = null;
                 this.loading = false;
-
+                console.log(this.user);
                 //redirect to login after hitting logout
                 if (router.currentRoute.value.name !== "Login") {
                     router.push({ name: "Login" });

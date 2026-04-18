@@ -16,6 +16,13 @@ import { useAuthStore } from '../../../stores/auth';
 
 const auth = useAuthStore();
 const logout = async () => {
-    await auth.logout();
+    try {
+        console.log('Attempting to logout...')
+        await auth.logout();
+        console.log('Success! Redirecting...');
+    } catch (error) {
+        console.error('Logout failed:', error);
+    }
+    
 };
 </script>
