@@ -65,7 +65,7 @@ const email = ref('');
 const password = ref('');
 
 //call login function from auth store
-const login = () => {
+const login = async() => {
     try {
         console.log('Attempting to login...');
         await auth.login({

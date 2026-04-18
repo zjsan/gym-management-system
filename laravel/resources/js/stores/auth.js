@@ -44,8 +44,10 @@ export const useAuthStore = defineStore("alerts", {
                 await api.get("/sanctum/csrf-cookie"); //intialize csrf protection
 
                 //make the login call to the backend
-                await api.post("/login", credentials);
+                const response = await api.post("/login", credentials);
+                const {data} = response;
 
+                console.log(data.message);
                 //fetch user data after successful login to update store state
                 await this.fetchUser();
 
