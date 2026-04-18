@@ -5,12 +5,12 @@ import Dashboard from "../pages/protected/Main.vue";
 import Adminview from "../pages/protected/Admin/Adminview.vue";
 
 const routes = [
-    { path: "/", component: Login, name: "Login" },
+    { path: "/", component: Login, name: "Login", requiresAuth: false },
     {
         path: "/dashboard",
         component: Dashboard,
         name: "Dashboard",
-        meta: { requiresAdmin: true },
+        meta: { requiresAuth: true },
     },
     {
         path: "/admin-page",
