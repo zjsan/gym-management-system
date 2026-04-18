@@ -50,8 +50,7 @@ export const useAuthStore = defineStore("alerts", {
                 console.log(data.message);
                 //fetch user data after successful login to update store state
                 await this.fetchUser();
-                this.user = response.data.user
-                
+
                 //persist data to localstorage if successful fetch
                 if (this.user) {
                     this.saveUserToStorage();
@@ -60,6 +59,7 @@ export const useAuthStore = defineStore("alerts", {
                 if (this.user) {
                     router.replace({ name: "Dashboard" });
                 }
+
             } catch (error) {
                 this.error = error.response?.data?.message || "Login failed";
                 console.log(this.error);
@@ -71,7 +71,7 @@ export const useAuthStore = defineStore("alerts", {
         async fetchUser() {
             try {
                 const response = await api.get("/user");
-                this.user = response.data;
+                this.user = response.data.user;
                 this.error = null;
                 console.log(this.user);
             } catch (error) {
