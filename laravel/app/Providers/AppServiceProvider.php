@@ -3,6 +3,8 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\Facades\Gate;
+use App\Models\User;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -25,7 +27,7 @@ class AppServiceProvider extends ServiceProvider
         });
 
         Gate::define('access-front-desk', function (User $user) {
-            return $user->role->slug? === 'staff';
+            return $user->role?->slug === 'staff';
         });
-    }
+    } 
 }
