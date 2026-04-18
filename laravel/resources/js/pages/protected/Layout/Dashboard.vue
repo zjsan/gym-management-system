@@ -2,12 +2,17 @@
     <div class="container">
         <h1>Dashboard</h1>
         
-        <Adminview v-if="userRole === 'admin'" />
-        <Staffview v-else-if="userRole === 'staff'" />
+        <!--conditionally render component based user roles-->
+        <Adminview v-if="auth.isAdmin" />
+        <Staffview v-else-if="auth.isStaff" />
+        <div v-else>
+            <p>Loading user permissions...</p>
+        </div>
 
         <button @click="logout" class="bg-red-500 text-white font-semibold rounded-lg shadow hover:bg-red-600 transition">
             Logout
         </button>
+        
     </div>
 </template>
 <script setup>
@@ -28,9 +33,5 @@ const logout = async () => {
     
 };
 
-computed: {
-  userRole() {
-    return this.$store.state.user.role; // Example using Pinia/Vuex
-  }
-};
+console.log()
 </script>
