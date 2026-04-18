@@ -50,7 +50,8 @@ export const useAuthStore = defineStore("alerts", {
                 console.log(data.message);
                 //fetch user data after successful login to update store state
                 await this.fetchUser();
-
+                this.user = response.data.user
+                
                 //persist data to localstorage if successful fetch
                 if (this.user) {
                     this.saveUserToStorage();

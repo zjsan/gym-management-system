@@ -21,9 +21,17 @@ class AuthController extends Controller
 
             //generate the session for the user
             $request->session()->regenerate();
- 
+            
+            //Get the authenticated user
+            $user = Auth::user();
+
+            // Eager load the 'role' relationship 
+            // so Vue can see the 'slug'
+            $user->load('role');
+
             return response()->json([
-                'message' => 'Login successful.'
+                'message' => 'Login successful.',
+                'user' => $user,
             ], 200);
         }
 
