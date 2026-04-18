@@ -67,12 +67,14 @@ const password = ref('');
 //call login function from auth store
 const login = () => {
     try {
-        auth.login({
+        console.log('Attempting to login...');
+        await auth.login({
             email: email.value,
             password: password.value
         });
+        console.log('Success! Redirecting...');
     } catch (error) {
-
+        console.error('Login failed:', error);
         if (error.response && error.response.status === 422) {
             console.log('Validation Errors:', error.response.data.errors);
         }
