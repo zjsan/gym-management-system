@@ -2,7 +2,7 @@ import { defineStore } from "pinia";
 import api from "../api/api";
 import router from "../router/router.js";
 
-export const useAuthStore = defineStore("alerts", {
+export const useAuthStore = defineStore("auth", {
     // other options...
     state: () => ({
         user: JSON.parse(localStorage.getItem("user")) || null, // stores logged-in user object
@@ -49,12 +49,11 @@ export const useAuthStore = defineStore("alerts", {
 
                 console.log(data.message);
                 
-                this.user = response.data.user;//assigned data to the user
+                this.user = data.user;//assigned data to the user
+                this.saveUserToStorage();
 
                 //if successfully logged in, redirect to dashboard
                 if (this.user) {
-                    
-                    this.saveUserToStorage();
                     router.replace({ name: "Dashboard" });
                 }else {
                     // Fallback: If for some reason controller didn't send user, fetch it
