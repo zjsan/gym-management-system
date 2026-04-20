@@ -15,6 +15,12 @@ class AdminMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {
-        return $next($request);
-    }
+        // Check if user is authenticated and has the admin role
+        if (auth()->check() && auth()->user()->role?->slug === 'admin') {
+            return $next($request);
+        }
+
+        // Redirect or abort if not an admin
+        return abort(403, 'Unauthorized access.');
+        }
 }
