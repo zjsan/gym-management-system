@@ -1,7 +1,19 @@
 <template>
     <div class="container">
+        <Navigation
+            :is-open="isSidebarOpen"
+            :is-mobile="isMobile"
+            @close="isSidebarOpen = false"
+        />
+
+        <div
+            v-if="isSidebarOpen && isMobile"
+            @click="isSidebarOpen = false"
+            class="fixed inset-0 z-30 bg-black/50 lg:hidden"
+        ></div>
+
         <h1>Dashboard</h1>
-        
+
         <!--conditionally render component based user roles-->
         <Adminview v-if="auth.isAdmin" />
         <Staffview v-else-if="auth.isStaff" />
@@ -9,29 +21,31 @@
             <p>Loading user permissions...</p>
         </div>
 
-        <button @click="logout" class="bg-red-500 text-white font-semibold rounded-lg shadow hover:bg-red-600 transition">
+        <button
+            @click="logout"
+            class="bg-red-500 text-white font-semibold rounded-lg shadow hover:bg-red-600 transition"
+        >
             Logout
         </button>
-        
     </div>
 </template>
 <script setup>
-import { useAuthStore } from '../../../stores/auth';
-import { ref, computed } from 'vue'
-import Adminview from '../Admin/Adminview.vue';
-import Staffview from '../Staff/Staffview.vue';
+import { useAuthStore } from "../../../stores/auth";
+import { ref, computed } from "vue";
+import Adminview from "../Admin/Adminview.vue";
+import Staffview from "../Staff/Staffview.vue";
+import Navigation from "../Components/Navigation.vue";
 
 const auth = useAuthStore();
 const logout = async () => {
     try {
-        console.log('Attempting to logout...')
+        console.log("Attempting to logout...");
         await auth.logout();
-        console.log('Success! Redirecting...');
+        console.log("Success! Redirecting...");
     } catch (error) {
-        console.error('Logout failed:', error);
+        console.error("Logout failed:", error);
     }
-    
 };
 
-console.log()
+console.log();
 </script>

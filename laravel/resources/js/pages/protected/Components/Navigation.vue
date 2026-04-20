@@ -15,7 +15,6 @@
                 :key="item.to"
                 :to="item.to"
                 class="flex items-center p-3 text-gray-700 rounded-lg hover:bg-gray-100 transition"
-                active-class="bg-gray-100 font-semibold border-l-4 border-blue-500"
             >
                 <i :class="['pi text-xl mr-3', item.icon]"></i>
                 {{ item.name }}
@@ -25,7 +24,7 @@
 </template>
 <script setup>
 import { computed } from "vue";
-import { useAuthStore } from "@/stores/auth";
+import { useAuthStore } from "../../../stores/auth";
 
 const authStore = useAuthStore();
 
@@ -41,7 +40,7 @@ const menuItems = [
         name: "DeveloperPage",
         to: "/developer",
         icon: "pi-code",
-        visible: () => auth.isDeveloper,
+        visible: () => authStore.isDeveloper,
     },
     // {
     //     name: "Admin Panel",
