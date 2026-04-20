@@ -1,17 +1,5 @@
 <template>
     <div class="container">
-        <Navigation
-            :is-open="isSidebarOpen"
-            :is-mobile="isMobile"
-            @close="isSidebarOpen = false"
-        />
-
-        <div
-            v-if="isSidebarOpen && isMobile"
-            @click="isSidebarOpen = false"
-            class="fixed inset-0 z-30 bg-black/50 lg:hidden"
-        ></div>
-
         <h1>Dashboard</h1>
 
         <!--conditionally render component based user roles-->
