@@ -24,9 +24,11 @@ export const useUserStore = defineStore("userStore", {
             try {
                 const res = await axios.post("/api/users", userData);
                 this.users.push(res.data); // Update UI instantly
+                console.log("User added successfully:", res.data);
                 return { success: true };
             } catch (err) {
                 this.errors = err.response.data.errors;
+                console.error("Failed to add user:", err);
                 return { success: false };
             }
         },
