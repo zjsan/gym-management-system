@@ -43,7 +43,7 @@
                 Save User
             </button>
 
-            <p v-if="userStore.errors" class="text-red-500">
+            <p v-if="userStore.errors?.email" class="text-red-500">
                 {{ userStore.errors.email[0] }}
             </p>
         </form>

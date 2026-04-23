@@ -13,7 +13,8 @@ class UserController extends Controller
      */
     public function index()
     {
-        //
+        // Returns users with their role object attached
+        return response()->json(User::with('role')->get());//eager loading the slug of the role
     }
 
     /**
@@ -23,20 +24,26 @@ class UserController extends Controller
     {
         //
         $validated = $request->validate([
-        'name' => 'required|string|max:255',
+        'first_name' => 'required|string|max:255',
+        'last_name' => 'required|string|max:255',
         'email' => 'required|email|unique:users',
         'password' => 'required|min:8|confirmed',
-        'role' => 'required|in:admin,staff', // Restrict roles
+        'role'     => 'required|exists:roles,slug', // Validate that the slug exists in roles table
         ]);
+
+        // 1. Find the Role ID based on the slug sent from Vue
+        $role = Role::where('slug', $validated['role'])->firstOrFail();
 
         $user = User::create([
-            'name' => $validated['name'],
+            'first_name' => $validated['first_name'],
+            'last_name' => $validated['last_name'],
             'email' => $validated['email'],
             'password' => Hash::make($validated['password']),
-            'role' => $validated['role'],
+            'role' => $role->id, // Store the role ID in the users table
         ]);
 
-        return response()->json($user, 201);
+        //load the role relationship to return the user with its role data
+        return response()->json($user->load('role'), 201);
     }
 
     /**
