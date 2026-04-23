@@ -7,11 +7,17 @@
 
     <div class="mb-10">
         <form @submit.prevent="handleSubmit">
-            <input v-model="form.name" type="text" placeholder="Full Name" />
+            <input
+                v-model="form.name"
+                type="text"
+                placeholder="Full Name"
+                required
+            />
             <input
                 v-model="form.email"
                 type="email"
                 placeholder="Email Address"
+                required
             />
 
             <select v-model="form.role">
