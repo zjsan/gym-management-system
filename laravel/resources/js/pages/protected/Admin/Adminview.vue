@@ -53,9 +53,12 @@ const form = ref({
 
 const handleSubmit = async () => {
     try {
-        await userStore.addUser(form.value);
+        const result = await userStore.addUser(form.value);
         // Reset form or show success message
-        alert("User added successfully!");
+
+        if (result.success) {
+            alert("User added successfully!");
+        }
     } catch (error) {
         console.error("Failed to add user:", error);
         alert("Failed to add user. Please check the console for details.");
