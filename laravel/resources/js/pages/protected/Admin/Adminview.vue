@@ -19,7 +19,18 @@
                 placeholder="Email Address"
                 required
             />
-
+            <input
+                v-model="form.password"
+                type="password"
+                placeholder="Password"
+                required
+            />
+            <input
+                v-model="form.password_confirmation"
+                type="password"
+                placeholder="Confirm Password"
+                required
+            />
             <select v-model="form.role">
                 <option value="staff">Staff</option>
                 <option value="admin">Admin</option>
