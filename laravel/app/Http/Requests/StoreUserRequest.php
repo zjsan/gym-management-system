@@ -15,6 +15,15 @@ class StoreUserRequest extends FormRequest
         return false;
     }
 
+    protected function prepareForValidation()
+    {
+        $this->merge([
+            'first_name' => trim($this->first_name),
+            'last_name'  => trim($this->last_name),
+            'email'      => filter_var(strtolower(trim($this->email)), FILTER_SANITIZE_EMAIL),
+        ]);
+    }
+
     /**
      * Get the validation rules that apply to the request.
      *
@@ -23,7 +32,11 @@ class StoreUserRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'first_name' => 'required|string|max:255',
+            'last_name'  => 'required|string|max:255',
+            'email'      => 'required|email|unique:users,email',
+            'password'   => 'required|min:8|confirmed',
+            'role'       => 'required|exists:roles,slug',
         ];
     }
 }
