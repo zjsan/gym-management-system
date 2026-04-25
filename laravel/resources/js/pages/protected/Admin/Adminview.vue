@@ -115,19 +115,21 @@ const editUser = (user) => {
     };
 };
 
+const form = ref({ ...initialState });
+
 const handleSubmit = async () => {
     try {
         let result;
         
         if(isEditing.value){
-            result = await userStore.updateUser(currentUserId, form.value)
+            result = await userStore.updateUser(currentUserId.value, form.value)
         }
         else{
                 const result = await userStore.addUser(form.value);
         }
-        if (result.success) {
+        if (result && result.success) {
             resetForm();
-            alert("Operation successful!");
+            alert(isEditing.value ? "User updated!" : "User added!");
         }
     } catch (error) {
         console.error("Failed operation:", error);
@@ -138,7 +140,7 @@ const handleSubmit = async () => {
 const resetForm = () => {
     isEditing.value = false;
     currentUserId.value = null;
-    form.value = { /* initial empty state */ };
+    form.value = { ...initialState };
 };
 
 onMounted(() => {
