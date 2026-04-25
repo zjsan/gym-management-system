@@ -54,20 +54,25 @@
                 </p>
             </form>
         </div>
+        <div>
+            
+        </div>
     </template>
     <script setup>
     import { ref } from "vue";
     import { useUserStore } from "@/stores/userStore";
 
     const userStore = useUserStore();
-    const form = ref({
-        fist_name: "",
+    const initialState = {
+        first_name: "",
         last_name: "",
         email: "",
         role: "staff",
         password: "",
         password_confirmation: "",
-    });
+    };
+
+    const form = ref({ ...initialState });
 
     const handleSubmit = async () => {
         try {
@@ -75,6 +80,7 @@
             // Reset form or show success message
 
             if (result.success) {
+                form.value = { ...initialState };
                 alert("User added successfully!");
             }
         } catch (error) {
