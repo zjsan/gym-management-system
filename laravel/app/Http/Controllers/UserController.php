@@ -32,6 +32,22 @@ class UserController extends Controller
         'role'     => 'required|exists:roles,slug', // Validate that the slug exists in roles table
         ]);
 
+        //validating and cleaning inputs
+        $validated = array_map(function($item){
+            $clean_first_name = trim($item['first_name']);
+            $clean_last_name = trim($item['last_name']);
+            $clean_email = filter_var(strtolower(trim($item['email'])),FILTER_SANITIZE_EMAIL);
+
+            return [
+                'first_name' => $clean_first_name,
+                'last_name' => $clean_last_name,
+                'email' => $clean_email,
+                'password' => $item['password'],
+                'role' =>   $item['role']
+            ];
+
+        },$validated);
+
         // 1. Find the Role ID based on the slug sent from Vue
         $role = Role::where('slug', $validated['role'])->firstOrFail();
 
