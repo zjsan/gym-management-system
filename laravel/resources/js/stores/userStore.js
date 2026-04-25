@@ -8,7 +8,7 @@ export const useUserStore = defineStore("userStore", {
         errors: null,
     }),
     actions: {
-        
+
         async fetchUsers() {
             this.loading = true;
             try {
@@ -55,6 +55,23 @@ export const useUserStore = defineStore("userStore", {
             }
             finally{
                 this.loading = false
+            }
+        },
+
+        async deleteUser(){
+            
+            if(!confirm("Are you sure?")){
+                return 
+            }
+
+            try {
+                await api.delete(`/users/${id}`);
+
+                //remove user from local state
+                this.users = this.user.filter(user => user.id !== id);
+            } catch (error) {
+                console.log(error)
+                alert("Failed to delete user");
             }
         }
     },
