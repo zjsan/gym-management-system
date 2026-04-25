@@ -39,7 +39,7 @@ class UserController extends Controller
             'last_name' => $validated['last_name'],
             'email' => $validated['email'],
             'password' => Hash::make($validated['password']),
-            'role' => $role->id, // Store the role ID in the users table
+            'role_id' => $role->id, // Store the role ID in the users table
         ]);
 
         //load the role relationship to return the user with its role data
