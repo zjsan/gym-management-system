@@ -10,13 +10,13 @@
                 <input
                     v-model="form.first_name"
                     type="text"
-                    placeholder="Full Name"
+                    placeholder="First Name"
                     required
                 />
                 <input
                     v-model="form.last_name"
                     type="text"
-                    placeholder="Full Name"
+                    placeholder="Last Name"
                     required
                 />
                 <input

@@ -11,7 +11,7 @@ export const useUserStore = defineStore("userStore", {
         async fetchUsers() {
             this.loading = true;
             try {
-                const res = await axios.get("/users");
+                const res = await api.get("/users");
                 this.users = res.data;
             } catch (err) {
                 this.errors = err.response.data;
@@ -22,7 +22,7 @@ export const useUserStore = defineStore("userStore", {
 
         async addUser(userData) {
             try {
-                const res = await axios.post("/users", userData);
+                const res = await api.post("/users", userData);
                 this.users.push(res.data); // Update UI instantly
                 console.log("User added successfully:", res.data);
                 return { success: true };
