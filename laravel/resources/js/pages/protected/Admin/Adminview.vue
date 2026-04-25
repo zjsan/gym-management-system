@@ -80,36 +80,66 @@
         </div>
         <div v-if="userStore.loading" class="mt-4 text-center">Loading users...</div>
     </template>
+
 <script setup>
-    import { ref } from "vue";
-    import { useUserStore } from "@/stores/userStore";
-    import { onMounted } from 'vue';
-    const userStore = useUserStore();
-    const initialState = {
-        first_name: "",
-        last_name: "",
-        email: "",
-        role: "staff",
-        password: "",
+import { ref } from "vue";
+import { useUserStore } from "@/stores/userStore";
+import { onMounted } from 'vue';
+
+const userStore = useUserStore();
+const initialState = {
+    first_name: "",
+    last_name: "",
+    email: "",
+    role: "staff",
+    password: "",
+    password_confirmation: "",
+};
+
+
+const isEditing = ref(false);
+const currentUserId = ref(null);
+
+const editUser = (user) => {
+    isEditing.value = true;
+    currentUserId.value = user.id;
+    
+    // Fill the form with existing data
+    form.value = {
+        first_name: user.first_name,
+        last_name: user.last_name,
+        email: user.email,
+        role: user.role?.slug,
+        password: "", // Leave blank for security
         password_confirmation: "",
     };
+};
 
-    const form = ref({ ...initialState });
-
-    const handleSubmit = async () => {
-        try {
-            const result = await userStore.addUser(form.value);
-            // Reset form or show success message
-
-            if (result.success) {
-                form.value = { ...initialState };
-                alert("User added successfully!");
-            }
-        } catch (error) {
-            console.error("Failed to add user:", error);
-            alert("Failed to add user. Please check the console for details.");
+const handleSubmit = async () => {
+    try {
+        let result;
+        
+        if(isEditing.value){
+            result = await userStore.updateUser(currentUserId, form.value)
         }
-    };
+        else{
+                const result = await userStore.addUser(form.value);
+        }
+        if (result.success) {
+            resetForm();
+            alert("Operation successful!");
+        }
+    } catch (error) {
+        console.error("Failed operation:", error);
+        alert("Failed to operation. Please check the console for details.");
+    }
+};
+
+const resetForm = () => {
+    isEditing.value = false;
+    currentUserId.value = null;
+    form.value = { /* initial empty state */ };
+};
 
 onMounted(() => {
     userStore.fetchUsers();
