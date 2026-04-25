@@ -57,25 +57,39 @@
         <div class="p-6">
             <h2 class="text-xl font-bold mb-4">User Management</h2>
             
-            <table class="min-w-full bg-white border">
-                <thead>
-                    <tr>
-                        <th class="border px-4 py-2">Name</th>
-                        <th class="border px-4 py-2">Email</th>
-                        <th class="border px-4 py-2">Role</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr v-for="user in userStore.users" :key="user.id">
-                        <td class="border px-4 py-2">{{ user.first_name }} {{ user.last_name }}</td>
-                        <td class="border px-4 py-2">{{ user.email }}</td>
-                        <td class="border px-4 py-2">
-                            <span class="px-2 py-1 bg-gray-200 rounded text-sm">
-                                {{ user.role?.slug }} </span>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
+            <button
+        class="ml-3 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+        :disabled="userStore.loading"
+    >
+        {{ isEditing ? 'Update User' : 'Save User' }}
+    </button>
+    <button v-if="isEditing" @click="resetForm" type="button" class="ml-2 text-gray-500 underline">
+        Cancel
+    </button>
+
+    <table class="min-w-full bg-white border mt-5">
+        <thead>
+            <tr>
+                <th class="border px-4 py-2">Name</th>
+                <th class="border px-4 py-2">Email</th>
+                <th class="border px-4 py-2">Role</th>
+                <th class="border px-4 py-2">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr v-for="user in userStore.users" :key="user.id">
+                <td class="border px-4 py-2">{{ user.first_name }} {{ user.last_name }}</td>
+                <td class="border px-4 py-2">{{ user.email }}</td>
+                <td class="border px-4 py-2">
+                    <span class="px-2 py-1 bg-gray-200 rounded text-sm">{{ user.role?.slug }}</span>
+                </td>
+                <td class="border px-4 py-2 text-center">
+                    <button @click="editUser(user)" class="text-blue-600 mr-3">Edit</button>
+                    <button @click="confirmDelete(user.id)" class="text-red-600">Delete</button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
             
         </div>
         <div v-if="userStore.loading" class="mt-4 text-center">Loading users...</div>
@@ -134,6 +148,12 @@ const handleSubmit = async () => {
     } catch (error) {
         console.error("Failed operation:", error);
         alert("Failed to operation. Please check the console for details.");
+    }
+};
+
+const confirmDelete = async (id) => {
+    if (confirm("Are you sure you want to delete this user?")) {
+        await userStore.deleteUser(id);
     }
 };
 
