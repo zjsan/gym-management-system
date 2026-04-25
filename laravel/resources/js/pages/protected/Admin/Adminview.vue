@@ -54,14 +54,36 @@
                 </p>
             </form>
         </div>
-        <div>
+        <div class="p-6">
+            <h2 class="text-xl font-bold mb-4">User Management</h2>
+            
+            <table class="min-w-full bg-white border">
+                <thead>
+                    <tr>
+                        <th class="border px-4 py-2">Name</th>
+                        <th class="border px-4 py-2">Email</th>
+                        <th class="border px-4 py-2">Role</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="user in userStore.users" :key="user.id">
+                        <td class="border px-4 py-2">{{ user.first_name }} {{ user.last_name }}</td>
+                        <td class="border px-4 py-2">{{ user.email }}</td>
+                        <td class="border px-4 py-2">
+                            <span class="px-2 py-1 bg-gray-200 rounded text-sm">
+                                {{ user.role?.slug }} </span>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
             
         </div>
+        <div v-if="userStore.loading" class="mt-4 text-center">Loading users...</div>
     </template>
-    <script setup>
+<script setup>
     import { ref } from "vue";
     import { useUserStore } from "@/stores/userStore";
-
+    import { onMounted } from 'vue';
     const userStore = useUserStore();
     const initialState = {
         first_name: "",
@@ -88,4 +110,8 @@
             alert("Failed to add user. Please check the console for details.");
         }
     };
-    </script>
+
+onMounted(() => {
+    userStore.fetchUsers();
+});
+</script>
