@@ -281,7 +281,7 @@ const handleSubmit = async () => {
                 form.value,
             );
         } else {
-            const result = await userStore.addUser(form.value);
+            result = await userStore.addUser(form.value);
         }
         if (result && result.success) {
             resetForm();
