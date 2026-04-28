@@ -33,11 +33,12 @@ class StoreUserRequest extends FormRequest
      */
     public function rules(): array
     {
+        $userId = $this->route('user'); // Get the user ID from the route if it exists
         return [
             'first_name' => 'required|string|max:255',
             'last_name'  => 'required|string|max:255',
-            'email'      => 'required|email|unique:users,email',
-            'password'   => 'required|min:8|confirmed',
+            'email'      => 'required|email|unique:users,email,' . $userId,
+            'password'   => $userId ? 'nullable|min:8|confirmed' : 'required|min:8|confirmed',
             'role'       => 'required|exists:roles,slug',
         ];
     }
