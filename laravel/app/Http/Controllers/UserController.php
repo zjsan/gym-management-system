@@ -25,7 +25,7 @@ class UserController extends Controller
     public function store(StoreUserRequest $request)
     {
         //retrive the clean and validated data
-        $validated = $request->validate();
+        $validated = $request->validated();
 
         // 1. Find the Role ID based on the slug sent from Vue
         $role = Role::where('slug', $validated['role'])->firstOrFail();
