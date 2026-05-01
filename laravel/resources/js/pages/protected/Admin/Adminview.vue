@@ -100,6 +100,9 @@
                                     class="block w-full rounded-md border-gray-300 shadow-sm border p-2 text-sm"
                                     :required="!isEditing"
                                 />
+                                 <p v-if="showWarning" style="color: red;">
+                                    password do not match!
+                                </p>
                             </div>
                         </div>
 
@@ -237,7 +240,7 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { computed, ref } from "vue";
 import { useUserStore } from "@/stores/userStore";
 import { onMounted } from "vue";
 
@@ -304,6 +307,15 @@ const resetForm = () => {
     currentUserId.value = null;
     form.value = { ...initialState };
 };
+
+//check matching password
+const passwordMatch = computed(() =>{
+    return form.value.password === form.value.password_confirmation
+});
+
+const showWarning = computed(() => {
+  return form.value.password_confirmation.length > 0 && !passwordMatch.value;
+});
 
 onMounted(() => {
     userStore.fetchUsers();
