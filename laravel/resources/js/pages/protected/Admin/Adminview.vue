@@ -278,6 +278,11 @@ const editUser = (user) => {
 const form = ref({ ...initialState });
 
 const handleSubmit = async () => {
+    if (!passwordMatch.value) {
+        alert("Passwords do not match!");
+        return; 
+    }
+    
     try {
         let result;
         const wasEditing = isEditing.value;
