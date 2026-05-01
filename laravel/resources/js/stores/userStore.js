@@ -22,6 +22,9 @@ export const useUserStore = defineStore("userStore", {
         },
 
         async addUser(userData) {
+            this.loading = true;
+            this.error = null//clear previous error
+
             try {
                 const res = await api.post("/users", userData);
                 this.users.push(res.data); // Update UI instantly
@@ -31,6 +34,9 @@ export const useUserStore = defineStore("userStore", {
                 this.errors = err.response.data.errors;
                 console.error("Failed to add user:", err);
                 return { success: false };
+            }
+            finally{
+                this.loading = false;
             }
         },
 
