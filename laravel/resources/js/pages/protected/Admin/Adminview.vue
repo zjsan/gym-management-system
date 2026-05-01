@@ -280,8 +280,9 @@ const form = ref({ ...initialState });
 const handleSubmit = async () => {
     try {
         let result;
+        const wasEditing = isEditing.value;
 
-        if (isEditing.value) {
+        if (wasEditing) {
             result = await userStore.updateUser(
                 currentUserId.value,
                 form.value,
@@ -290,8 +291,8 @@ const handleSubmit = async () => {
             result = await userStore.addUser(form.value);
         }
         if (result && result.success) {
-            resetForm();
             alert(isEditing.value ? "User updated!" : "User added!");
+            resetForm();
         }
     } catch (error) {
         console.error("Failed operation:", error);
