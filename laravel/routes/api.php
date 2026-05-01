@@ -14,4 +14,14 @@ Route::middleware(['web'])->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
 });
 
-Route::apiResource('users', UserController::class);
+Route::middleware(['auth:sanctum'])->group(function () {
+    
+    // Developer-only routes
+    Route::middleware(['can:admin-only'])->group(function () {
+
+        // routes for GET, POST, PUT, DELETE /api/users
+        Route::apiResource('users', UserController::class);
+        
+    });
+    
+});
