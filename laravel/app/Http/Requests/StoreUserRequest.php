@@ -20,8 +20,8 @@ class StoreUserRequest extends FormRequest
     protected function prepareForValidation()
     {
         $this->merge([
-            'first_name' => trim($this->first_name),
-            'last_name'  => trim($this->last_name),
+            'first_name' => ucfirst(trim($this->first_name)),
+            'last_name'  => ucfirst(trim($this->last_name)),
             'email'      => filter_var(strtolower(trim($this->email)), FILTER_SANITIZE_EMAIL),
         ]);
     }
