@@ -104,6 +104,11 @@
                                  <p v-if="showWarning" style="color: red;">
                                     password do not match!
                                 </p>
+
+                                <!-- Server-side Laravel Error -->
+                                <p v-if="userStore.errors?.password" class="text-red-500 text-xs mt-1">
+                                    {{ userStore.errors.password[0] }}
+                                </p>
                             </div>
                         </div>
 
@@ -278,7 +283,7 @@ const editUser = (user) => {
 const form = ref({ ...initialState });
 
 const handleSubmit = async () => {
-    
+
     if (!passwordMatch.value) {
         alert("Passwords do not match!");
         return; 

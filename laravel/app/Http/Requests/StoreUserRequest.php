@@ -33,7 +33,8 @@ class StoreUserRequest extends FormRequest
      */
     public function rules(): array
     {
-        $userId = $this->route('user'); // Get the user ID from the route if it exists
+        $userId = $this->route('user')?->id; // Get the ID only if the route parameter 'user' exists
+
         return [
             'first_name' => 'required|string|max:255',
             'last_name'  => 'required|string|max:255',
