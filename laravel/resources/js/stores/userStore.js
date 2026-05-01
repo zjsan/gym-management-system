@@ -45,12 +45,12 @@ export const useUserStore = defineStore("userStore", {
 
                 //check if it successully found the user
                 if(index !== -1){
-                    this.user[index] = res.data;//swap the old data from the new data 
+                    this.users[index] = res.data;//swap the old data from the new data 
                 }
-
+                
                 return { success: true };
             } catch (error) {
-                this.errors = err.response?.data?.errors;
+                this.errors = error.response?.data?.errors;
                 return { success: false };
             }
             finally{
@@ -58,7 +58,7 @@ export const useUserStore = defineStore("userStore", {
             }
         },
 
-        async deleteUser(){
+        async deleteUser(id){
             
             if(!confirm("Are you sure?")){
                 return 
@@ -68,7 +68,7 @@ export const useUserStore = defineStore("userStore", {
                 await api.delete(`/users/${id}`);
 
                 //remove user from local state
-                this.users = this.user.filter(user => user.id !== id);
+                this.users = this.users.filter(user => user.id !== id);
             } catch (error) {
                 console.log(error)
                 alert("Failed to delete user");

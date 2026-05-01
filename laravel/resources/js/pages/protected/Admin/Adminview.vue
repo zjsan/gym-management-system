@@ -14,6 +14,7 @@
                         {{ isEditing ? "Edit User" : " Create New User" }}
                     </h2>
 
+                    <!--form for adding and updating-->
                     <form @submit.prevent="handleSubmit" class="space-y-4">
                         <div class="grid grid-cols-2 gap-4">
                             <div>
@@ -140,6 +141,8 @@
                 </div>
             </div>
 
+
+            <!--table for users viewing-->
             <div class="lg:col-span-2">
                 <div
                     class="bg-white rounded-lg shadow-md border border-gray-200 overflow-hidden"
@@ -292,7 +295,7 @@ const handleSubmit = async () => {
         }
     } catch (error) {
         console.error("Failed operation:", error);
-        alert("Failed to operation. Please check the console for details.");
+        alert("Failed operation. Please check the console for details.");
     }
 };
 
