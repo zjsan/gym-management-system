@@ -22,7 +22,7 @@ class StoreMemberRequest extends FormRequest
             'first_name' => ucfirst(trim($this->first_name)),
             'last_name'  => ucfirst(trim($this->last_name)),
             'contact_number' => trim($this->contact_number),
-            
+            'address' => ucfirst(trim($this->address)),
         ]);
     }
 
@@ -39,6 +39,7 @@ class StoreMemberRequest extends FormRequest
             'first_name' => 'required|string|max:255',
             'last_name'  => 'required|string|max:255',
             'contact_number' => 'required|string|max:11|unique:members,contact_number,' . $userId,
+            'address' => 'required|string|max:500',
             'photo' => 'image|max:2048' // Ensure image upload
         ];
     }
