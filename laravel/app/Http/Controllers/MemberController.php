@@ -30,6 +30,14 @@ class MemberController extends Controller
             $validated['photo_path'] = $path;
         }
         
+        // Set initial 30 days membership
+        $validated['membership_start'] = now();
+        $validated['membership_end'] = now()->addDays(30);
+
+        // Create the member record
+        $member = Member::create($validated);
+
+        return response()->json($member, 201);
     }
 
     /**
