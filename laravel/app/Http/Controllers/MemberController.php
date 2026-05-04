@@ -22,6 +22,13 @@ class MemberController extends Controller
     public function store(Request $request)
     {
         //
+        $validated = $request->validated();
+
+        // Logic for photo upload
+        if ($request->hasFile('photo')) {
+            $path = $request->file('photo')->store('members', 'public');
+            $validated['photo_path'] = $path;
+        }
         
     }
 
