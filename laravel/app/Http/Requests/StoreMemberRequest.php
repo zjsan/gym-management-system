@@ -32,9 +32,14 @@ class StoreMemberRequest extends FormRequest
      * @return array<string, ValidationRule|array<mixed>|string>
      */
     public function rules(): array
-    {
+    {   
+        $userId = $this->route('user')?->id; // Get the ID only if the route parameter 'user' exists
+
         return [
-            //
+            'first_name' => 'required|string|max:255',
+            'last_name'  => 'required|string|max:255',
+            'contact_number' => 'required|string|max:11|unique:members,contact_number,' . $userId,
+            'photo' => 'image|max:2048' // Ensure image upload
         ];
     }
 }
