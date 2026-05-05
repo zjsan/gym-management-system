@@ -8,9 +8,16 @@ class Member extends Model
 {
     //
     protected $fillable = [
-        'membership_no', 'first_name', 'last_name', 'contact_number', 
-        'address', 'gender', 'photo_path', 'is_active', 
+        'membership_no', 'first_name', 'last_name', 'contact_number', 'emergency_contact_number',
+        'address', 'gender', 'date_of_birth', 'age', 'photo_path', 'is_active',
         'membership_start', 'membership_end'
+    ];
+
+    protected $casts = [
+        'membership_start' => 'datetime',
+        'membership_end' => 'datetime',
+        'last_renewal_at' => 'datetime',
+        'is_active' => 'boolean',
     ];
 
     // Check if membership is expired (based on 30-day rule)
