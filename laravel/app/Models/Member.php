@@ -35,9 +35,11 @@ class Member extends Model
     }
 
     //function to adjust membership end date by adding 1 day
-    public function adjust_membership()
+    public function adjust_membership($days = 1)
     {
-        $this->membership_end = now()->addDays(1);//increase 1 day to the current end date
+        // Use the existing end date as the starting point
+        $currentEnd = $this->membership_end ?? now();
+        $this->membership_end = $currentEnd->addDays($days);
         $this->save();
     }
 }
