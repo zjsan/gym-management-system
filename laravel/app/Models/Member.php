@@ -8,7 +8,7 @@ class Member extends Model
 {
     //
     protected $fillable = [
-        'membersip_no', 'first_name', 'last_name', 'contact_number', 
+        'membership_no', 'first_name', 'last_name', 'contact_number', 
         'address', 'gender', 'photo_path', 'is_active', 
         'membership_start', 'membership_end'
     ];
