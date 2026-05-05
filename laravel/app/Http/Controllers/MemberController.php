@@ -24,6 +24,9 @@ class MemberController extends Controller
         //
         $validated = $request->validated();
 
+        //generate unique membership number
+        $validated['membership_no'] = 'GYM-' . strtoupper(str_random(6));
+
         // Logic for photo upload
         if ($request->hasFile('photo')) {
             $path = $request->file('photo')->store('members', 'public');
