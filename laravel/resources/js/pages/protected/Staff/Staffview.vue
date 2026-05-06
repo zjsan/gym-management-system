@@ -153,19 +153,27 @@ import { useMemberStore } from "@/stores/memberStore";
 import { onMounted } from "vue";
 
 const memberStore = useMemberStore();
-const member = computed(() => memberStore.member);
 
-const initialState = {
-    first_name: "",
-    last_name: "",
-    contact_number: "",
-    emergency_contact_number: "",
-    address: "",
-    role: "staff",
-    password: "",
-    password_confirmation: "",
+const activeCount = computed(() => {
+    return memberStore.members.filter((m) => m.is_active).length;
+});
+
+const formatDate = (dateString) => {
+    if (!dateString) return "N/A";
+    return new Date(dateString).toLocaleDateString();
 };
 
-const isEditing = ref(false);
-const currentMemberId = ref(null);
+const renewMember = async (id) => {
+    if (confirm("Renew this membership for 30 days?")) {
+        await memberStore.renewMember(id);
+    }
+};
+
+const toggleStatus = async (id) => {
+    await memberStore.toggleMemberStatus(id);
+};
+
+onMounted(() => {
+    memberStore.fetchMembers();
+});
 </script>
