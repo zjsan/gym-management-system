@@ -155,27 +155,48 @@ import { useMemberStore } from "@/stores/memberStore";
 import { onMounted } from "vue";
 
 const memberStore = useMemberStore();
+const loading = ref(false);
 
-const activeCount = computed(() => {
-    return memberStore.members.filter((m) => m.is_active).length;
+const form = ref({
+    first_name: "",
+    last_name: "",
+    contact_number: "",
+    gender: "male",
+    photo: null,
 });
 
-const formatDate = (dateString) => {
-    if (!dateString) return "N/A";
-    return new Date(dateString).toLocaleDateString();
+const handleFileUpload = (event) => {
+    form.value.photo = event.target.files[0];
 };
 
-const renewMember = async (id) => {
-    if (confirm("Renew this membership for 30 days?")) {
-        await memberStore.renewMember(id);
+const submitForm = async () => {
+    loading.value = true;
+
+    // We must use FormData for file uploads
+    const data = new FormData();
+    data.append("first_name", form.value.first_name);
+    data.append("last_name", form.value.last_name);
+    data.append("contact_number", form.value.contact_number);
+    data.append("gender", form.value.gender);
+    if (form.value.photo) {
+        data.append("photo", form.value.photo);
     }
+
+    const result = await memberStore.addMember(data);
+    if (result.success) {
+        // Reset form
+        form.value = {
+            first_name: "",
+            last_name: "",
+            contact_number: "",
+            gender: "male",
+            photo: null,
+        };
+    }
+    loading.value = false;
 };
 
-const toggleStatus = async (id) => {
-    await memberStore.toggleMemberStatus(id);
-};
+const formatDate = (date) => new Date(date).toLocaleDateString();
 
-onMounted(() => {
-    memberStore.fetchMembers();
-});
+onMounted(() => memberStore.fetchMembers());
 </script>
