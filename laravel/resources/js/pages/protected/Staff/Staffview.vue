@@ -79,6 +79,28 @@
                             </tr>
                         </thead>
                         <tbody>
+                            <!--show if loading-->
+                            <tr v-if="memberStore.loading">
+                                <td
+                                    colspan="5"
+                                    class="p-10 text-center text-gray-500 italic"
+                                >
+                                    Fetching members from database...
+                                </td>
+                            </tr>
+
+                            <!--show if no members found-->
+                            <tr v-else-if="memberStore.members.length === 0">
+                                <td
+                                    colspan="5"
+                                    class="p-10 text-center text-gray-400"
+                                >
+                                    No members registered yet. Use the form to
+                                    add one.
+                                </td>
+                            </tr>
+
+                            <!--show member rows-->
                             <tr
                                 v-for="member in memberStore.members"
                                 :key="member.id"
@@ -196,7 +218,11 @@ const submitForm = async () => {
     loading.value = false;
 };
 
-const formatDate = (date) => new Date(date).toLocaleDateString();
+const formatDate = (dateString) => {
+    if (!dateString) return "N/A";
+    const date = new Date(dateString);
+    return isNaN(date.getTime()) ? "N/A" : date.toLocaleDateString();
+};
 
 onMounted(() => memberStore.fetchMembers());
 </script>
