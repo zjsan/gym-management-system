@@ -233,6 +233,7 @@ const submitForm = async () => {
     loading.value = false;
 };
 
+// Helper function to format dates, returns "N/A" if invalid or missing
 const formatDate = (dateString) => {
     if (!dateString) return "N/A";
     const date = new Date(dateString);

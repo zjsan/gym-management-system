@@ -12,9 +12,12 @@ export const useMemberStore = defineStore("memberStore", {
             this.loading = true;
             try {
                 const res = await api.get("/members");
-                this.members = res.data;
+                this.members = Array.isArray(res.data)
+                    ? res.data
+                    : res.data.data || [];
             } catch (err) {
                 this.errors = err.response.data;
+                this.members = [];
             } finally {
                 this.loading = false;
             }
