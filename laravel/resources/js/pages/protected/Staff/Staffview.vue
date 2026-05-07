@@ -68,104 +68,119 @@
                 <div
                     class="lg:col-span-3 bg-white rounded shadow border overflow-hidden"
                 >
-                    <table class="w-full text-left text-sm">
-                        <thead class="bg-gray-50 border-b">
-                            <tr>
-                                <th class="p-3">ID / Photo</th>
-                                <th class="p-3">Name</th>
-                                <th class="p-3">Membership Period</th>
-                                <th class="p-3">Status</th>
-                                <th class="p-3">Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <!--show if loading-->
-                            <tr v-if="memberStore.loading">
-                                <td
-                                    colspan="5"
-                                    class="p-10 text-center text-gray-500 italic"
-                                >
-                                    Fetching members from database...
-                                </td>
-                            </tr>
+                    <!-- Wrapper for scrolling -->
+                    <div class="overflow-y-auto max-h-[500px]">
+                        <table class="w-full text-left text-sm">
+                            <thead class="bg-gray-50 border-b">
+                                <tr>
+                                    <th class="p-3">ID / Photo</th>
+                                    <th class="p-3">Name</th>
+                                    <th class="p-3">Membership Period</th>
+                                    <th class="p-3">Status</th>
+                                    <th class="p-3">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!--show if loading-->
+                                <tr v-if="memberStore.loading">
+                                    <td
+                                        colspan="5"
+                                        class="p-10 text-center text-gray-500 italic"
+                                    >
+                                        Fetching members from database...
+                                    </td>
+                                </tr>
 
-                            <!--show if no members found-->
-                            <tr v-else-if="memberStore.members.length === 0">
-                                <td
-                                    colspan="5"
-                                    class="p-10 text-center text-gray-400"
+                                <!--show if no members found-->
+                                <tr
+                                    v-else-if="memberStore.members.length === 0"
                                 >
-                                    No members registered yet. Use the form to
-                                    add one.
-                                </td>
-                            </tr>
+                                    <td
+                                        colspan="5"
+                                        class="p-10 text-center text-gray-400"
+                                    >
+                                        No members registered yet. Use the form
+                                        to add one.
+                                    </td>
+                                </tr>
 
-                            <!--show member rows-->
-                            <tr
-                                v-for="member in memberStore.members"
-                                :key="member.id"
-                                class="border-b hover:bg-gray-50"
-                            >
-                                <td class="p-3">
-                                    <div class="flex items-center space-x-3">
-                                        <img
-                                            :src="
-                                                member.photo_path
-                                                    ? `/storage/${member.photo_path}`
-                                                    : '/placeholder.png'
+                                <!--show member rows-->
+                                <tr
+                                    v-for="member in memberStore.members"
+                                    :key="member.id"
+                                    class="border-b hover:bg-gray-50"
+                                >
+                                    <td class="p-3">
+                                        <div
+                                            class="flex items-center space-x-3"
+                                        >
+                                            <img
+                                                :src="
+                                                    member.photo_path
+                                                        ? `/storage/${member.photo_path}`
+                                                        : '/placeholder.png'
+                                                "
+                                                class="w-10 h-10 rounded-full bg-gray-200 object-cover"
+                                            />
+                                            <span class="font-mono text-xs">{{
+                                                member.membership_no
+                                            }}</span>
+                                        </div>
+                                    </td>
+                                    <td class="p-3 font-medium">
+                                        {{ member.first_name }}
+                                        {{ member.last_name }}
+                                    </td>
+                                    <td class="p-3 text-xs">
+                                        <div>
+                                            Start:
+                                            {{
+                                                formatDate(
+                                                    member.membership_start,
+                                                )
+                                            }}
+                                        </div>
+                                        <div class="text-red-500">
+                                            End:
+                                            {{
+                                                formatDate(
+                                                    member.membership_end,
+                                                )
+                                            }}
+                                        </div>
+                                    </td>
+                                    <td class="p-3">
+                                        <span
+                                            :class="
+                                                member.is_active
+                                                    ? 'text-green-600'
+                                                    : 'text-red-600'
                                             "
-                                            class="w-10 h-10 rounded-full bg-gray-200 object-cover"
-                                        />
-                                        <span class="font-mono text-xs">{{
-                                            member.membership_no
-                                        }}</span>
-                                    </div>
-                                </td>
-                                <td class="p-3 font-medium">
-                                    {{ member.first_name }}
-                                    {{ member.last_name }}
-                                </td>
-                                <td class="p-3 text-xs">
-                                    <div>
-                                        Start:
-                                        {{
-                                            formatDate(member.membership_start)
-                                        }}
-                                    </div>
-                                    <div class="text-red-500">
-                                        End:
-                                        {{ formatDate(member.membership_end) }}
-                                    </div>
-                                </td>
-                                <td class="p-3">
-                                    <span
-                                        :class="
-                                            member.is_active
-                                                ? 'text-green-600'
-                                                : 'text-red-600'
-                                        "
-                                        class="font-bold"
-                                    >
-                                        {{
-                                            member.is_active
-                                                ? "ACTIVE"
-                                                : "INACTIVE"
-                                        }}
-                                    </span>
-                                </td>
-                                <td class="p-3">
-                                    <button
-                                        @click="
-                                            memberStore.toggleStatus(member.id)
-                                        "
-                                        class="text-blue-500 hover:underline"
-                                    >
-                                        Toggle
-                                    </button>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
+                                            class="font-bold"
+                                        >
+                                            {{
+                                                member.is_active
+                                                    ? "ACTIVE"
+                                                    : "INACTIVE"
+                                            }}
+                                        </span>
+                                    </td>
+                                    <td class="p-3">
+                                        <button
+                                            @click="
+                                                memberStore.toggleStatus(
+                                                    member.id,
+                                                )
+                                            "
+                                            class="text-blue-500 hover:underline"
+                                        >
+                                            Toggle
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
