@@ -27,8 +27,12 @@ class MemberController extends Controller
         $validated = $request->validated();
 
         //generate unique membership number
-        $validated['membership_no'] = 'GYM-' . strtoupper(Str::random(4));
+        $lastMember = Member::latest('id')->first();
+        $nextId = $lastMember ? $lastMember->id + 1 : 1; // Find the last member's ID to increment it, or start at 0
 
+        // str_pad turns "1" into "0001"
+        $validated['membership_no'] = 'GYM-' . str_pad($nextId, 4, '0', STR_PAD_LEFT);
+        
         // Logic for photo upload
         if ($request->hasFile('photo')) {
             $path = $request->file('photo')->store('members', 'public');
