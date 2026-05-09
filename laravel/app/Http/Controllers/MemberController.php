@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Member;   
+use App\Http\Requests\StoreMemberRequest;
+use Illuminate\Support\Str;
 
 class MemberController extends Controller
 {
@@ -25,7 +27,7 @@ class MemberController extends Controller
         $validated = $request->validated();
 
         //generate unique membership number
-        $validated['membership_no'] = 'GYM-' . strtoupper(str_random(4));
+        $validated['membership_no'] = 'GYM-' . strtoupper(Str::random(4));
 
         // Logic for photo upload
         if ($request->hasFile('photo')) {
