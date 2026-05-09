@@ -144,6 +144,10 @@
                                             <span class="font-mono text-xs">{{
                                                 member.membership_no
                                             }}</span>
+                                                 <span class="font-mono text-xs">{{
+                                                member.date_of_birth
+                                            }}</span>
+                                            <span class="font-mono text-xs">{{ member.gender }}</span>
                                         </div>
                                     </td>
                                     <td class="p-3 font-medium">
