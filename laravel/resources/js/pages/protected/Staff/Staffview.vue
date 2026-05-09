@@ -34,11 +34,18 @@
                             class="w-full border p-2 rounded text-sm"
                             required
                         />
+                         <input
+                            v-model="form.emergency_contact_number"
+                            placeholder="Emergency contact #"
+                            class="w-full border p-2 rounded text-sm"
+                            required
+                        />
 
                         <select
                             v-model="form.gender"
                             class="w-full border p-2 rounded text-sm"
                         >
+                            <option disabled value="">--Select Gender--</option>
                             <option value="male">Male</option>
                             <option value="female">Female</option>
                             <option value="other">Other</option>
@@ -51,7 +58,7 @@
                             <input
                                 type="file"
                                 @change="handleFileUpload"
-                                class="w-full text-xs"
+                                class="w-full text-xs cursor-pointer"
                             />
                         </div>
 
@@ -198,7 +205,7 @@ const form = ref({
     first_name: "",
     last_name: "",
     contact_number: "",
-    gender: "male",
+    gender: "",
     photo: null,
 });
 
@@ -214,6 +221,7 @@ const submitForm = async () => {
     data.append("first_name", form.value.first_name);
     data.append("last_name", form.value.last_name);
     data.append("contact_number", form.value.contact_number);
+    data.append("emergency_contact_number", form.value.emergency_contact_numbers);
     data.append("gender", form.value.gender);
     if (form.value.photo) {
         data.append("photo", form.value.photo);
