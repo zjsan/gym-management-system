@@ -16,24 +16,25 @@ export const useMemberStore = defineStore("memberStore", {
                     ? res.data
                     : res.data.data || [];
             } catch (err) {
-                this.errors = err.response.data;
+                this.errors = err.response?.data?.errors || "fetch error occurred";
+                console.log("Fetch error failed: ", err);
                 this.members = [];
             } finally {
                 this.loading = false;
             }
         },
 
-        async addUser(memberData) {
+        async addMember(memberData) {
             this.loading = true;
             this.error = null; //clear previous error
 
             try {
                 const res = await api.post("/members", memberData);
-                this.members.push(res.data); // Update UI instantly
+                this.members.unshift(res.data);//newest member appears at the top of the table
                 console.log("Member added successfully:", res.data);
                 return { success: true };
             } catch (err) {
-                this.errors = err.response.data.errors;
+                this.errors = err.response?.data?.errors || "Create error occurred";
                 console.error("Failed to add member:", err);
                 return { success: false };
             } finally {
