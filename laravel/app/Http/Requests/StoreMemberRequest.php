@@ -13,7 +13,7 @@ class StoreMemberRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return Gate::allows('access-front-desk');
+       return true;
     }
 
     protected function prepareForValidation()

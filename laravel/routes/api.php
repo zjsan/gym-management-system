@@ -4,6 +4,7 @@ use App\Http\Controllers\AuthController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\MemberController;
 
 Route::get('/user', function (Request $request) {
     return $request->user();
@@ -16,11 +17,19 @@ Route::middleware(['web'])->group(function () {
 
 Route::middleware(['auth:sanctum'])->group(function () {
     
-    // Developer-only routes
+    // admin routes
     Route::middleware(['can:admin-only'])->group(function () {
 
         // routes for GET, POST, PUT, DELETE /api/users
         Route::apiResource('users', UserController::class);
+        
+    });
+
+        // staff routes
+    Route::middleware(['can:access-front-desk'])->group(function () {
+
+        // routes for GET, POST, PUT, DELETE /api/users
+        Route::apiResource('members', MemberController::class);
         
     });
     
