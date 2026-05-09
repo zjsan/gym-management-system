@@ -233,7 +233,7 @@ const submitForm = async () => {
     data.append("first_name", form.value.first_name);
     data.append("last_name", form.value.last_name);
     data.append("contact_number", form.value.contact_number);
-    data.append("emergency_contact_number", form.value.emergency_contact_numbers);
+    data.append("emergency_contact_number", form.value.emergency_contact_number);
     data.append("address", form.value.address);
     data.append("date_of_birth", form.value.dob);
     data.append("gender", form.value.gender);
