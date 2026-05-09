@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Carbon;
 
 class Member extends Model
 {
@@ -46,6 +47,6 @@ class Member extends Model
     //function to derived age from date of birth
     public function getAgeAttribute()
     {
-        return \Carbon\Carbon::parse($this->date_of_birth)->age;
+        return Carbon::parse($this->date_of_birth)->age;
     }
 }
