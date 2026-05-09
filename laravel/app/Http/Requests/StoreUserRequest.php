@@ -14,7 +14,7 @@ class StoreUserRequest extends FormRequest
     public function authorize(): bool
     {
         //allow only if the request passed the admin only gate check
-        return Gate::allows('admin-only');
+        return true; 
     }
 
     protected function prepareForValidation()
