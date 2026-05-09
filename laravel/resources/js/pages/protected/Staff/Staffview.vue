@@ -40,6 +40,18 @@
                             class="w-full border p-2 rounded text-sm"
                             required
                         />
+                          <input
+                            v-model="form.address"
+                            placeholder="Address"
+                            class="w-full border p-2 rounded text-sm"
+                            required
+                        />
+                         <input
+                            v-model="form.dob"
+                            placeholder="Date of Birth"
+                            class="w-full border p-2 rounded text-sm"
+                            required
+                        />
 
                         <select
                             v-model="form.gender"
@@ -222,6 +234,8 @@ const submitForm = async () => {
     data.append("last_name", form.value.last_name);
     data.append("contact_number", form.value.contact_number);
     data.append("emergency_contact_number", form.value.emergency_contact_numbers);
+    data.append("address", form.value.address);
+    data.append("date_of_birth", form.value.dob);
     data.append("gender", form.value.gender);
     if (form.value.photo) {
         data.append("photo", form.value.photo);
