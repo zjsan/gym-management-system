@@ -47,7 +47,7 @@
                             required
                         />
                          <input
-                            v-model="form.dob"
+                            v-model="form.date_of_birth"
                             placeholder="Date of Birth"
                             class="w-full border p-2 rounded text-sm"
                             required
@@ -235,7 +235,7 @@ const submitForm = async () => {
     data.append("contact_number", form.value.contact_number);
     data.append("emergency_contact_number", form.value.emergency_contact_number);
     data.append("address", form.value.address);
-    data.append("date_of_birth", form.value.dob);
+    data.append("date_of_birth", form.value.date_of_birth);
     data.append("gender", form.value.gender);
     if (form.value.photo) {
         data.append("photo", form.value.photo);
