@@ -22,7 +22,7 @@ class StoreMemberRequest extends FormRequest
             'first_name' => ucfirst(trim($this->first_name)),
             'last_name'  => ucfirst(trim($this->last_name)),
             'contact_number' => trim($this->contact_number),
-            'emergency_contact_number' => trim($this->emergency_contact_number),
+            'emergency_contact_number' => trim($this->emergency_contact_number),    
             'address' => ucfirst(trim($this->address)),
         ]);
     }
