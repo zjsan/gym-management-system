@@ -45,9 +45,8 @@ class MemberController extends Controller
         return response()->json($member, 201);
     }
 
-    public function toggleStatus($id)
+    public function toggleStatus( Member $member)
     {
-        $member = Member::findOrFail($id);
         $member->is_active = !$member->is_active; // Flips between active/inactive
         $member->save();
         return response()->json(['message' => 'Status updated']);
