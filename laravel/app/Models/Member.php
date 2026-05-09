@@ -9,7 +9,7 @@ class Member extends Model
     //
     protected $fillable = [
         'membership_no', 'first_name', 'last_name', 'contact_number', 'emergency_contact_number',
-        'address', 'gender', 'date_of_birth', 'age', 'photo_path', 'is_active',
+        'address', 'gender', 'date_of_birth', 'photo_path', 'is_active',
         'membership_start', 'membership_end'
     ];
 
@@ -41,5 +41,11 @@ class Member extends Model
         $currentEnd = $this->membership_end ?? now();
         $this->membership_end = $currentEnd->addDays($days);
         $this->save();
+    }
+
+    //function to derived age from date of birth
+    public function getAgeAttribute()
+    {
+        return \Carbon\Carbon::parse($this->date_of_birth)->age;
     }
 }

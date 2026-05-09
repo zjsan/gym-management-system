@@ -21,7 +21,6 @@ return new class extends Migration
             $table->text('address');
             $table->enum('gender', ['male', 'female', 'other']);
             $table->date('date_of_birth')->nullable();
-            $table->integer('age')->nullable();
             $table->string('photo_path')->nullable();
             $table->boolean('is_active')->default(true);
 
