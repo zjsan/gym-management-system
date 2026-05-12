@@ -34,19 +34,19 @@
                             class="w-full border p-2 rounded text-sm"
                             required
                         />
-                         <input
+                        <input
                             v-model="form.emergency_contact_number"
                             placeholder="Emergency contact #"
                             class="w-full border p-2 rounded text-sm"
                             required
                         />
-                          <input
+                        <input
                             v-model="form.address"
                             placeholder="Address"
                             class="w-full border p-2 rounded text-sm"
                             required
                         />
-                         <input
+                        <input
                             v-model="form.date_of_birth"
                             placeholder="Date of Birth"
                             class="w-full border p-2 rounded text-sm"
@@ -144,10 +144,12 @@
                                             <span class="font-mono text-xs">{{
                                                 member.membership_no
                                             }}</span>
-                                                 <span class="font-mono text-xs">{{
+                                            <span class="font-mono text-xs">{{
                                                 member.date_of_birth
                                             }}</span>
-                                            <span class="font-mono text-xs">{{ member.gender }}</span>
+                                            <span class="font-mono text-xs">{{
+                                                member.gender
+                                            }}</span>
                                         </div>
                                     </td>
                                     <td class="p-3 font-medium">
@@ -237,12 +239,20 @@ const submitForm = async () => {
     data.append("first_name", form.value.first_name);
     data.append("last_name", form.value.last_name);
     data.append("contact_number", form.value.contact_number);
-    data.append("emergency_contact_number", form.value.emergency_contact_number);
+    data.append(
+        "emergency_contact_number",
+        form.value.emergency_contact_number,
+    );
     data.append("address", form.value.address);
     data.append("date_of_birth", form.value.date_of_birth);
     data.append("gender", form.value.gender);
     if (form.value.photo) {
         data.append("photo", form.value.photo);
+    }
+
+    // Debugging: Log FormData entries
+    for (let [key, value] of data.entries()) {
+        console.log(`${key}:`, value);
     }
 
     const result = await memberStore.addMember(data);
