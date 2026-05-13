@@ -5,12 +5,18 @@ namespace Tests\Feature;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Http\UploadedFile;
+use App\Models\Member;
 
 class MemberControllerTest extends TestCase
 {
     /**
      * A basic feature test example.
      */
+
+    use RefreshDatabase;
+    
     public function test_can_create_member_with_photo()
     {
         Storage::fake('public'); // Intercepts file saving so you don't clutter your PC
