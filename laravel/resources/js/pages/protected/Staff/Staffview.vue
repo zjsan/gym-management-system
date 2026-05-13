@@ -56,6 +56,7 @@
                         <select
                             v-model="form.gender"
                             class="w-full border p-2 rounded text-sm"
+                            required
                         >
                             <option disabled value="">--Select Gender--</option>
                             <option value="male">Male</option>
@@ -71,6 +72,7 @@
                                 type="file"
                                 @change="handleFileUpload"
                                 class="w-full text-xs cursor-pointer"
+                                required
                             />
                         </div>
 
