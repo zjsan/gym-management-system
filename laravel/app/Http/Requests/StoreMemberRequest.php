@@ -27,6 +27,16 @@ class StoreMemberRequest extends FormRequest
         ]);
     }
 
+    protected function passedValidation()
+{
+    // This will kill the request and show you the data in your Browser DevTools
+    dd([
+        'all_input' => $this->all(),
+        'file_bag' => $this->file('photo'),
+        'has_file' => $this->hasFile('photo'),
+    ]);
+}
+
     /**
      * Get the validation rules that apply to the request.
      *
