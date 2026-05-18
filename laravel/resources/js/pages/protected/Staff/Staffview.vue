@@ -194,11 +194,8 @@
                                     </td>
                                     <td class="p-3">
                                         <button
-                                            @click="
-                                                memberStore.toggleStatus(
-                                                    member.id,
-                                                )
-                                            "
+                                            @click="toggleStatus(member.id)"
+                                            :disabled="memberStore.loading"
                                             class="text-blue-500 hover:underline"
                                         >
                                             Toggle
@@ -276,6 +273,10 @@ const formatDate = (dateString) => {
     if (!dateString) return "N/A";
     const date = new Date(dateString);
     return isNaN(date.getTime()) ? "N/A" : date.toLocaleDateString();
+};
+
+const toggleStatus = async (memberId) => {
+    await memberStore.toggleStatus(memberId);
 };
 
 onMounted(() => memberStore.fetchMembers());
