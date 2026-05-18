@@ -25,14 +25,12 @@ export const useMemberStore = defineStore("memberStore", {
             }
         },
 
-        async toggleStatus(member) {
+        async toggleStatus(id) {
             this.loading = true;
             this.error = null; //clear previous error
 
             try {
-                const res = await api.put(
-                    `/members/${member.id}/toggle-status`,
-                );
+                const res = await api.put(`/members/${id}/toggle-status`);
 
                 // Update the member's status in the local state
                 const index = this.members.findIndex((m) => m.id === member.id);
