@@ -53,7 +53,12 @@ class MemberController extends Controller
     {
         $member->is_active = !$member->is_active; // Flips between active/inactive
         $member->save();
-        return response()->json(['message' => 'Status updated']);
+
+        return response()->json([
+            'message' => 'Status updated successfully.',
+            'is_active' => $member->is_active, // return the new status
+            'member' => $member //  return the updated member data
+        ], 200);
     }
     
     /**
