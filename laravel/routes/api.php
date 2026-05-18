@@ -28,6 +28,9 @@ Route::middleware(['auth:sanctum'])->group(function () {
         // staff routes
     Route::middleware(['can:access-front-desk'])->group(function () {
 
+        //custom route for toggling member status
+        Route::put('members/{member}/toggle-status', [MemberController::class, 'toggleStatus']);
+
         // routes for GET, POST, PUT, DELETE /api/users
         Route::apiResource('members', MemberController::class);
         
