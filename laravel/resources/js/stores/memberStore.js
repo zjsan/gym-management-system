@@ -16,9 +16,35 @@ export const useMemberStore = defineStore("memberStore", {
                     ? res.data
                     : res.data.data || [];
             } catch (err) {
-                this.errors = err.response?.data?.errors || "fetch error occurred";
+                this.errors =
+                    err.response?.data?.errors || "fetch error occurred";
                 console.log("Fetch error failed: ", err);
                 this.members = [];
+            } finally {
+                this.loading = false;
+            }
+        },
+
+        async toggleStatus(member) {
+            this.loading = true;
+            this.error = null; //clear previous error
+
+            try {
+                const res = await api.put(
+                    `/members/${member.id}/toggle-status`,
+                );
+
+                // Update the member's status in the local state
+                const index = this.members.findIndex((m) => m.id === member.id);
+                if (index !== -1) {
+                    this.members[index] = res.data.member;
+                }
+                console.log("Member status toggled successfully:", res.data);
+            } catch (err) {
+                this.errors =
+                    err.response?.data?.errors ||
+                    "Toggle status error occurred";
+                console.error("Failed to toggle member status:", err);
             } finally {
                 this.loading = false;
             }
@@ -30,11 +56,12 @@ export const useMemberStore = defineStore("memberStore", {
 
             try {
                 const res = await api.post("/members", memberData);
-                this.members.unshift(res.data);//newest member appears at the top of the table
+                this.members.unshift(res.data); //newest member appears at the top of the table
                 console.log("Member added successfully:", res.data);
                 return { success: true };
             } catch (err) {
-                this.errors = err.response?.data?.errors || "Create error occurred";
+                this.errors =
+                    err.response?.data?.errors || "Create error occurred";
                 console.error("Failed to add member:", err);
                 return { success: false };
             } finally {
