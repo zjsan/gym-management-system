@@ -25,29 +25,39 @@ class MemberController extends Controller
     public function store(StoreMemberRequest $request, Member $member)
     {
         //
-        $validated = $request->validated();
+        try{
 
-        //generate unique membership number
-        $lastMember = Member::latest('id')->first();
-        $nextId = $lastMember ? $lastMember->id + 1 : 1; // Find the last member's ID to increment it, or start at 0
+            $validated = $request->validated();
 
-        // str_pad turns "1" into "0001"
-        $validated['membership_no'] = 'GYM-' . str_pad($nextId, 4, '0', STR_PAD_LEFT);
-        
-        // Logic for photo upload
-        if ($request->hasFile('photo')) {
-            $path = $request->file('photo')->store('members', 'public');
-            $validated['photo_path'] = $path;
+            //generate unique membership number
+            $lastMember = Member::latest('id')->first();
+            $nextId = $lastMember ? $lastMember->id + 1 : 1; // Find the last member's ID to increment it, or start at 0
+
+            // str_pad turns "1" into "0001"
+            $validated['membership_no'] = 'GYM-' . str_pad($nextId, 4, '0', STR_PAD_LEFT);
+            
+            // Logic for photo upload
+            if ($request->hasFile('photo')) {
+                $path = $request->file('photo')->store('members', 'public');
+                $validated['photo_path'] = $path;
+            }
+            
+            // Set initial 30 days membership
+            $validated['membership_start'] = now();
+            $validated['membership_end'] = now()->addDays(30);
+
+            // Create the member record
+            $member = Member::create($validated);
+
+            return response()->json($member, 201);  
         }
-        
-        // Set initial 30 days membership
-        $validated['membership_start'] = now();
-        $validated['membership_end'] = now()->addDays(30);
-
-        // Create the member record
-        $member = Member::create($validated);
-
-        return response()->json($member, 201);
+        catch(\Exception $e) {
+            return response()->json([
+                'message' => 'Failed to create member',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+       
     }
 
     public function toggleStatus( Member $member)
@@ -76,26 +86,36 @@ class MemberController extends Controller
     public function update(StoreMemberRequest $request, Member $member)
     {
         //
-        $validated = $request->validated();
+        try{
 
-        //handle photo upload if a new photo is provided
-        if($request->hasFile('photo')) {
+            $validated = $request->validated();
 
-            if($member->photo_path) {
-                //delete the old photo if it exists
-                Storage::disk('public')->delete($member->photo_path);
+            //handle photo upload if a new photo is provided
+            if($request->hasFile('photo')) {
+
+                if($member->photo_path) {
+                    //delete the old photo if it exists
+                    Storage::disk('public')->delete($member->photo_path);
+                }
+
+            //store the new photo and update the path
+            $validated['photo_path'] = $request->file('photo')->store('members', 'public');
             }
 
-           //store the new photo and update the path
-           $validated['photo_path'] = $request->file('photo')->store('members', 'public');
+            $member->update($validated); //update the member with the validated data
+
+            return response()->json([
+                'message' => 'Member updated successfully',
+                'member' => $member->fresh() // Returns recalculated fields if any
+            ], 200);
         }
-
-        $member->update($validated); //update the member with the validated data
-
-        return response()->json([
-            'message' => 'Member updated successfully',
-            'member' => $member->fresh() // Returns recalculated fields if any
-        ], 200);
+        catch(\Exception $e) {
+            return response()->json([
+                'message' => 'Failed to update member',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+  
     }
 
     /**
