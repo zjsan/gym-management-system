@@ -34,7 +34,8 @@ class StoreMemberRequest extends FormRequest
      */
     public function rules(): array
     {   
-        $memberId = $this->route('member')?->id; // Get the ID only if the route parameter 'user' exists
+        $member = $this->route('member'); // Get the member instance from the route, if it exists
+        $memberId = is_object($member) ? $member->id : $member; // If it's an object, get the ID, otherwise use it directly  
 
         return [
             'first_name' => 'required|string|max:255',
