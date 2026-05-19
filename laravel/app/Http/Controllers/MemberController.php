@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Member;   
 use App\Http\Requests\StoreMemberRequest;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Storage;
 
 class MemberController extends Controller
 {
@@ -72,9 +73,29 @@ class MemberController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(StoreMemberRequest $request, Member $member)
     {
         //
+        $validated = $request->validated();
+
+        //handle photo upload if a new photo is provided
+        if($request->hasFile('photo')) {
+
+            if($member->photo_path) {
+                //delete the old photo if it exists
+                Storage::disk('public')->delete($member->photo_path);
+            }
+
+           //store the new photo and update the path
+           $validated['photo_path'] = $request->file('photo')->store('members', 'public');
+        }
+
+        $member->update($validated); //update the member with the validated data
+
+        return response()->json([
+            'message' => 'Member updated successfully',
+            'member' => $member->fresh() // Returns recalculated fields if any
+        ], 200);
     }
 
     /**
