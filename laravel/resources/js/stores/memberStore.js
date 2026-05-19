@@ -33,7 +33,7 @@ export const useMemberStore = defineStore("memberStore", {
                 const res = await api.put(`/members/${id}/toggle-status`);
 
                 // Update the member's status in the local state
-                const index = this.members.findIndex((m) => m.id === member.id);
+                const index = this.members.findIndex((m) => m.id === id);
                 if (index !== -1) {
                     this.members[index] = res.data.member;
                 }
