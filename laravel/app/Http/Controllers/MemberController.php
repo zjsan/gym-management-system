@@ -70,6 +70,7 @@ class MemberController extends Controller
     public function show(string $id)
     {
         //
+        return resposne()->json(Member::findOrFail($id));
     }
 
     /**
@@ -78,8 +79,6 @@ class MemberController extends Controller
     public function update(StoreMemberRequest $request, Member $member)
     {
         //
-        
-
         $validated = $request->validated();
 
         //handle photo upload if a new photo is provided
@@ -101,14 +100,18 @@ class MemberController extends Controller
             'member' => $member->fresh() // Returns recalculated fields if any
         ], 200);
     
-  
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Member $member)
     {
         //
+        $member->delete();
+        return response()->json([
+            'message' => 'Member deleted successfully'
+        ], 200);
+
     }
 }
