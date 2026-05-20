@@ -243,6 +243,19 @@ const resetForm = () => {
     form.value = { ...initialState };
 };
 
+const editMember = (member) => {
+    isEditing.value = true;
+    currentMemberId.value = member.id;
+
+    form.value = {
+        first_name: member.first_name,
+        last_name: member.last_name,
+        contact_number: member.contact_number,
+        gender: member.gender,
+        photo: null, // We won't pre-fill the photo input
+    };
+};
+
 const handleFileUpload = (event) => {
     form.value.photo = event.target.files[0];
 };
