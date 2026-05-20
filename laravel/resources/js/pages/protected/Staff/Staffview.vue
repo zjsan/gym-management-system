@@ -264,40 +264,64 @@ const form = ref({ ...initialState });
 
 const submitForm = async () => {
     loading.value = true;
+    let result;
 
-    // We must use FormData for file uploads
-    const data = new FormData();
-    data.append("first_name", form.value.first_name);
-    data.append("last_name", form.value.last_name);
-    data.append("contact_number", form.value.contact_number);
-    data.append(
-        "emergency_contact_number",
-        form.value.emergency_contact_number,
-    );
-    data.append("address", form.value.address);
-    data.append("date_of_birth", form.value.date_of_birth);
-    data.append("gender", form.value.gender);
-    if (form.value.photo) {
-        data.append("photo", form.value.photo);
-    }
+    try {
+        // 1. Prepare the FormData object (shared by both Create and Update)
+        const data = new FormData();
+        data.append("first_name", form.value.first_name);
+        data.append("last_name", form.value.last_name);
+        data.append("contact_number", form.value.contact_number);
+        data.append(
+            "emergency_contact_number",
+            form.value.emergency_contact_number,
+        );
+        data.append("address", form.value.address);
+        data.append("date_of_birth", form.value.date_of_birth);
+        data.append("gender", form.value.gender);
 
-    // Debugging: Log FormData entries
-    for (let [key, value] of data.entries()) {
-        console.log(`${key}:`, value);
-    }
+        // Only append photo if a new file object is actually selected
+        if (form.value.photo && form.value.photo instanceof File) {
+            data.append("photo", form.value.photo);
+        }
 
-    const result = await memberStore.addMember(data);
-    if (result.success) {
-        // Reset form
-        form.value = {
-            first_name: "",
-            last_name: "",
-            contact_number: "",
-            gender: "male",
-            photo: null,
-        };
+        // Debugging: Log FormData entries
+        for (let [key, value] of data.entries()) {
+            console.log(`${key}:`, value);
+        }
+
+        // 2. Branch logic based on Edit vs. Create mode
+        if (isEditing.value) {
+            // CRITICAL: Spoof the PUT method for Laravel to read the FormData/Files
+
+            // Pass the member ID along with the payload to your store action
+            result = await memberStore.updateMember(form.value.id, data);
+        } else {
+            // Standard Create operation
+            result = await memberStore.addMember(data);
+        }
+
+        // 3. Handle the response
+        if (result && result.success) {
+            // Optional: If you use a modal or routing, you might want to redirect/close here
+            resetForm();
+            alert(
+                isEditing.value
+                    ? "Member updated successfully!"
+                    : "Member added successfully!",
+            );
+        } else {
+            // Handle validation errors or backend failures returned gracefully
+            alert(result.message || "Failed to save member data.");
+        }
+    } catch (error) {
+        console.error("Error submitting form:", error);
+        alert("An error occurred while submitting the form");
+    } finally {
+        // Moving this to 'finally' ensures loading drops back to false
+        // no matter if the try blocks succeed OR catch blocks fail.
+        loading.value = false;
     }
-    loading.value = false;
 };
 
 // Helper function to format dates, returns "N/A" if invalid or missing
