@@ -107,11 +107,6 @@ class MemberController extends Controller
      */
     public function destroy(Member $member)
     {
-        //
-        $member->delete();
-        return response()->json([
-            'message' => 'Member deleted successfully'
-        ], 200);
-
+ 
     }
 }

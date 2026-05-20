@@ -67,42 +67,27 @@ export const useMemberStore = defineStore("memberStore", {
             }
         },
 
-        // async updateUser(id, userData) {
-        //     this.loading = true;
-        //     try {
-        //         const res = await api.put(`/members/${id}`, userData);
+        async updateMember(id, memberData) {
+            this.loading = true;
+            this.error = null; //clear previous error
 
-        //         //find the index of the user
-        //         const index = this.users.findIndex((user) => user.id === id);
+            try {
+                const res = await api.put(`/members/${id}`, memberData);
 
-        //         //check if it successully found the user
-        //         if (index !== -1) {
-        //             this.users[index] = res.data; //swap the old data from the new data
-        //         }
-
-        //         return { success: true };
-        //     } catch (error) {
-        //         this.errors = error.response?.data?.errors;
-        //         return { success: false };
-        //     } finally {
-        //         this.loading = false;
-        //     }
-        // },
-
-        // async deleteUser(id) {
-        //     if (!confirm("Are you sure?")) {
-        //         return;
-        //     }
-
-        //     try {
-        //         await api.delete(`/users/${id}`);
-
-        //         //remove user from local state
-        //         this.users = this.users.filter((user) => user.id !== id);
-        //     } catch (error) {
-        //         console.log(error);
-        //         alert("Failed to delete user");
-        //     }
-        // },
+                const index = this.members.findIndex((m) => m.id === id);
+                if (index !== -1) {
+                    this.members[index] = res.data; //swap the old data from the new data
+                }
+                console.log("Member updated successfully:", res.data);
+                return { success: true };
+            } catch (err) {
+                this.errors =
+                    err.response?.data?.errors || "Update error occurred";
+                console.error("Failed to update member:", err);
+                return { success: false };
+            } finally {
+                this.loading = false;
+            }
+        },
     },
 });
