@@ -226,9 +226,28 @@ const form = ref({
     photo: null,
 });
 
+const initialFormState = {
+    first_name: "",
+    last_name: "",
+    contact_number: "",
+    gender: "",
+    photo: null,
+};
+
+const isEditing = ref(false);
+const currentMemberId = ref(null);
+
+const resetForm = () => {
+    isEditing.value = false;
+    currentMemberId.value = null;
+    form.value = { ...initialState };
+};
+
 const handleFileUpload = (event) => {
     form.value.photo = event.target.files[0];
 };
+
+const form = ref({ ...initialState });
 
 const submitForm = async () => {
     loading.value = true;
