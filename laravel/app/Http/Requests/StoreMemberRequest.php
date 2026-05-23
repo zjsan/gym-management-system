@@ -45,7 +45,7 @@ class StoreMemberRequest extends FormRequest
             'address' => 'required|string|max:500',
             'date_of_birth' => 'required|date|before:today',
             'gender' => 'required|in:male,female,other',
-            'photo' => 'nullable|mimes:jpg,jpeg,png|max:2048'
+            'photo' => 'nullable|mimes:jpg,jpeg,png,webp,heic|max:5120' 
         ];
     }
 }
