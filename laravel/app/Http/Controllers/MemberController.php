@@ -70,7 +70,7 @@ class MemberController extends Controller
     public function show(string $id)
     {
         //
-        return resposne()->json(Member::findOrFail($id));
+        return response()->json(Member::findOrFail($id));
     }
 
     /**
