@@ -208,13 +208,13 @@
                                         </span>
                                     </td>
                                     <td class="p-3">
-                                        <button
+                                        <!-- <button
                                             @click="toggleStatus(member.id)"
                                             :disabled="memberStore.loading"
                                             class="text-blue-500 hover:underline"
                                         >
                                             Toggle
-                                        </button>
+                                        </button> -->
 
                                         <button 
                                             @click="editMember(member)" 
