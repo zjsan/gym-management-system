@@ -13,7 +13,7 @@
                 <!-- Registration Form -->
                 <div class="lg:col-span-1 bg-white p-4 rounded shadow border">
                     <h2 class="font-semibold mb-4 text-blue-600">
-                        Register New Member
+                        {{ isEditing ? "Edit Member" : " Register New User" }}
                     </h2>
                     <form @submit.prevent="submitForm" class="space-y-3">
                         <input
@@ -200,6 +200,7 @@
                                         >
                                             Toggle
                                         </button>
+                                        
                                     </td>
                                 </tr>
                             </tbody>
