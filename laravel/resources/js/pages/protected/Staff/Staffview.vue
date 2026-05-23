@@ -76,12 +76,27 @@
                             />
                         </div>
 
-                        <button
-                            :disabled="loading"
-                            class="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 disabled:opacity-50"
-                        >
-                            {{ loading ? "Saving..." : "Register Member" }}
-                        </button>
+                       
+                        <div class="flex justify-end space-x-3">
+                            <!-- Show a Cancel button ONLY when editing -->
+                            <button 
+                                v-if="isEditing" 
+                                type="button" 
+                                @click="resetForm" 
+                                class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50"
+                            >
+                                Cancel Edit
+                            </button>
+
+                            <button 
+                                type="submit" 
+                                :disabled="loading"
+                                class="px-4 py-2 text-sm font-medium text-white bg-indigo-600 rounded-md hover:bg-indigo-700 disabled:opacity-50"
+                            >
+                                <span v-if="loading">Processing...</span>
+                                <span v-else>{{ isEditing ? 'Update Profile' : 'Save Registration' }}</span>
+                            </button>
+                        </div>
                     </form>
                 </div>
 
@@ -200,7 +215,13 @@
                                         >
                                             Toggle
                                         </button>
-                                        
+
+                                        <button 
+                                            @click="editMember(member)" 
+                                            class="text-indigo-600 hover:text-indigo-900 font-medium mr-3"
+                                        >
+                                            Edit
+                                        </button>
                                     </td>
                                 </tr>
                             </tbody>
@@ -254,7 +275,7 @@ const editMember = (member) => {
         address: member.address,
         date_of_birth: member.date_of_birth,
         gender: member.gender,
-        photo: null, // Gym staff must re-upload a photo if updating it
+        photo: null, // If they don't upload a new file, backend retains the old photo path
     };
 };
 
