@@ -68,11 +68,11 @@
                             <label class="block text-xs text-gray-500"
                                 >Member Photo</label
                             >
-                            <input
-                                type="file"
-                                @change="handleFileUpload"
-                                class="w-full text-xs cursor-pointer"
-                                required
+                           <input 
+                                type="file" 
+                                @change="handleFileUpload" 
+                                accept="image/png, image/jpeg, image/jpg, image/webp"
+                                class="your-existing-tailwind-classes"
                             />
                         </div>
 
