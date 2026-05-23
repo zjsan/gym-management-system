@@ -17,44 +17,44 @@
                     </h2>
                     <form @submit.prevent="submitForm" class="space-y-3">
                         <input
-                            v-model="form.first_name"
+                            v-model="memberForm.first_name"
                             placeholder="First Name"
                             class="w-full border p-2 rounded text-sm"
                             required
                         />
                         <input
-                            v-model="form.last_name"
+                            v-model="memberForm.last_name"
                             placeholder="Last Name"
                             class="w-full border p-2 rounded text-sm"
                             required
                         />
                         <input
-                            v-model="form.contact_number"
+                            v-model="memberForm.contact_number"
                             placeholder="Contact #"
                             class="w-full border p-2 rounded text-sm"
                             required
                         />
                         <input
-                            v-model="form.emergency_contact_number"
+                            v-model="memberForm.emergency_contact_number"
                             placeholder="Emergency contact #"
                             class="w-full border p-2 rounded text-sm"
                             required
                         />
                         <input
-                            v-model="form.address"
+                            v-model="memberForm.address"
                             placeholder="Address"
                             class="w-full border p-2 rounded text-sm"
                             required
                         />
                         <input
-                            v-model="form.date_of_birth"
+                            v-model="memberForm.date_of_birth"
                             placeholder="Date of Birth"
                             class="w-full border p-2 rounded text-sm"
                             required
                         />
 
                         <select
-                            v-model="form.gender"
+                            v-model="memberForm.gender"
                             class="w-full border p-2 rounded text-sm"
                             required
                         >
@@ -211,120 +211,100 @@
     </div>
 </template>
 <script setup>
-import { computed, ref } from "vue";
+import { ref, onMounted } from "vue";
 import { useMemberStore } from "@/stores/memberStore";
-import { onMounted } from "vue";
 
 const memberStore = useMemberStore();
 const loading = ref(false);
+const isEditing = ref(false);
+const currentMemberId = ref(null);
 
-const form = ref({
+// 1. Keep initialState as a raw, static blueprint object (no ref needed)
+const initialState = {
     first_name: "",
     last_name: "",
     contact_number: "",
-    gender: "",
-    photo: null,
-});
-
-const initialFormState = {
-    first_name: "",
-    last_name: "",
-    contact_number: "",
+    emergency_contact_number: "",
+    address: "",
+    date_of_birth: "",
     gender: "",
     photo: null,
 };
 
-const isEditing = ref(false);
-const currentMemberId = ref(null);
+// 2. Initialize memberForm reactively using a clean copy of the blueprint
+const memberForm = ref({ ...initialState });
 
+// 3. Reset form logic now correctly copies the deep values
 const resetForm = () => {
     isEditing.value = false;
     currentMemberId.value = null;
-    form.value = { ...initialState };
+    memberForm.value = { ...initialState };
 };
 
 const editMember = (member) => {
     isEditing.value = true;
     currentMemberId.value = member.id;
 
-    form.value = {
+    memberForm.value = {
         first_name: member.first_name,
         last_name: member.last_name,
         contact_number: member.contact_number,
+        emergency_contact_number: member.emergency_contact_number,
+        address: member.address,
+        date_of_birth: member.date_of_birth,
         gender: member.gender,
-        photo: null, // We won't pre-fill the photo input
+        photo: null, // Gym staff must re-upload a photo if updating it
     };
 };
 
+// 4. Fixed the 'form' to 'memberForm' name here
 const handleFileUpload = (event) => {
-    form.value.photo = event.target.files[0];
+    if (event.target.files.length > 0) {
+        memberForm.value.photo = event.target.files[0];
+    }
 };
-
-const form = ref({ ...initialState });
 
 const submitForm = async () => {
     loading.value = true;
     let result;
 
     try {
-        // 1. Prepare the FormData object (shared by both Create and Update)
+        // Prepare FormData object for backend handling (crucial for files)
         const data = new FormData();
-        data.append("first_name", form.value.first_name);
-        data.append("last_name", form.value.last_name);
-        data.append("contact_number", form.value.contact_number);
-        data.append(
-            "emergency_contact_number",
-            form.value.emergency_contact_number,
-        );
-        data.append("address", form.value.address);
-        data.append("date_of_birth", form.value.date_of_birth);
-        data.append("gender", form.value.gender);
+        data.append("first_name", memberForm.value.first_name || "");
+        data.append("last_name", memberForm.value.last_name || "");
+        data.append("contact_number", memberForm.value.contact_number || "");
+        data.append("emergency_contact_number", memberForm.value.emergency_contact_number || "");
+        data.append("address", memberForm.value.address || "");
+        data.append("date_of_birth", memberForm.value.date_of_birth || "");
+        data.append("gender", memberForm.value.gender || "");
 
-        // Only append photo if a new file object is actually selected
-        if (form.value.photo && form.value.photo instanceof File) {
-            data.append("photo", form.value.photo);
+        if (memberForm.value.photo && memberForm.value.photo instanceof File) {
+            data.append("photo", memberForm.value.photo);
         }
 
-        // Debugging: Log FormData entries
-        for (let [key, value] of data.entries()) {
-            console.log(`${key}:`, value);
-        }
-
-        // 2. Branch logic based on Edit vs. Create mode
+        // 5. If editing, we need to append standard method spoofing for Laravel multipart/form-data updates
         if (isEditing.value) {
-            // CRITICAL: Spoof the PUT method for Laravel to read the FormData/Files
-
-            // Pass the member ID along with the payload to your store action
-            result = await memberStore.updateMember(form.value.id, data);
+            data.append("_method", "PUT");
+            result = await memberStore.updateMember(currentMemberId.value, data);
         } else {
-            // Standard Create operation
             result = await memberStore.addMember(data);
         }
 
-        // 3. Handle the response
         if (result && result.success) {
-            // Optional: If you use a modal or routing, you might want to redirect/close here
+            alert(isEditing.value ? "Member updated successfully!" : "Member added successfully!");
             resetForm();
-            alert(
-                isEditing.value
-                    ? "Member updated successfully!"
-                    : "Member added successfully!",
-            );
         } else {
-            // Handle validation errors or backend failures returned gracefully
             alert(result.message || "Failed to save member data.");
         }
     } catch (error) {
         console.error("Error submitting form:", error);
         alert("An error occurred while submitting the form");
     } finally {
-        // Moving this to 'finally' ensures loading drops back to false
-        // no matter if the try blocks succeed OR catch blocks fail.
         loading.value = false;
     }
 };
 
-// Helper function to format dates, returns "N/A" if invalid or missing
 const formatDate = (dateString) => {
     if (!dateString) return "N/A";
     const date = new Date(dateString);
@@ -335,5 +315,7 @@ const toggleStatus = async (memberId) => {
     await memberStore.toggleStatus(memberId);
 };
 
-onMounted(() => memberStore.fetchMembers());
+onMounted(() => {
+    memberStore.fetchMembers();
+});
 </script>
