@@ -68,33 +68,36 @@
                             <label class="block text-xs text-gray-500"
                                 >Member Photo</label
                             >
-                           <input 
-                                type="file" 
-                                @change="handleFileUpload" 
+                            <input
+                                type="file"
+                                @change="handleFileUpload"
                                 accept="image/png, image/jpeg, image/jpg, image/webp"
                                 class="your-existing-tailwind-classes"
                             />
                         </div>
 
-                       
                         <div class="flex justify-end space-x-3">
                             <!-- Show a Cancel button ONLY when editing -->
-                            <button 
-                                v-if="isEditing" 
-                                type="button" 
-                                @click="resetForm" 
+                            <button
+                                v-if="isEditing"
+                                type="button"
+                                @click="resetForm"
                                 class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50"
                             >
                                 Cancel Edit
                             </button>
 
-                            <button 
-                                type="submit" 
+                            <button
+                                type="submit"
                                 :disabled="loading"
                                 class="px-4 py-2 text-sm font-medium text-white bg-indigo-600 rounded-md hover:bg-indigo-700 disabled:opacity-50"
                             >
                                 <span v-if="loading">Processing...</span>
-                                <span v-else>{{ isEditing ? 'Update Profile' : 'Save Registration' }}</span>
+                                <span v-else>{{
+                                    isEditing
+                                        ? "Update Profile"
+                                        : "Save Registration"
+                                }}</span>
                             </button>
                         </div>
                     </form>
@@ -111,6 +114,7 @@
                                 <tr>
                                     <th class="p-3">ID / Photo</th>
                                     <th class="p-3">Name</th>
+                                    <th class="p-3">Age</th>
                                     <th class="p-3">Membership Period</th>
                                     <th class="p-3">Status</th>
                                     <th class="p-3">Actions</th>
@@ -173,6 +177,12 @@
                                         {{ member.first_name }}
                                         {{ member.last_name }}
                                     </td>
+                                    <td>
+                                        {{
+                                            memberStore.memberAges[member.id] ||
+                                            "N/A"
+                                        }}
+                                    </td>
                                     <td class="p-3 text-xs">
                                         <div>
                                             Start:
@@ -216,8 +226,8 @@
                                             Toggle
                                         </button> -->
 
-                                        <button 
-                                            @click="editMember(member)" 
+                                        <button
+                                            @click="editMember(member)"
                                             class="text-indigo-600 hover:text-indigo-900 font-medium mr-3"
                                         >
                                             Edit
@@ -296,7 +306,10 @@ const submitForm = async () => {
         data.append("first_name", memberForm.value.first_name || "");
         data.append("last_name", memberForm.value.last_name || "");
         data.append("contact_number", memberForm.value.contact_number || "");
-        data.append("emergency_contact_number", memberForm.value.emergency_contact_number || "");
+        data.append(
+            "emergency_contact_number",
+            memberForm.value.emergency_contact_number || "",
+        );
         data.append("address", memberForm.value.address || "");
         data.append("date_of_birth", memberForm.value.date_of_birth || "");
         data.append("gender", memberForm.value.gender || "");
@@ -308,13 +321,20 @@ const submitForm = async () => {
         // 5. If editing, we need to append standard method spoofing for Laravel multipart/form-data updates
         if (isEditing.value) {
             data.append("_method", "PUT");
-            result = await memberStore.updateMember(currentMemberId.value, data);
+            result = await memberStore.updateMember(
+                currentMemberId.value,
+                data,
+            );
         } else {
             result = await memberStore.addMember(data);
         }
 
         if (result && result.success) {
-            alert(isEditing.value ? "Member updated successfully!" : "Member added successfully!");
+            alert(
+                isEditing.value
+                    ? "Member updated successfully!"
+                    : "Member added successfully!",
+            );
             resetForm();
         } else {
             alert(result.message || "Failed to save member data.");
@@ -339,5 +359,6 @@ const toggleStatus = async (memberId) => {
 
 onMounted(() => {
     memberStore.fetchMembers();
+    memberStore.fetchMemberAge(); // Call the new method to fetch member age when the component mounts
 });
 </script>
