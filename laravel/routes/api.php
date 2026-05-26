@@ -31,6 +31,9 @@ Route::middleware(['auth:sanctum'])->group(function () {
         //custom route for toggling member status
         Route::put('members/{member}/toggle-status', [MemberController::class, 'toggleStatus']);
 
+        //custom route for getting member age
+        Route::get('members/{member}/age', [MemberController::class, 'getMemberAge']);
+
         // routes for GET, POST, PUT, DELETE /api/users
         Route::apiResource('members', MemberController::class);
         
