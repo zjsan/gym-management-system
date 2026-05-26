@@ -178,10 +178,7 @@
                                         {{ member.last_name }}
                                     </td>
                                     <td>
-                                        {{
-                                            memberStore.memberAges[member.id] ||
-                                            "N/A"
-                                        }}
+                                        {{ member.age ?? "N/A" }}
                                     </td>
                                     <td class="p-3 text-xs">
                                         <div>
@@ -359,6 +356,5 @@ const toggleStatus = async (memberId) => {
 
 onMounted(() => {
     memberStore.fetchMembers();
-    memberStore.fetchMemberAge(); // Call the new method to fetch member age when the component mounts
 });
 </script>
