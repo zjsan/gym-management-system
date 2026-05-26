@@ -63,14 +63,7 @@ class MemberController extends Controller
             'member' => $member //  return the updated member data
         ], 200);
     }
-    
-    public function getMemberAge(Member $member)
-    {
-        return response()->json([
-            'age' => $member->age // Access the age attribute from the model
-        ], 200);
-    }
-    
+
     /**
      * Display the specified resource.
      */
