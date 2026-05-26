@@ -48,24 +48,6 @@ export const useMemberStore = defineStore("memberStore", {
             }
         },
 
-        async fetchMemberAge(id) {
-            this.loading = true;
-            this.error = null; //clear previous error
-
-            try {
-                const res = await api.get(`/members/${id}/age`);
-                console.log("Member age fetched successfully:", res.data);
-                return res.data.age; // Return the age to the caller
-            } catch (err) {
-                this.errors =
-                    err.response?.data?.errors || "Fetch age error occurred";
-                console.error("Failed to fetch member age:", err);
-                return null; // Return null if there's an error
-            } finally {
-                this.loading = false;
-            }
-        },
-
         async addMember(memberData) {
             this.loading = true;
             this.error = null; //clear previous error
