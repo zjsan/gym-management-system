@@ -29,6 +29,22 @@ class Member extends Model
         return now()->greaterThan($this->membership_end);
     }
 
+    /**
+     * Check if 30 days have passed since registration OR last renewal.
+     * Members cannot renew early until this condition passes.
+     */
+    public function getCanRenewAttribute()
+    {
+        $baselineDate = $this->last_renewal_at ?? $this->created_at;
+        
+        // If there's no baseline (unsaved model instance), fallback safely to true
+        if (!$baselineDate) {
+            return true;
+        }
+
+        return now()->diffInDays($baselineDate) >= 30;
+    }
+    
     // Logic to renew: always adds 30 days
     public function renew()
     {
