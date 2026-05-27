@@ -21,7 +21,7 @@ class Member extends Model
         'is_active' => 'boolean',
     ];
 
-    protected $appends = ['age']; // Automatically include age in JSON responses
+    protected $appends = ['age', 'can_renew']; // Automatically append custom runtime properties to serialized JSON outputs
 
     // Check if membership is expired (based on 30-day rule)
     public function isExpired()
