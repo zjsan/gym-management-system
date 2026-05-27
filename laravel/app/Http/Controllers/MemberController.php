@@ -65,6 +65,22 @@ class MemberController extends Controller
         ], 200);
     }
 
+    public function renewMembership(Member $member){
+
+        if(!$member->can_renew){
+            return response()->json([
+                'error' => 'Lockout active. Members cannot renew their membership until 30 days have passed.'
+            ], 422);
+        }
+
+        $member->renew();
+
+        return response()->json([
+            'message' => 'Membership successfully renewed for 30 days.',
+            'member' => $member
+        ], 200);
+    }
+
     /**
      * Display the specified resource.
      */
