@@ -44,12 +44,16 @@ class Member extends Model
 
         return now()->diffInDays($baselineDate) >= 30;
     }
-    
+
     // Logic to renew: always adds 30 days
     public function renew()
     {
         $this->membership_start = now();
-        $this->membership_end = now()->addDays(30);
+
+        // Always adds 30 days to their current end date if active, or from now if expired
+        $base = $this->isExpired() ? now() : $this->membership_end;
+        
+        $this->membership_end = $base->addDays(30);
         $this->save();
     }
 
