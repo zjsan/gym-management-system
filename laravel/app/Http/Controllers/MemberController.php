@@ -44,6 +44,7 @@ class MemberController extends Controller
         // Set initial 30 days membership
         $validated['membership_start'] = now();
         $validated['membership_end'] = now()->addDays(30);
+        $validated['is_active'] = true; //explicitly make active upon creation
 
         // Create the member record
         $member = Member::create($validated);
