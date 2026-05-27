@@ -27,15 +27,17 @@ export const useMemberStore = defineStore("memberStore", {
 
         async toggleStatus(id) {
             this.loading = true;
-            this.error = null; //clear previous error
+            this.errors = null; //clear previous error
 
             try {
                 const res = await api.put(`/members/${id}/toggle-status`);
 
+                const updatedMember = res.data.member || res.data.data || res.data;
+
                 // Update the member's status in the local state
                 const index = this.members.findIndex((m) => m.id === id);
                 if (index !== -1) {
-                    this.members[index] = res.data.member;
+                    this.members.splice(index, 1, updatedMember);
                 }
                 console.log("Member status toggled successfully:", res.data);
             } catch (err) {
@@ -50,11 +52,15 @@ export const useMemberStore = defineStore("memberStore", {
 
         async addMember(memberData) {
             this.loading = true;
-            this.error = null; //clear previous error
+            this.errors = null; //clear previous error
 
             try {
                 const res = await api.post("/members", memberData);
-                this.members.unshift(res.data); //newest member appears at the top of the table
+
+                //Fallback chain to catch Laravel's response data structure
+                const newMember = res.data.member || res.data.data || res.data;
+
+                this.members.unshift(newMember);
                 console.log("Member added successfully:", res.data);
                 return { success: true };
             } catch (err) {
@@ -69,14 +75,17 @@ export const useMemberStore = defineStore("memberStore", {
 
         async updateMember(id, memberData) {
             this.loading = true;
-            this.error = null; //clear previous error
+            this.errors = null; //clear previous error
 
             try {
                 const res = await api.put(`/members/${id}`, memberData);
 
+                // Safely unpack the updated member resource
+                const updatedMember = res.data.member || res.data.data || res.data;
+
                 const index = this.members.findIndex((m) => m.id === id);
                 if (index !== -1) {
-                    this.members[index] = res.data; //swap the old data from the new data
+                    this.members.splice(index, 1, updatedMember); //swap the old data from the new data
                 }
                 console.log("Member updated successfully:", res.data);
                 return { success: true };
