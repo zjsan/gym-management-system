@@ -115,7 +115,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from "vue";
+import { ref, computed, onMounted } from "vue";
 import { useMemberStore } from "@/stores/memberStore";
 
 const memberStore = useMemberStore();
@@ -132,6 +132,19 @@ const initialState = {
     gender: "",
     photo: null,
 };
+
+// Matches: 09171234567, +639171234567, 639171234567
+const phMobileRegex = /^(?:\+63|63|0)?9\d{9}$/;
+
+const isMobileNumberValid = computed(() => {
+
+    if(!memberForm.value.contact_number && !memberForm.value.emergency_contact_number){
+        return false;
+    }
+
+     // Returns true if the phMobileRegex fails the regex test
+    return !phMobileRegex.test(memberForm.value.contact_number);
+});
 
 const memberForm = ref({ ...initialState });
 
