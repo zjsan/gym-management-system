@@ -30,7 +30,9 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
         //custom route for toggling member status
         Route::put('members/{member}/toggle-status', [MemberController::class, 'toggleStatus']);
-        
+        Route::put('/members/{member}/renew', [MemberController::class, 'renewMembership']);
+        Route::put('/members/{member}/adjust-days', [MemberController::class, 'adjustDays']);
+
         // routes for GET, POST, PUT, DELETE /api/users
         Route::apiResource('members', MemberController::class);
         
