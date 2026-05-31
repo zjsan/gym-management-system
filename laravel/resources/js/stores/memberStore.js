@@ -50,6 +50,26 @@ export const useMemberStore = defineStore("memberStore", {
             }
         },
 
+        async renewMembership(id){
+            this.loading = true;
+            this.errors = false;
+
+            try{
+                const res = await api.put(`/members/${id}/renew`);
+                const updatedMember = res.data.member || res.data; 
+
+                this.updateLocalState(id, updatedMember);
+                return { success: true };
+            }
+            catch{
+                const msg = err.response?.data?.error || "Renewal error occurred";
+                return { success: false, message: msg };
+            }
+            finally{
+                this.loading = false;
+            }
+        },
+
         async addMember(memberData) {
             this.loading = true;
             this.errors = null; //clear previous error
