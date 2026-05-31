@@ -65,6 +65,11 @@ class MemberController extends Controller
         ], 200);
     }
 
+    /**
+     * Flexible Day Adjustment Endpoint
+     * Allows staff to increase or decrease days manually if business was shut down unexpectedly.
+     */
+    
     public function renewMembership(Member $member){
 
         if(!$member->can_renew){
@@ -77,6 +82,25 @@ class MemberController extends Controller
 
         return response()->json([
             'message' => 'Membership successfully renewed for 30 days.',
+            'member' => $member
+        ], 200);
+    }
+
+    /**
+     * Flexible Day Adjustment Endpoint
+     * Allows staff to increase or decrease days manually if business was shut down unexpectedly.
+     */
+
+    public function adjustDays(Request $request, Member $member)
+    {
+        $request->validate([
+            'days' => 'required|integer'
+        ]);
+
+        $member->adjust_membership($request->days);
+
+        return response()->json([
+            'message' => "Membership period adjusted by {$request->days} day(s).",
             'member' => $member
         ], 200);
     }
