@@ -34,11 +34,7 @@ export const useMemberStore = defineStore("memberStore", {
 
                 const updatedMember = res.data.member || res.data.data || res.data;
 
-                // Update the member's status in the local state
-                const index = this.members.findIndex((m) => m.id === id);
-                if (index !== -1) {
-                    this.members.splice(index, 1, updatedMember);
-                }
+                this.updateLocalState(id, updatedMember);
                 console.log("Member status toggled successfully:", res.data);
             } catch (err) {
                 this.errors =
@@ -97,7 +93,7 @@ export const useMemberStore = defineStore("memberStore", {
                 //Fallback chain to catch Laravel's response data structure
                 const newMember = res.data.member || res.data.data || res.data;
 
-                this.members.unshift(newMember);
+                this.members.push(newMember);
                 console.log("Member added successfully:", res.data);
                 return { success: true };
             } catch (err) {
@@ -120,10 +116,7 @@ export const useMemberStore = defineStore("memberStore", {
                 // Safely unpack the updated member resource
                 const updatedMember = res.data.member || res.data.data || res.data;
 
-                const index = this.members.findIndex((m) => m.id === id);
-                if (index !== -1) {
-                    this.members.splice(index, 1, updatedMember); //swap the old data from the new data
-                }
+                this.updateLocalState(id, updatedMember);
                 console.log("Member updated successfully:", res.data);
                 return { success: true };
             } catch (err) {
