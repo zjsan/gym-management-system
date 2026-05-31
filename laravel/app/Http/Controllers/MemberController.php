@@ -16,7 +16,7 @@ class MemberController extends Controller
     public function index()
     {
         //
-        return response()->json(Member::all());//eager loading the slug of the role
+       return response()->json(Member::latest()->get());//eager loading the slug of the role
     }
 
     /**
@@ -69,7 +69,7 @@ class MemberController extends Controller
      * Flexible Day Adjustment Endpoint
      * Allows staff to increase or decrease days manually if business was shut down unexpectedly.
      */
-    
+
     public function renewMembership(Member $member){
 
         if(!$member->can_renew){
