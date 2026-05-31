@@ -70,6 +70,23 @@ export const useMemberStore = defineStore("memberStore", {
             }
         },
 
+        async adjustMemberDays(id, daysCount) {
+            this.loading = true;
+            this.errors = false;
+
+            try {
+                const res = await api.put(`/members/${id}/adjust-days`, { days: daysCount });
+                const updatedMember = res.data.member || res.data;
+                
+                this.updateLocalState(id, updatedMember);
+                return { success: true };
+            } catch (err) {
+                return { success: false, message: "Failed to adjust membership dates." };
+            } finally {
+                this.loading = false;
+            }
+        },
+
         async addMember(memberData) {
             this.loading = true;
             this.errors = null; //clear previous error
