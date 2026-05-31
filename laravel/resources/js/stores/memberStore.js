@@ -77,7 +77,7 @@ export const useMemberStore = defineStore("memberStore", {
             try {
                 const res = await api.put(`/members/${id}/adjust-days`, { days: daysCount });
                 const updatedMember = res.data.member || res.data;
-                
+
                 this.updateLocalState(id, updatedMember);
                 return { success: true };
             } catch (err) {
@@ -135,5 +135,13 @@ export const useMemberStore = defineStore("memberStore", {
                 this.loading = false;
             }
         },
+
+        // Helper method to keep local cache synchronized with backend responses
+        updateLocalState(id, updatedMember) {
+            const index = this.members.findIndex((m) => m.id === id);
+            if (index !== -1) {
+                this.members.splice(index, 1, updatedMember);
+            }
+        }
     },
 });
