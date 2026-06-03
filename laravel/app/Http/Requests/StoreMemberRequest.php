@@ -44,8 +44,17 @@ class StoreMemberRequest extends FormRequest
         return [
             'first_name' => 'required|string|max:255',
             'last_name'  => 'required|string|max:255',
-            'contact_number' => 'required|string|max:11|unique:members,contact_number,' . $memberId,
-            'emergency_contact_number' => 'required|string|max:11',
+            'contact_number' => [
+                'required', 
+                'string', 
+                $phPhoneRegex, 
+                'unique:members,contact_number,' . $memberId
+            ],
+            'emergency_contact_number' => [
+                'required', 
+                'string', 
+                $phPhoneRegex
+            ],
             'address' => 'required|string|max:500',
             'date_of_birth' => 'required|date|before:today',
             'gender' => 'required|in:male,female,other',
