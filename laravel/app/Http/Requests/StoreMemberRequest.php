@@ -61,4 +61,11 @@ class StoreMemberRequest extends FormRequest
             'photo' => 'nullable|mimes:jpg,jpeg,png,webp,heic|max:5120' 
         ];
     }
+
+    private function normalizePhPhoneNumber($number): ?string
+    {
+        if (!$number) return null;
+
+    
+    }
 }
