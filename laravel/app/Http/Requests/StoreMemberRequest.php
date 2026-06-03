@@ -37,6 +37,10 @@ class StoreMemberRequest extends FormRequest
         $member = $this->route('member'); // Get the member instance from the route, if it exists
         $memberId = is_object($member) ? $member->id : $member; // If it's an object, get the ID, otherwise use it directly  
 
+        // This ensures that even if they bypass the frontend, the backend catches it
+        //matches the regex pattern in the frontend for ph phone numbers
+         $phPhoneRegex = 'regex:/^(?:\+63|63|0)?9\d{9}$/';
+
         return [
             'first_name' => 'required|string|max:255',
             'last_name'  => 'required|string|max:255',
