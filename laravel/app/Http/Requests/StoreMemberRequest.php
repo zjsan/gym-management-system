@@ -66,6 +66,25 @@ class StoreMemberRequest extends FormRequest
     {
         if (!$number) return null;
 
-    
+        //strip out anything that isn't a digit
+        $cleaned = preg_replace('/\D/', '', $number);
+
+        // Matches 12 digits starting with 639 (e.g., 639171234567)
+        if (preg_match('/^639\d{9}$/', $cleaned)) {
+            return '0' . substr($cleaned, 2);
+        }
+
+        // Matches 11 digits starting with 09 (e.g., 09171234567)
+        if (preg_match('/^09\d{9}$/', $cleaned)) {
+            return $cleaned;
+        }
+
+        // Matches 10 digits starting with 9 (e.g., 9171234567)
+        if (preg_match('/^9\d{9}$/', $cleaned)) {
+            return '0' . $cleaned;
+        }
+
+        return $cleaned;
+
     }
 }
