@@ -5,6 +5,7 @@ namespace App\Http\Requests;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Validation\Rule;
 
 class StoreMemberRequest extends FormRequest
 {
@@ -39,7 +40,7 @@ class StoreMemberRequest extends FormRequest
 
         // This ensures that even if they bypass the frontend, the backend catches it
         //matches the regex pattern in the frontend for ph phone numbers
-         $phPhoneRegex = 'regex:/^(?:\+63|63|0)?9\d{9}$/';
+        $phPhoneRegex = 'regex:/^09\d{9}$/';
 
         return [
             'first_name' => 'required|string|max:255',
@@ -48,7 +49,7 @@ class StoreMemberRequest extends FormRequest
                 'required', 
                 'string', 
                 $phPhoneRegex, 
-                'unique:members,contact_number,' . $memberId
+                Rule::unique('members', 'contact_number')->ignore($memberId),
             ],
             'emergency_contact_number' => [
                 'required', 
