@@ -21,8 +21,8 @@ class StoreMemberRequest extends FormRequest
         $this->merge([
             'first_name' => ucfirst(trim($this->first_name)),
             'last_name'  => ucfirst(trim($this->last_name)),
-            'contact_number' => trim($this->contact_number),
-            'emergency_contact_number' => trim($this->emergency_contact_number),    
+            'contact_number' => $this->normalizePhPhoneNumber($this->contact_number),
+            'emergency_contact_number' => $this->normalizePhPhoneNumber($this->emergency_contact_number),  
             'address' => ucfirst(trim($this->address)),
         ]);
     }
@@ -85,6 +85,5 @@ class StoreMemberRequest extends FormRequest
         }
 
         return $cleaned;
-
     }
 }
