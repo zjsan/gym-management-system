@@ -380,6 +380,13 @@ const handleFileUpload = (event) => {
 };
 
 const submitForm = async () => {
+
+    //block submission upon missing mobile number
+    if (!isContactInfoValid.value) {
+        alert("Please provide valid Philippine mobile numbers.");
+        return;
+    }
+
     const data = new FormData();
     Object.keys(memberForm.value).forEach((key) => {
         if (key !== "photo" && memberForm.value[key] !== null) {
