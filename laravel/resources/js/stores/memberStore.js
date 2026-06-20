@@ -1,83 +1,38 @@
-import { defineStore } from "pinia";
+import {
+    defineStore
+} from "pinia";
 import api from "../api/api";
 
 export const useMemberStore = defineStore("memberStore", {
     state: () => ({
         members: [],
         loading: false,
-        errors: null,
+        errors: null, // Holds validation arrays or global strings
     }),
+
     actions: {
+        // Centralized helper to extract a resource uniformly
+        unpackResource(response) {
+            return response.data?.data || response.data?.member || response.data;
+        },
+
+        // Centralized error handler to map backend anomalies cleanly
+        handleError(err, fallbackMessage) {
+            console.error(`Store Error [${fallbackMessage}]:`, err);
+            this.errors = err.response?.data?.errors || { message: err.response?.data?.message || fallbackMessage };
+            return err.response?.data?.message || fallbackMessage;
+        },
+
         async fetchMembers() {
             this.loading = true;
+            this.errors = null;
             try {
                 const res = await api.get("/members");
-                this.members = Array.isArray(res.data)
-                    ? res.data
-                    : res.data.data || [];
+                const data = this.unpackResource(res);
+                this.members = Array.isArray(data) ? data : [];
             } catch (err) {
-                this.errors =
-                    err.response?.data?.errors || "fetch error occurred";
-                console.log("Fetch error failed: ", err);
+                this.handleError(err, "Failed to load members.");
                 this.members = [];
-            } finally {
-                this.loading = false;
-            }
-        },
-
-        async toggleStatus(id) {
-            this.loading = true;
-            this.errors = null; //clear previous error
-
-            try {
-                const res = await api.put(`/members/${id}/toggle-status`);
-
-                const updatedMember = res.data.member || res.data.data || res.data;
-
-                this.updateLocalState(id, updatedMember);
-                console.log("Member status toggled successfully:", res.data);
-            } catch (err) {
-                this.errors =
-                    err.response?.data?.errors ||
-                    "Toggle status error occurred";
-                console.error("Failed to toggle member status:", err);
-            } finally {
-                this.loading = false;
-            }
-        },
-
-        async renewMembership(id){
-            this.loading = true;
-            this.errors = false;
-
-            try{
-                const res = await api.put(`/members/${id}/renew`);
-                const updatedMember = res.data.member || res.data; 
-
-                this.updateLocalState(id, updatedMember);
-                return { success: true };
-            }
-            catch{
-                const msg = err.response?.data?.error || "Renewal error occurred";
-                return { success: false, message: msg };
-            }
-            finally{
-                this.loading = false;
-            }
-        },
-
-        async adjustMemberDays(id, daysCount) {
-            this.loading = true;
-            this.errors = false;
-
-            try {
-                const res = await api.put(`/members/${id}/adjust-days`, { days: daysCount });
-                const updatedMember = res.data.member || res.data;
-
-                this.updateLocalState(id, updatedMember);
-                return { success: true };
-            } catch (err) {
-                return { success: false, message: "Failed to adjust membership dates." };
             } finally {
                 this.loading = false;
             }
@@ -85,22 +40,21 @@ export const useMemberStore = defineStore("memberStore", {
 
         async addMember(memberData) {
             this.loading = true;
-            this.errors = null; //clear previous error
-
+            this.errors = null;
             try {
                 const res = await api.post("/members", memberData);
-
-                //Fallback chain to catch Laravel's response data structure
-                const newMember = res.data.member || res.data.data || res.data;
+                const newMember = this.unpackResource(res);
 
                 this.members.push(newMember);
-                console.log("Member added successfully:", res.data);
-                return { success: true };
+                return {
+                    success: true
+                };
             } catch (err) {
-                this.errors =
-                    err.response?.data?.errors || "Create error occurred";
-                console.error("Failed to add member:", err);
-                return { success: false };
+                const message = this.handleError(err, "Create error occurred");
+                return {
+                    success: false,
+                    message
+                };
             } finally {
                 this.loading = false;
             }
@@ -108,28 +62,95 @@ export const useMemberStore = defineStore("memberStore", {
 
         async updateMember(id, memberData) {
             this.loading = true;
-            this.errors = null; //clear previous error
-
+            this.errors = null;
             try {
                 const res = await api.put(`/members/${id}`, memberData);
-
-                // Safely unpack the updated member resource
-                const updatedMember = res.data.member || res.data.data || res.data;
+                const updatedMember = this.unpackResource(res);
 
                 this.updateLocalState(id, updatedMember);
-                console.log("Member updated successfully:", res.data);
-                return { success: true };
+                return {
+                    success: true
+                };
             } catch (err) {
-                this.errors =
-                    err.response?.data?.errors || "Update error occurred";
-                console.error("Failed to update member:", err);
-                return { success: false };
+                const message = this.handleError(err, "Update error occurred");
+                return {
+                    success: false,
+                    message
+                };
             } finally {
                 this.loading = false;
             }
         },
 
-        // Helper method to keep local cache synchronized with backend responses
+        async toggleStatus(id) {
+            this.loading = true;
+            this.errors = null;
+            try {
+                const res = await api.put(`/members/${id}/toggle-status`);
+                const updatedMember = this.unpackResource(res);
+
+                this.updateLocalState(id, updatedMember);
+                return {
+                    success: true
+                };
+            } catch (err) {
+                const message = this.handleError(err, "Toggle status error occurred");
+                return {
+                    success: false,
+                    message
+                };
+            } finally {
+                this.loading = false;
+            }
+        },
+
+        // Renamed to match the exact method called in the Vue file
+        async renewMember(id) {
+            this.loading = true;
+            this.errors = null;
+            try {
+                const res = await api.put(`/members/${id}/renew`);
+                const updatedMember = this.unpackResource(res);
+
+                this.updateLocalState(id, updatedMember);
+                return {
+                    success: true
+                };
+            } catch (err) { // FIXED syntax error here
+                const message = this.handleError(err, "Renewal error occurred");
+                return {
+                    success: false,
+                    message
+                };
+            } finally {
+                this.loading = false;
+            }
+        },
+
+        async adjustMemberDays(id, daysCount) {
+            this.loading = true;
+            this.errors = null;
+            try {
+                const res = await api.put(`/members/${id}/adjust-days`, {
+                    days: daysCount
+                });
+                const updatedMember = this.unpackResource(res);
+
+                this.updateLocalState(id, updatedMember);
+                return {
+                    success: true
+                };
+            } catch (err) {
+                const message = this.handleError(err, "Failed to adjust membership dates.");
+                return {
+                    success: false,
+                    message
+                };
+            } finally {
+                this.loading = false;
+            }
+        },
+
         updateLocalState(id, updatedMember) {
             const index = this.members.findIndex((m) => m.id === id);
             if (index !== -1) {
