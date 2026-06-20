@@ -6,17 +6,25 @@ use Illuminate\Http\Request;
 use App\Models\Member;   
 use App\Http\Requests\StoreMemberRequest;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
+use Exception;
 
 class MemberController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+   public function index()
     {
-        //
-       return response()->json(Member::latest()->get());//eager loading the slug of the role
+        try {
+            // MVP Fix: Direct JSON wrapper. (If roles are needed later, remember to use Eager Loading)
+            return response()->json(Member::latest()->get(), 200);
+        } catch (Exception $e) {
+            Log::error("Failed fetching members: " . $e->getMessage());
+            return response()->json(['error' => 'Unable to retrieve members.'], 500);
+        }
     }
 
     /**
