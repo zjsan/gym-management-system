@@ -37,12 +37,6 @@ class MemberController extends Controller
 
         try {
             return DB::transaction(function () use ($request, $validated, &$uploadedPath) {
-                // Production MVP Fix for 'membership_no':
-                // Instead of looking up the last row (unsafe), use a fallback hash or timestamp 
-                // Alternatively, let the database save first, then generate it. 
-                // For a robust atomic MVP step, we can base it safely on a timestamp sequence or clean increment block:
-                $microtime = substr(now()->format('u'), 0, 4);
-                $validated['membership_no'] = 'GYM-' . date('Ymd') . '-' . $microtime;
 
                 if ($request->hasFile('photo')) {
                     $uploadedPath = $request->file('photo')->store('members', 'public');
@@ -53,6 +47,8 @@ class MemberController extends Controller
                 $validated['membership_end'] = now()->addDays(30);
                 $validated['is_active'] = true;
 
+                // 1. This creates the row, database generates a unique sequential ID (e.g., 42)
+                // 2. The Model's booted() method triggers and sets membership_no to GYM-0042
                 $member = Member::create($validated);
 
                 return response()->json($member, 201);
