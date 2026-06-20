@@ -115,18 +115,23 @@ class MemberController extends Controller
      * Allows staff to increase or decrease days manually if business was shut down unexpectedly.
      */
 
-    public function adjustDays(Request $request, Member $member)
+   public function adjustDays(Request $request, Member $member)
     {
         $request->validate([
             'days' => 'required|integer'
         ]);
 
-        $member->adjust_membership($request->days);
+        try {
+            $member->adjust_membership($request->days);
 
-        return response()->json([
-            'message' => "Membership period adjusted by {$request->days} day(s).",
-            'member' => $member
-        ], 200);
+            return response()->json([
+                'message' => "Membership period adjusted by {$request->days} day(s).",
+                'member' => $member
+            ], 200);
+        } catch (Exception $e) {
+            Log::error("Day adjustment failed for member ID {$member->id}: " . $e->getMessage());
+            return response()->json(['error' => 'Failed to adjust membership parameters.'], 500);
+        }
     }
 
     /**
