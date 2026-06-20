@@ -30,7 +30,7 @@ class MemberController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-   public function store(StoreMemberRequest $request)
+    public function store(StoreMemberRequest $request)
     {
         $validated = $request->validated();
         $uploadedPath = null;
@@ -66,16 +66,22 @@ class MemberController extends Controller
             return response()->json(['error' => 'Could not create member. Server error.'], 500);
         }
     }
-    public function toggleStatus( Member $member)
+    
+    public function toggleStatus(Member $member)
     {
-        $member->is_active = !$member->is_active; // Flips between active/inactive
-        $member->save();
+        try {
+            $member->is_active = !$member->is_active;
+            $member->save();
 
-        return response()->json([
-            'message' => 'Status updated successfully.',
-            'is_active' => $member->is_active, // return the new status
-            'member' => $member //  return the updated member data
-        ], 200);
+            return response()->json([
+                'message' => 'Status updated successfully.',
+                'is_active' => $member->is_active,
+                'member' => $member
+            ], 200);
+        } catch (Exception $e) {
+            Log::error("Failed toggling member status ID {$member->id}: " . $e->getMessage());
+            return response()->json(['error' => 'Failed to update member status.'], 500);
+        }
     }
 
     /**
