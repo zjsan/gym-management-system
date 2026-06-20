@@ -390,6 +390,12 @@ const submitForm = async () => {
     const data = new FormData();
     Object.keys(memberForm.value).forEach((key) => {
         if (key !== "photo" && memberForm.value[key] !== null) {
+
+            // Normalize phone fields right before sending
+            if (key === 'contact_number' || key === 'emergency_contact_number') {
+                value = normalizePhPhoneNumber(value);
+            }
+            
             data.append(key, memberForm.value[key]);
         }
     });
