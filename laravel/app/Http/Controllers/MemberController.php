@@ -66,7 +66,7 @@ class MemberController extends Controller
             return response()->json(['error' => 'Could not create member. Server error.'], 500);
         }
     }
-    
+
     public function toggleStatus(Member $member)
     {
         try {
@@ -89,20 +89,25 @@ class MemberController extends Controller
      * Allows staff to increase or decrease days manually if business was shut down unexpectedly.
      */
 
-    public function renewMembership(Member $member){
+    public function renewMembership(Member $member)
+    {
+        try {
+            if (!$member->can_renew) {
+                return response()->json([
+                    'error' => 'Lockout active. Members cannot renew their membership until 30 days have passed.'
+                ], 422);
+            }
 
-        if(!$member->can_renew){
+            $member->renew();
+
             return response()->json([
-                'error' => 'Lockout active. Members cannot renew their membership until 30 days have passed.'
-            ], 422);
+                'message' => 'Membership successfully renewed for 30 days.',
+                'member' => $member
+            ], 200);
+        } catch (Exception $e) {
+            Log::error("Renewal failed for member ID {$member->id}: " . $e->getMessage());
+            return response()->json(['error' => 'An error occurred during renewal.'], 500);
         }
-
-        $member->renew();
-
-        return response()->json([
-            'message' => 'Membership successfully renewed for 30 days.',
-            'member' => $member
-        ], 200);
     }
 
     /**
