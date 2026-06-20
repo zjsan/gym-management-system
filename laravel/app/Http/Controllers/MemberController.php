@@ -147,28 +147,37 @@ class MemberController extends Controller
      */
     public function update(StoreMemberRequest $request, Member $member)
     {
-        //
         $validated = $request->validated();
+        $oldPhotoPath = $member->photo_path;
+        $newUploadedPath = null;
 
-        //handle photo upload if a new photo is provided
-        if($request->hasFile('photo')) {
+        try {
+            return DB::transaction(function () use ($request, $member, $validated, $oldPhotoPath, &$newUploadedPath) {
+                if ($request->hasFile('photo')) {
+                    $newUploadedPath = $request->file('photo')->store('members', 'public');
+                    $validated['photo_path'] = $newUploadedPath;
+                }
 
-            if($member->photo_path) {
-                //delete the old photo if it exists
-                Storage::disk('public')->delete($member->photo_path);
+                $member->update($validated);
+
+                // Delete the OLD photo ONLY after a successful DB operation commit
+                if ($request->hasFile('photo') && $oldPhotoPath) {
+                    Storage::disk('public')->delete($oldPhotoPath);
+                }
+
+                return response()->json([
+                    'message' => 'Member updated successfully',
+                    'member' => $member->fresh()
+                ], 200);
+            });
+        } catch (Exception $e) {
+            // Cleanup failed new upload immediately
+            if ($newUploadedPath) {
+                Storage::disk('public')->delete($newUploadedPath);
             }
-
-        //store the new photo and update the path
-        $validated['photo_path'] = $request->file('photo')->store('members', 'public');
+            Log::error("Failed updating member ID {$member->id}: " . $e->getMessage());
+            return response()->json(['error' => 'Update transaction failed.'], 500);
         }
-
-        $member->update($validated); //update the member with the validated data
-
-        return response()->json([
-            'message' => 'Member updated successfully',
-            'member' => $member->fresh() // Returns recalculated fields if any
-        ], 200);
-    
     }
 
     /**
