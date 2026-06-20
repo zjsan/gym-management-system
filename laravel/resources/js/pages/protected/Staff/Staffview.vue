@@ -326,23 +326,7 @@ const isEmergencyContactValid = computed(() => {
 // Overall form contact validity (Both must be valid to submit)
 const isContactInfoValid = computed(() => {
     return isContactNumberValid.value && isEmergencyContactValid.value;
-});
-
-//clean the mobile number before sending it to the backend
-const normalizePhPhoneNumber = (number) => {
-    if (!number) return "";
-    
-    // Remove all non-digit characters (including the +)
-    const cleaned = number.replace(/\D/g, "");
-
-    if (/^639\d{9}$/.test(cleaned)) {
-        return "0" . cleaned.substring(2);
-    }
-    if (/^9\d{9}$/.test(cleaned)) {
-        return "0" + cleaned;
-    }
-    return cleaned; // Should already be 09xxxxxxxxx
-};
+}); 
 
 const memberForm = ref({ ...initialState });
 
@@ -390,11 +374,6 @@ const submitForm = async () => {
     const data = new FormData();
     Object.keys(memberForm.value).forEach((key) => {
         if (key !== "photo" && memberForm.value[key] !== null) {
-
-            // Normalize phone fields right before sending
-            if (key === 'contact_number' || key === 'emergency_contact_number') {
-                value = normalizePhPhoneNumber(value);
-            }
 
             data.append(key, memberForm.value[key]);
         }
