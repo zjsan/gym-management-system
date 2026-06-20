@@ -71,4 +71,13 @@ class Member extends Model
     {
         return Carbon::parse($this->date_of_birth)->age;
     }
+
+    protected static function booted()
+    {
+        static::created(function ($member) {
+            // Automatically pads the auto-increment ID: e.g., ID 1 becomes "GYM-0001"
+            $member->membership_no = 'GYM-' . str_pad($member->id, 4, '0', STR_PAD_LEFT);
+            $member->saveQuietly(); // saveQuietly avoids triggering infinite boot loops
+        });
+    }
 }
