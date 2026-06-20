@@ -326,7 +326,7 @@ const isEmergencyContactValid = computed(() => {
 // Overall form contact validity (Both must be valid to submit)
 const isContactInfoValid = computed(() => {
     return isContactNumberValid.value && isEmergencyContactValid.value;
-}); 
+});
 
 const memberForm = ref({ ...initialState });
 
@@ -364,17 +364,16 @@ const handleFileUpload = (event) => {
 };
 
 const submitForm = async () => {
-
     //block submission upon missing mobile number
     if (!isContactInfoValid.value) {
         alert("Please provide valid Philippine mobile numbers.");
         return;
     }
 
+    //data initial preparation
     const data = new FormData();
     Object.keys(memberForm.value).forEach((key) => {
         if (key !== "photo" && memberForm.value[key] !== null) {
-
             data.append(key, memberForm.value[key]);
         }
     });
@@ -383,18 +382,35 @@ const submitForm = async () => {
         data.append("photo", memberForm.value.photo);
     }
 
-    let result;
-    if (isEditing.value) {
-        data.append("_method", "PUT");
-        result = await memberStore.updateMember(currentMemberId.value, data);
-    } else {
-        result = await memberStore.addMember(data);
-    }
+    try {
+        let result;
+        if (isEditing.value) {
+            data.append("_method", "PUT");
+            result = await memberStore.updateMember(
+                currentMemberId.value,
+                data,
+            );
+        } else {
+            result = await memberStore.addMember(data);
+        }
 
-    if (result && result.success) {
-        resetForm();
-    } else {
-       alert(result?.message || "Action failed. Double-check backend validation schemas.");
+        if (result && result.success) {
+            resetForm();
+        } else {
+            alert(
+                result?.message ||
+                    "Action failed. Double-check backend validation schemas.",
+            );
+        }
+    } catch (error) {
+        // catch unexpected infrastructure errors (Network drop, 500 error, etc.)
+        console.error("Form submission failed:", error);
+
+        // Extract a helpful message from the error object if your HTTP client (like Axios) provides it
+        const errorMessage =
+            error.response?.data?.message ||
+            "A network error occurred. Please try again later.";
+        alert(errorMessage);
     }
 };
 

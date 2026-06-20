@@ -111,7 +111,6 @@ class MemberController extends Controller
     public function show(string $id)
     {
         //
-        return response()->json(Member::findOrFail($id));
     }
 
     /**
