@@ -328,6 +328,22 @@ const isContactInfoValid = computed(() => {
     return isContactNumberValid.value && isEmergencyContactValid.value;
 });
 
+//clean the mobile number before sending it to the backend
+const normalizePhPhoneNumber = (number) => {
+    if (!number) return "";
+    
+    // Remove all non-digit characters (including the +)
+    const cleaned = number.replace(/\D/g, "");
+
+    if (/^639\d{9}$/.test(cleaned)) {
+        return "0" . cleaned.substring(2);
+    }
+    if (/^9\d{9}$/.test(cleaned)) {
+        return "0" + cleaned;
+    }
+    return cleaned; // Should already be 09xxxxxxxxx
+};
+
 const memberForm = ref({ ...initialState });
 
 const resetForm = () => {
