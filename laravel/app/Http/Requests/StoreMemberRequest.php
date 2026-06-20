@@ -4,8 +4,8 @@ namespace App\Http\Requests;
 
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Support\Facades\Gate;
 use Illuminate\Validation\Rule;
+use App\Models\Member;
 
 class StoreMemberRequest extends FormRequest
 {
@@ -86,5 +86,31 @@ class StoreMemberRequest extends FormRequest
         }
 
         return $cleaned;
+    }
+
+    /**
+     * Configure the validator instance.
+     * Intercepts "Soft Duplicates" based on name and DOB combinations.
+     */
+
+    public function withValidator($validator)
+    {
+        $validator->after(function ($validator) {
+            // Only perform this check for new registrations (store), not updates
+            if ($this->isMethod('post')) {
+                $duplicateExists = Member::where('first_name', '=', $this->first_name)
+                    ->where('last_name', '=', $this->last_name)
+                    ->where('date_of_birth', '=', $this->date_of_birth)
+                    ->exists();
+
+                if ($duplicateExists) {
+                    // Fail the whole validation block cleanly
+                    $validator->errors()->add(
+                        'first_name', 
+                        'A member with this exact name and date of birth is already registered.'
+                    );
+                }
+            }
+        });
     }
 }
