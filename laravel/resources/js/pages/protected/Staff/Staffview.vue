@@ -395,7 +395,7 @@ const submitForm = async () => {
             if (key === 'contact_number' || key === 'emergency_contact_number') {
                 value = normalizePhPhoneNumber(value);
             }
-            
+
             data.append(key, memberForm.value[key]);
         }
     });
@@ -415,7 +415,7 @@ const submitForm = async () => {
     if (result && result.success) {
         resetForm();
     } else {
-        alert("Action failed. Double-check backend validation schemas.");
+       alert(result?.message || "Action failed. Double-check backend validation schemas.");
     }
 };
 
