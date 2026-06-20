@@ -19,7 +19,7 @@ class MemberController extends Controller
    public function index()
     {
         try {
-            // MVP Fix: Direct JSON wrapper. (If roles are needed later, remember to use Eager Loading)
+            //  Direct JSON wrapper. 
             return response()->json(Member::latest()->get(), 200);
         } catch (Exception $e) {
             Log::error("Failed fetching members: " . $e->getMessage());
@@ -30,37 +30,42 @@ class MemberController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreMemberRequest $request, Member $member)
+   public function store(StoreMemberRequest $request)
     {
-        //
-        
         $validated = $request->validated();
+        $uploadedPath = null;
 
-        //generate unique membership number
-        $lastMember = Member::latest('id')->first();
-        $nextId = $lastMember ? $lastMember->id + 1 : 1; // Find the last member's ID to increment it, or start at 0
+        try {
+            return DB::transaction(function () use ($request, $validated, &$uploadedPath) {
+                // Production MVP Fix for 'membership_no':
+                // Instead of looking up the last row (unsafe), use a fallback hash or timestamp 
+                // Alternatively, let the database save first, then generate it. 
+                // For a robust atomic MVP step, we can base it safely on a timestamp sequence or clean increment block:
+                $microtime = substr(now()->format('u'), 0, 4);
+                $validated['membership_no'] = 'GYM-' . date('Ymd') . '-' . $microtime;
 
-        // str_pad turns "1" into "0001"
-        $validated['membership_no'] = 'GYM-' . str_pad($nextId, 4, '0', STR_PAD_LEFT);
-        
-        // Logic for photo upload
-        if ($request->hasFile('photo')) {
-            $path = $request->file('photo')->store('members', 'public');
-            $validated['photo_path'] = $path;
+                if ($request->hasFile('photo')) {
+                    $uploadedPath = $request->file('photo')->store('members', 'public');
+                    $validated['photo_path'] = $uploadedPath;
+                }
+
+                $validated['membership_start'] = now();
+                $validated['membership_end'] = now()->addDays(30);
+                $validated['is_active'] = true;
+
+                $member = Member::create($validated);
+
+                return response()->json($member, 201);
+            });
+        } catch (Exception $e) {
+            // Delete uploaded file if DB engine fails to commit
+            if ($uploadedPath) {
+                Storage::disk('public')->delete($uploadedPath);
+            }
+            Log::error("Member creation failed: " . $e->getMessage());
+            return response()->json(['error' => 'Could not create member. Server error.'], 500);
         }
-        
-        // Set initial 30 days membership
-        $validated['membership_start'] = now();
-        $validated['membership_end'] = now()->addDays(30);
-        $validated['is_active'] = true; //explicitly make active upon creation
-
-        // Create the member record
-        $member = Member::create($validated);
-
-        return response()->json($member, 201);  
-        
     }
-
     public function toggleStatus( Member $member)
     {
         $member->is_active = !$member->is_active; // Flips between active/inactive
