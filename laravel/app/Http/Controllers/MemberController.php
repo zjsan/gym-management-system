@@ -34,24 +34,23 @@ class MemberController extends Controller
         $query = Member::query(); //defining a query
         try {
 
-            //server-side searching by email, role name, or organization name
+            //server-side searching by membership number and name of member
             if (!empty($search)) {
                 $query->where(function (Builder $subQuery) use ($search) {
-                    $subQuery->where('email', 'LIKE', "%{$search}%")
-                        
-                        // Query relation records cleanly via isolated subqueries
-                        ->orWhereHas('role', function (Builder $roleQuery) use ($search) {
-                            $roleQuery->where('name', 'LIKE', "%{$search}%");
-                        })
-                        ->orWhereHas('organization', function (Builder $orgQuery) use ($search) {
-                            $orgQuery->where('name', 'LIKE', "%{$search}%");
-                        });
+                    $subQuery->where('membership_no', 'LIKE', "%{$search}%")
+                        ->orWhere('first_name', 'LIKE', "%{$search}%")
+                        ->orWhere('last_name', 'LIKE', "%{$search}%");
                 });
             }  
 
-            $members = Member::latest()->get();
+            //apply default ordering by creation date, showing oldest entries first
+            $query->orderBy('members.created_at', 'asc');
+
+            $members = $query->paginate($perPage);
+
             // MemberResource::collection wraps an array of data neatly
-            return MemberResource::collection($members);
+            return MemberResource::collection($members)->response();
+
         } catch (Exception $e) {
             Log::error("Failed fetching members: " . $e->getMessage());
             return response()->json(['error' => 'Unable to retrieve members.'], 500);
