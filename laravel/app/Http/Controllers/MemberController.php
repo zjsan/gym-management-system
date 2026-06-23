@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Member;   
 use App\Http\Requests\StoreMemberRequest;
 use Illuminate\Support\Str;
+use App\Http\Resources\MemberResource;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
@@ -19,8 +20,9 @@ class MemberController extends Controller
    public function index()
     {
         try {
-            //  Direct JSON wrapper. 
-            return response()->json(Member::latest()->get(), 200);
+            $members = Member::latest()->get();
+            // MemberResource::collection wraps an array of data neatly
+            return MemberResource::collection($members);
         } catch (Exception $e) {
             Log::error("Failed fetching members: " . $e->getMessage());
             return response()->json(['error' => 'Unable to retrieve members.'], 500);
@@ -51,7 +53,9 @@ class MemberController extends Controller
                 // 2. The Model's booted() method triggers and sets membership_no to GYM-0042
                 $member = Member::create($validated);
 
-                return response()->json($member, 201);
+               return (new MemberResource($member))
+                    ->response()
+                    ->setStatusCode(201);   
             });
         } catch (Exception $e) {
             // Delete uploaded file if DB engine fails to commit
@@ -71,8 +75,7 @@ class MemberController extends Controller
 
             return response()->json([
                 'message' => 'Status updated successfully.',
-                'is_active' => $member->is_active,
-                'member' => $member
+                'member' => new MemberResource($member)
             ], 200);
         } catch (Exception $e) {
             Log::error("Failed toggling member status ID {$member->id}: " . $e->getMessage());
@@ -98,8 +101,8 @@ class MemberController extends Controller
 
             return response()->json([
                 'message' => 'Membership successfully renewed for 30 days.',
-                'member' => $member
-            ], 200);
+                'member' => new MemberResource($member)
+            ], 200);    
         } catch (Exception $e) {
             Log::error("Renewal failed for member ID {$member->id}: " . $e->getMessage());
             return response()->json(['error' => 'An error occurred during renewal.'], 500);
@@ -122,7 +125,7 @@ class MemberController extends Controller
 
             return response()->json([
                 'message' => "Membership period adjusted by {$request->days} day(s).",
-                'member' => $member
+                'member' => new MemberResource($member)
             ], 200);
         } catch (Exception $e) {
             Log::error("Day adjustment failed for member ID {$member->id}: " . $e->getMessage());
@@ -163,7 +166,7 @@ class MemberController extends Controller
 
                 return response()->json([
                     'message' => 'Member updated successfully',
-                    'member' => $member->fresh()
+                    'member' => new MemberResource($member->fresh())
                 ], 200);
             });
         } catch (Exception $e) {
