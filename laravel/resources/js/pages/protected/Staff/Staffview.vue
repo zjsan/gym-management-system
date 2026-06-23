@@ -22,12 +22,24 @@
                         class="w-full border p-2.5 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500"
                         required
                     />
+                    <span
+                        v-if="memberStore.errors?.first_name"
+                        class="error-msg"
+                    >
+                        {{ memberStore.errors.first_name[0] }}
+                    </span>
                     <input
                         v-model="memberForm.last_name"
                         placeholder="Last Name"
                         class="w-full border p-2.5 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500"
                         required
                     />
+                    <span
+                        v-if="memberStore.errors?.last_name"
+                        class="error-msg"
+                    >
+                        {{ memberStore.errors.last_name[0] }}
+                    </span>
                     <input
                         v-model="memberForm.contact_number"
                         placeholder="Contact Number"
@@ -58,6 +70,12 @@
                             class="w-full border p-2.5 rounded-lg text-sm text-gray-700"
                             required
                         />
+                        <span
+                            v-if="memberStore.errors?.date_of_birth"
+                            class="error-msg"
+                        >
+                            {{ memberStore.errors.date_of_birth[0] }}
+                        </span>
                     </div>
 
                     <select
@@ -334,6 +352,7 @@ const resetForm = () => {
     isEditing.value = false;
     currentMemberId.value = null;
     memberForm.value = { ...initialState };
+    memberStore.errors = null;
 };
 
 const editMember = (member) => {
