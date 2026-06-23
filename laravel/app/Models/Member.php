@@ -4,6 +4,9 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Carbon;
+use Illuminate\Database\Eloquent\Casts\Attribute;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Filesystem\FilesystemAdapter;
 
 class Member extends Model
 {
@@ -78,6 +81,20 @@ class Member extends Model
             // Automatically pads the auto-increment ID: e.g., ID 1 becomes "GYM-0001"
             $member->membership_no = 'GYM-' . str_pad($member->id, 4, '0', STR_PAD_LEFT);
             $member->saveQuietly(); // saveQuietly avoids triggering infinite boot loops
+        });
+    }
+
+    protected function photoUrl(): Attribute
+    {
+        return Attribute::get(function () {
+            if (!$this->photo_path) {
+                return null;
+            }
+
+            /** @var FilesystemAdapter $disk */
+            $disk = Storage::disk('public');
+
+            return $disk->url($this->photo_path);
         });
     }
 }
