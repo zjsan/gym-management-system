@@ -64,6 +64,40 @@ class StoreMemberRequest extends FormRequest
         ];
     }
 
+    /**
+     * Configure the validator instance.
+     * Intercepts "Soft Duplicates" based on name and DOB combinations.
+     */
+
+    public function withValidator($validator)
+    {
+
+        $validator->after(function ($validator) {
+
+            // Only validate duplicates on fresh creation, and ONLY if bypass isn't requested
+            if ($this->isMethod('post') && !$this->boolean('bypass_duplicate_check')) {
+
+                // Safely grab the already-normalized values from the request
+                $firstName = $this->input('first_name');
+                $lastName = $this->input('last_name');
+
+                //sql query for checking the dupicates
+               $duplicateExists = Member::whereRaw('LOWER(first_name) = ?', [strtolower($firstName)])
+                ->whereRaw('LOWER(last_name) = ?', [strtolower($lastName)])
+                ->where('date_of_birth', '=', $this->date_of_birth)
+                ->exists();
+
+                if ($duplicateExists) {
+                    // Fail the whole validation block cleanly
+                    $validator->errors()->add(
+                        'first_name', 
+                        'A member with this exact name and date of birth is already registered.'
+                    );
+                }   
+            }
+        });
+    }
+
     private function normalizePhPhoneNumber($number): ?string
     {
         if (!$number) return null;
@@ -89,37 +123,5 @@ class StoreMemberRequest extends FormRequest
         return $cleaned;
     }
 
-    /**
-     * Configure the validator instance.
-     * Intercepts "Soft Duplicates" based on name and DOB combinations.
-     */
-
-    public function withValidator($validator)
-    {
-
-        $validator->after(function ($validator) {
-
-            //run only the validation if it is a create requesst
-            if ($this->isMethod('post')) {
-
-                $firstName = trim($this->first_name);
-                $lastName = trim($this->last_name);
-
-                // Only perform this check for new registrations (store), not updates
-            
-               $duplicateExists = Member::whereRaw('LOWER(first_name) = ?', [strtolower($firstName)])
-                ->whereRaw('LOWER(last_name) = ?', [strtolower($lastName)])
-                ->where('date_of_birth', '=', $this->date_of_birth)
-                ->exists();
-
-                if ($duplicateExists) {
-                    // Fail the whole validation block cleanly
-                    $validator->errors()->add(
-                        'first_name', 
-                        'A member with this exact name and date of birth is already registered.'
-                    );
-                }   
-            }
-        });
-    }
+  
 }
