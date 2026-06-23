@@ -60,7 +60,7 @@ class MemberController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreMemberRequest $request)
+    public function store(StoreMemberRequest $request): JsonResponse
     {
         $validated = $request->validated();
         $uploadedPath = null;
@@ -95,7 +95,7 @@ class MemberController extends Controller
         }
     }
 
-    public function toggleStatus(Member $member)
+    public function toggleStatus(Member $member): JsonResponse
     {
         try {
             $member->is_active = !$member->is_active;
@@ -116,7 +116,7 @@ class MemberController extends Controller
      * Allows staff to increase or decrease days manually if business was shut down unexpectedly.
      */
 
-    public function renewMembership(Member $member)
+    public function renewMembership(Member $member): JsonResponse
     {
         try {
             if (!$member->can_renew) {
@@ -142,7 +142,7 @@ class MemberController extends Controller
      * Allows staff to increase or decrease days manually if business was shut down unexpectedly.
      */
 
-   public function adjustDays(Request $request, Member $member)
+   public function adjustDays(Request $request, Member $member): JsonResponse
     {
         $request->validate([
             'days' => 'required|integer'
@@ -172,7 +172,7 @@ class MemberController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(StoreMemberRequest $request, Member $member)
+    public function update(StoreMemberRequest $request, Member $member): JsonResponse
     {
         $validated = $request->validated();
         $oldPhotoPath = $member->photo_path;
