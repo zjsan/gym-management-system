@@ -11,15 +11,44 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Exception;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Database\Eloquent\Builder;
 
 class MemberController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-   public function index()
-    {
+   public function index(Request $request): JsonResponse
+    {   
+        $defaultPerPage = 10;
+
+        $perPage = (int) $request->query('per_page', $defaultPerPage);
+
+        //check if it is integer and greater than 0, and set a maximum limit of 100 to prevent abuse
+        if ($perPage <= 0 || $perPage > 100) {
+            $perPage = $defaultPerPage; // fallback to default 
+        }
+
+        $search = $request->query('search');//fetch the search query parameter in the url for server-side searching
+        $query = Member::query(); //defining a query
         try {
+
+            //server-side searching by email, role name, or organization name
+            if (!empty($search)) {
+                $query->where(function (Builder $subQuery) use ($search) {
+                    $subQuery->where('email', 'LIKE', "%{$search}%")
+                        
+                        // Query relation records cleanly via isolated subqueries
+                        ->orWhereHas('role', function (Builder $roleQuery) use ($search) {
+                            $roleQuery->where('name', 'LIKE', "%{$search}%");
+                        })
+                        ->orWhereHas('organization', function (Builder $orgQuery) use ($search) {
+                            $orgQuery->where('name', 'LIKE', "%{$search}%");
+                        });
+                });
+            }  
+
             $members = Member::latest()->get();
             // MemberResource::collection wraps an array of data neatly
             return MemberResource::collection($members);
