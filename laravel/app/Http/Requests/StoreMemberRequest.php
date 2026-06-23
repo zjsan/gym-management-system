@@ -20,12 +20,12 @@ class StoreMemberRequest extends FormRequest
     protected function prepareForValidation()
     {
         $this->merge([
-            //ucfirst for proper casing of text example "Zai Santos"
-            'first_name' => ucwords(strtolower(trim($this->first_name))),
-            'last_name'  => ucwords(strtolower(trim($this->last_name))),
-            'contact_number' => $this->normalizePhPhoneNumber($this->contact_number),
-            'emergency_contact_number' => $this->normalizePhPhoneNumber($this->emergency_contact_number),  
-            'address' => ucfirst(trim($this->address)),
+            //added null safe operator for handling empty fields properly
+            'first_name' => $this->first_name ? ucwords(strtolower(trim($this->first_name))) : null,
+            'last_name'  => $this->last_name ? ucwords(strtolower(trim($this->last_name))) : null,
+            'contact_number' => $this->contact_number ? $this->normalizePhPhoneNumber($this->contact_number) : null,
+            'emergency_contact_number' => $this->emergency_contact_number ? $this->normalizePhPhoneNumber($this->emergency_contact_number) : null,  
+            'address' => $this->address ? ucfirst(trim($this->address)) : null,
         ]);
     }
 
