@@ -21,7 +21,7 @@ export const useMemberStore = defineStore("memberStore", {
             console.error(`Store Error [${fallbackMessage}]:`, err);
             this.errors = err.response?.data?.errors || { message: err.response?.data?.message || fallbackMessage };
             return err.response?.data?.message || fallbackMessage;
-        },
+        },          
 
         async fetchMembers() {
             this.loading = true;
