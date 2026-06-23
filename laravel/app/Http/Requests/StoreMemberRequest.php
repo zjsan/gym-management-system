@@ -20,8 +20,9 @@ class StoreMemberRequest extends FormRequest
     protected function prepareForValidation()
     {
         $this->merge([
-            'first_name' => ucfirst(trim($this->first_name)),
-            'last_name'  => ucfirst(trim($this->last_name)),
+            //ucfirst for proper casing of text example "Zai Santos"
+            'first_name' => ucwords(strtolower(trim($this->first_name))),
+            'last_name'  => ucwords(strtolower(trim($this->last_name))),
             'contact_number' => $this->normalizePhPhoneNumber($this->contact_number),
             'emergency_contact_number' => $this->normalizePhPhoneNumber($this->emergency_contact_number),  
             'address' => ucfirst(trim($this->address)),
