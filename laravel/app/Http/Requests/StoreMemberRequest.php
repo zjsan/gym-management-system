@@ -95,13 +95,21 @@ class StoreMemberRequest extends FormRequest
 
     public function withValidator($validator)
     {
+
         $validator->after(function ($validator) {
-            // Only perform this check for new registrations (store), not updates
+
+            //run only the validation if it is a create requesst
             if ($this->isMethod('post')) {
-                $duplicateExists = Member::where('first_name', '=', $this->first_name)
-                    ->where('last_name', '=', $this->last_name)
-                    ->where('date_of_birth', '=', $this->date_of_birth)
-                    ->exists();
+
+                $firstName = trim($this->first_name);
+                $lastName = trim($this->last_name);
+
+                // Only perform this check for new registrations (store), not updates
+            
+               $duplicateExists = Member::whereRaw('LOWER(first_name) = ?', [strtolower($firstName)])
+                ->whereRaw('LOWER(last_name) = ?', [strtolower($lastName)])
+                ->where('date_of_birth', '=', $this->date_of_birth)
+                ->exists();
 
                 if ($duplicateExists) {
                     // Fail the whole validation block cleanly
@@ -109,7 +117,7 @@ class StoreMemberRequest extends FormRequest
                         'first_name', 
                         'A member with this exact name and date of birth is already registered.'
                     );
-                }
+                }   
             }
         });
     }
