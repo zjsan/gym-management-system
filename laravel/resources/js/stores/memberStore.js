@@ -1,6 +1,4 @@
-import {
-    defineStore
-} from "pinia";
+import { defineStore } from "pinia";
 import api from "../api/api";
 
 export const useMemberStore = defineStore("memberStore", {
@@ -8,20 +6,31 @@ export const useMemberStore = defineStore("memberStore", {
         members: [],
         loading: false,
         errors: null, // Holds validation arrays or global strings
+        currentPage: 1,
+        itemsPerPage: 10,
+        lastPage: 1, //for disabling next button when on the last page
+        totalItems: 0,
+        loading: false,
+        errors: null,
+        currentAbortController: null, // to manage request cancellation
     }),
 
     actions: {
         // Centralized helper to extract a resource uniformly
         unpackResource(response) {
-            return response.data?.data || response.data?.member || response.data;
+            return (
+                response.data?.data || response.data?.member || response.data
+            );
         },
 
         // Centralized error handler to map backend anomalies cleanly
         handleError(err, fallbackMessage) {
             console.error(`Store Error [${fallbackMessage}]:`, err);
-            this.errors = err.response?.data?.errors || { message: err.response?.data?.message || fallbackMessage };
+            this.errors = err.response?.data?.errors || {
+                message: err.response?.data?.message || fallbackMessage,
+            };
             return err.response?.data?.message || fallbackMessage;
-        },          
+        },
 
         async fetchMembers() {
             this.loading = true;
@@ -47,13 +56,13 @@ export const useMemberStore = defineStore("memberStore", {
 
                 this.members.push(newMember);
                 return {
-                    success: true
+                    success: true,
                 };
             } catch (err) {
                 const message = this.handleError(err, "Create error occurred");
                 return {
                     success: false,
-                    message
+                    message,
                 };
             } finally {
                 this.loading = false;
@@ -69,13 +78,13 @@ export const useMemberStore = defineStore("memberStore", {
 
                 this.updateLocalState(id, updatedMember);
                 return {
-                    success: true
+                    success: true,
                 };
             } catch (err) {
                 const message = this.handleError(err, "Update error occurred");
                 return {
                     success: false,
-                    message
+                    message,
                 };
             } finally {
                 this.loading = false;
@@ -91,13 +100,16 @@ export const useMemberStore = defineStore("memberStore", {
 
                 this.updateLocalState(id, updatedMember);
                 return {
-                    success: true
+                    success: true,
                 };
             } catch (err) {
-                const message = this.handleError(err, "Toggle status error occurred");
+                const message = this.handleError(
+                    err,
+                    "Toggle status error occurred",
+                );
                 return {
                     success: false,
-                    message
+                    message,
                 };
             } finally {
                 this.loading = false;
@@ -114,13 +126,14 @@ export const useMemberStore = defineStore("memberStore", {
 
                 this.updateLocalState(id, updatedMember);
                 return {
-                    success: true
+                    success: true,
                 };
-            } catch (err) { // FIXED syntax error here
+            } catch (err) {
+                // FIXED syntax error here
                 const message = this.handleError(err, "Renewal error occurred");
                 return {
                     success: false,
-                    message
+                    message,
                 };
             } finally {
                 this.loading = false;
@@ -132,19 +145,22 @@ export const useMemberStore = defineStore("memberStore", {
             this.errors = null;
             try {
                 const res = await api.put(`/members/${id}/adjust-days`, {
-                    days: daysCount
+                    days: daysCount,
                 });
                 const updatedMember = this.unpackResource(res);
 
                 this.updateLocalState(id, updatedMember);
                 return {
-                    success: true
+                    success: true,
                 };
             } catch (err) {
-                const message = this.handleError(err, "Failed to adjust membership dates.");
+                const message = this.handleError(
+                    err,
+                    "Failed to adjust membership dates.",
+                );
                 return {
                     success: false,
-                    message
+                    message,
                 };
             } finally {
                 this.loading = false;
@@ -156,6 +172,6 @@ export const useMemberStore = defineStore("memberStore", {
             if (index !== -1) {
                 this.members.splice(index, 1, updatedMember);
             }
-        }
+        },
     },
 });
