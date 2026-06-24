@@ -86,7 +86,13 @@ export const useMemberStore = defineStore("memberStore", {
                 this.errors = errMsg;
                 throw error;
             } finally {
-                this.loading = false;
+                //only set loading to false if the current request is the one that just finished
+                if (
+                    this.currentAbortController === controller ||
+                    this.currentAbortController === null
+                ) {
+                    this.loading = false;
+                }
             }
         },
 
