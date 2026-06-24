@@ -50,11 +50,26 @@ export const useMemberStore = defineStore("memberStore", {
                     params: { page, per_page: perPage, search },
                     signal: controller.signal, //track the local reference of the abort controller for this specific request
                 });
+
                 const payload = res.data; //extract response data from the controller
                 console.log("API Response:", payload); // Debugging log
 
-                const data = this.unpackResource(res);
-                this.members = Array.isArray(data) ? data : [];
+                //update only the states if the request are not aborted
+                if (!controller.signal.aborted) {
+                    // If backend returns a Resource, it might be response.data.data
+                    this.members = payload.data || [];
+
+                    // Update pagination info
+                    this.currentPage = payload.meta?.current_page || page;
+                    this.itemsPerPage = payload.meta?.per_page || perPage;
+                    this.lastPage = payload.meta?.last_page || 1;
+                    this.totalItems = payload.meta?.total || 0;
+
+                    //clean up the abort controller reference since the request has completed
+                    if (this.currentAbortController === controller) {
+                        this.currentAbortController = null;
+                    }
+                }
             } catch (err) {
                 this.handleError(err, "Failed to load members.");
                 this.members = [];
