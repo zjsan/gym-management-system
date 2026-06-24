@@ -32,7 +32,7 @@ export const useMemberStore = defineStore("memberStore", {
             return err.response?.data?.message || fallbackMessage;
         },
 
-        async fetchMembers() {
+        async fetchMembers(page = 1, perPage = 10, search = "") {
             this.loading = true;
             this.errors = null;
             try {
