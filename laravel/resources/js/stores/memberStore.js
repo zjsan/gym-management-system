@@ -35,6 +35,15 @@ export const useMemberStore = defineStore("memberStore", {
         async fetchMembers(page = 1, perPage = 10, search = "") {
             this.loading = true;
             this.errors = null;
+
+            //clear ongoing request before starting new one
+            if (this.currentAbortController) {
+                this.currentAbortController.abort();
+            }
+
+            //intializing a new abort controller for new request and assigning it to the store's state to track it
+            const controller = new AbortController();
+            this.currentAbortController = controller;
             try {
                 const res = await api.get("/members");
                 const data = this.unpackResource(res);
