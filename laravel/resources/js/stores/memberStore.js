@@ -71,8 +71,20 @@ export const useMemberStore = defineStore("memberStore", {
                     }
                 }
             } catch (err) {
-                this.handleError(err, "Failed to load members.");
-                this.members = [];
+                //handle request cancellation separately to avoid showing error messages for aborted requests
+                if (
+                    error.name === "AbortError" ||
+                    error.name === "CanceledError" ||
+                    api.isCancel(error)
+                ) {
+                    console.log("Organizations fetch request safely aborted.");
+                    return; // Graceful exit
+                }
+                //handle backend/network errors
+                const errMsg =
+                    error.response?.data?.message || "Failed to load members.";
+                this.errors = errMsg;
+                throw error;
             } finally {
                 this.loading = false;
             }
