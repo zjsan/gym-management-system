@@ -44,8 +44,15 @@ export const useMemberStore = defineStore("memberStore", {
             //intializing a new abort controller for new request and assigning it to the store's state to track it
             const controller = new AbortController();
             this.currentAbortController = controller;
+
             try {
-                const res = await api.get("/members");
+                const res = await api.get("/members", {
+                    params: { page, per_page: perPage, search },
+                    signal: controller.signal, //track the local reference of the abort controller for this specific request
+                });
+                const payload = res.data; //extract response data from the controller
+                console.log("API Response:", payload); // Debugging log
+
                 const data = this.unpackResource(res);
                 this.members = Array.isArray(data) ? data : [];
             } catch (err) {
