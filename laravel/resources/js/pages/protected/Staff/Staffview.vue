@@ -314,6 +314,7 @@ import { ref, computed, onMounted, watch } from "vue";
 import { useMemberStore } from "@/stores/memberStore";
 import debounce from "lodash.debounce"; //for debouncing search input
 import { usePagination } from "@/composables/usePagination";
+import { storeToRefs } from "pinia";
 
 //local states
 const memberStore = useMemberStore();
@@ -356,7 +357,7 @@ const {
     prevPage,
     nextPage,
     goToPage,
-} = usePagination(allowedEmailsStore, loadPage);
+} = usePagination(memberStore, loadPage);
 
 //debounced search function to limit API calls while typing in the search input
 const debouncedSearch = debounce((targetQuery) => {
