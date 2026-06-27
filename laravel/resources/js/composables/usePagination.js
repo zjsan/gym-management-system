@@ -10,34 +10,38 @@ export function usePagination(store, onPageChange = null) {
     const isLoading = computed(() => store.loading);
     const error = computed(() => store.errors);
 
-    // Destructure the callback passed by the component
-    const { onPageChange } = options;
+    // Local error state if components want to hook into errors caught here
+    const paginationError = ref(null);
 
     // Centralize the execution of a page change
     const executePageChange = (pageNumber) => {
-
-        //  Guard clause: prevent execution if no callback is provided
-        if (!onPageChange) {
-            console.warn('[usePagination]: No onPageChange callback was provided.');
-            return;
-        }
-
-        isLoading.value = true;
-        error.value = null;
-       
         try{
-            //update local page state
-            currentPage.value = pageNumber
-
-            //Await the callback (handles both sync and async actions seamlessly)
+           if (onPageChange) {
+            // Runs the component's loadPage function (preserves filters)
             await onPageChange(pageNumber);
+           }
+
+           //fallback if the onPagechange has an error
+           else{
+
+                //dynamic direct store execution 
+                const fetchMethodName = Object.keys(store).find(
+                    (key) => key.startsWith("fetch") && typeof store[key] === "function"
+                );
+
+                if (fetchMethodName) {
+                    await store[fetchMethodName](pageNumber);
+                } else {
+                    console.warn("[usePagination]: No valid page change handler or store fetch method found.");
+                }
+           }
         }
         catch (err) {
-            // 4. Catch and handle errors gracefully
-            error.value = err?.message || 'Failed to fetch page data.';
-            console.error('[usePagination Error]:', err);
-        } finally {
-            isLoading.value = false;
+            paginationError.value = err?.message || err || "An error occurred during page transition.";
+            console.error("[usePagination Error]:", err);
+            
+            // Re-throw so the component's try/catch can also see it
+            throw err;
         }
 
     };
