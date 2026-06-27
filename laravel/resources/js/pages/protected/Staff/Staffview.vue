@@ -315,20 +315,48 @@ import { useMemberStore } from "@/stores/memberStore";
 import debounce from "lodash/debounce"; //for debouncing search input
 import { usePagination } from "@/composables/usePagination";
 
+//local states
 const memberStore = useMemberStore();
 const isEditing = ref(false);
 const currentMemberId = ref(null);
 
-const initialState = {
-    first_name: "",
-    last_name: "",
-    contact_number: "",
-    emergency_contact_number: "",
-    address: "",
-    date_of_birth: "",
-    gender: "",
-    photo: null,
+// Component-level feedback states
+const successMessage = ref("");
+const errorMessage = ref("");
+const modalErrorMessage = ref("");
+
+//extract states from the store while maintaining reactivity
+const { member } = storeToRefs(memberStore);
+
+// ---------------------------------------------------
+// Search and Pagination Logic
+// ---------------------------------------------------
+const loadPage = async (pageNumber, searchKeyword = searchQuery.value) => {
+    try {
+        errorMessage.value = ""; //clear any existing error messages before attempting to load new data
+        await memberStore.fetchAllowedEmails(
+            pageNumber,
+            memberStore.itemsPerPage,
+            searchKeyword,
+        );
+    } catch (err) {
+        errorMessage.value = err?.message || err || "Failed to load registry.";
+    }
 };
+
+// Custom pagination composable to manage pagination state and logic
+const {
+    currentPage,
+    lastPage,
+    totalItems,
+    isLoading,
+    visiblePages,
+    rangeStart,
+    rangeEnd,
+    prevPage,
+    nextPage,
+    goToPage,
+} = usePagination(allowedEmailsStore, loadPage);
 
 // ---------------------------------------------------
 // Mobile Number Validation
@@ -355,6 +383,17 @@ const isContactInfoValid = computed(() => {
 // ---------------------------------------------------
 // Form States
 // ---------------------------------------------------
+
+const initialState = {
+    first_name: "",
+    last_name: "",
+    contact_number: "",
+    emergency_contact_number: "",
+    address: "",
+    date_of_birth: "",
+    gender: "",
+    photo: null,
+};
 
 const memberForm = ref({ ...initialState });
 
