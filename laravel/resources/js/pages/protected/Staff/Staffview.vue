@@ -547,7 +547,23 @@ const formatDate = (dateString) => {
           });
 };
 
+// ---------------------------------------------------
+// Mounting Guards
+// ---------------------------------------------------
+
 onMounted(() => {
     memberStore.fetchMembers();
+});
+
+onUnmounted(() => {
+    // console.log(
+    //     "Component unmounted, cancelling pending debounced search calls.",
+    // );
+    debouncedSearch.cancel(); //cancel any pending debounce calls
+
+    //cancel any api request upon unmount
+    if (memberStore.currentAbortController) {
+        memberStore.currentAbortController.abort();
+    }
 });
 </script>
