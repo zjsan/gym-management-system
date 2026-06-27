@@ -330,6 +330,10 @@ const initialState = {
     photo: null,
 };
 
+// ---------------------------------------------------
+// Mobile Number Validation
+// ---------------------------------------------------
+
 // Matches: 09171234567, +639171234567, 639171234567
 const phMobileRegex = /^(?:\+63|63|0)?9\d{9}$/;
 
@@ -347,6 +351,10 @@ const isEmergencyContactValid = computed(() => {
 const isContactInfoValid = computed(() => {
     return isContactNumberValid.value && isEmergencyContactValid.value;
 });
+
+// ---------------------------------------------------
+// Form States
+// ---------------------------------------------------
 
 const memberForm = ref({ ...initialState });
 
@@ -378,11 +386,19 @@ const editMember = (member) => {
     };
 };
 
+// ---------------------------------------------------
+// Photo Handling
+// ---------------------------------------------------
+
 const handleFileUpload = (event) => {
     if (event.target.files.length > 0) {
         memberForm.value.photo = event.target.files[0];
     }
 };
+
+// ---------------------------------------------------
+// Form Submission
+// ---------------------------------------------------
 
 const submitForm = async () => {
     //block submission upon missing mobile number
@@ -434,6 +450,10 @@ const submitForm = async () => {
         alert(errorMessage);
     }
 };
+
+// ---------------------------------------------------
+// Member Additional Operations
+// ---------------------------------------------------
 
 const handleToggleStatus = async (id) => {
     await memberStore.toggleStatus(id);
