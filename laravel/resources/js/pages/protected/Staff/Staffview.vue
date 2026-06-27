@@ -552,7 +552,9 @@ const formatDate = (dateString) => {
 // ---------------------------------------------------
 
 onMounted(() => {
-    memberStore.fetchMembers();
+    console.log("Component mounted, loading initial data.");
+
+    loadPage(currentPage.value, searchQuery.value.trim() || ""); //caputre the initial search query value to ensure the first load respects any default search state
 });
 
 onUnmounted(() => {
