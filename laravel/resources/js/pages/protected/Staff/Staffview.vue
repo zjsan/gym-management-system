@@ -310,8 +310,10 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from "vue";
+import { ref, computed, onMounted, watch } from "vue";
 import { useMemberStore } from "@/stores/memberStore";
+import debounce from "lodash/debounce"; //for debouncing search input
+import { usePagination } from "@/composables/usePagination";
 
 const memberStore = useMemberStore();
 const isEditing = ref(false);

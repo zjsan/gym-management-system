@@ -47,21 +47,21 @@ export function usePagination(store, onPageChange = null) {
     };
 
     // Core Navigation Actions
-    const prevPage = () => {
+    const prevPage = async () => {
         if (isLoading.value) return;
         if (currentPage.value > 1) {
-            executePageChange(currentPage.value - 1);
+            await executePageChange(currentPage.value - 1);
         }
     };
 
-    const nextPage = () => {
+    const nextPage = async () => {
         if (isLoading.value) return;
         if (currentPage.value < lastPage.value) {
-            executePageChange(currentPage.value + 1);
+            await executePageChange(currentPage.value + 1);
         }
     };
 
-    const goToPage = (page) => {
+    const goToPage = async (page) => {
         if (isLoading.value) return;
         const pageNumber = Number(page);
         if (
@@ -69,7 +69,7 @@ export function usePagination(store, onPageChange = null) {
             pageNumber <= lastPage.value &&
             pageNumber !== currentPage.value
         ) {
-            executePageChange(pageNumber);
+            await executePageChange(pageNumber);
         }
     };
 
