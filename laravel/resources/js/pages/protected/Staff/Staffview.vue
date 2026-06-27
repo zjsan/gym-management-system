@@ -310,7 +310,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, watch } from "vue";
+import { ref, computed, onMounted, watch, onUnmounted } from "vue";
 import { useMemberStore } from "@/stores/memberStore";
 import debounce from "lodash.debounce"; //for debouncing search input
 import { usePagination } from "@/composables/usePagination";
@@ -320,6 +320,7 @@ import { storeToRefs } from "pinia";
 const memberStore = useMemberStore();
 const isEditing = ref(false);
 const currentMemberId = ref(null);
+const searchQuery = ref("");
 
 // Component-level feedback states
 const successMessage = ref("");

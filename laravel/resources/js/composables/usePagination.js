@@ -1,4 +1,4 @@
-import { computed } from "vue";
+import { computed, ref } from "vue";
 
 //accepting the store and the optional onPageChange callback function to remember the last page number
 export function usePagination(store, onPageChange = null) {
