@@ -14,7 +14,7 @@ export function usePagination(store, onPageChange = null) {
     const paginationError = ref(null);
 
     // Centralize the execution of a page change
-    const executePageChange = (pageNumber) => {
+    const executePageChange = async (pageNumber) => {
         try{
            if (onPageChange) {
             // Runs the component's loadPage function (preserves filters)
