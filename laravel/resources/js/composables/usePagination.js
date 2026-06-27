@@ -10,16 +10,34 @@ export function usePagination(store, onPageChange = null) {
     const isLoading = computed(() => store.loading);
     const error = computed(() => store.errors);
 
+    // Destructure the callback passed by the component
+    const { onPageChange } = options;
+
     // Centralize the execution of a page change
     const executePageChange = (pageNumber) => {
 
+        //  Guard clause: prevent execution if no callback is provided
+        if (!onPageChange) {
+            console.warn('[usePagination]: No onPageChange callback was provided.');
+            return;
+        }
+
+        isLoading.value = true;
+        error.value = null;
+       
         try{
-            if (onPageChange) {
-            //runs the component loadpage function to preserve the search query and other filters when changing pages
-            onPageChange(pageNumber);
-        } 
-        catch(error){
-            
+            //update local page state
+            currentPage.value = pageNumber
+
+            //Await the callback (handles both sync and async actions seamlessly)
+            await onPageChange(pageNumber);
+        }
+        catch (err) {
+            // 4. Catch and handle errors gracefully
+            error.value = err?.message || 'Failed to fetch page data.';
+            console.error('[usePagination Error]:', err);
+        } finally {
+            isLoading.value = false;
         }
 
     };
