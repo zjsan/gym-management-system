@@ -114,6 +114,7 @@ export function usePagination(store, onPageChange = null) {
         lastPage,
         totalItems,
         isLoading,
+        paginationError,
         visiblePages,
         rangeStart,
         rangeEnd,
