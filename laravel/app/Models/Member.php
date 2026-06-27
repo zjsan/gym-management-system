@@ -7,9 +7,13 @@ use Illuminate\Support\Carbon;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Filesystem\FilesystemAdapter;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Member extends Model
 {
+
+    use HasFactory;//needed for creating dummy records in the database
+    
     //
     protected $fillable = [
         'membership_no', 'first_name', 'last_name', 'contact_number', 'emergency_contact_number',
