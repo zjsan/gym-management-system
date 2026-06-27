@@ -358,6 +358,25 @@ const {
     goToPage,
 } = usePagination(allowedEmailsStore, loadPage);
 
+//debounced search function to limit API calls while typing in the search input
+const debouncedSearch = debounce((targetQuery) => {
+    loadPage(1, targetQuery);
+}, 500);
+
+//watch the searchQuery for changes and trigger the debounced search function
+watch(searchQuery, (newVal, oldVal) => {
+    //trim the search query to prevent unnecessary API calls on whitespace changes
+    //fall back to empty string if newVal or oldVal is null or undefined to prevent errors
+    const currentText = newVal?.trim() || "";
+    const previousText = oldVal?.trim() || "";
+
+    if (currentText === previousText) {
+        return;
+    }
+
+    debouncedSearch(currentText);
+});
+
 // ---------------------------------------------------
 // Mobile Number Validation
 // ---------------------------------------------------
