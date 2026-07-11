@@ -19,6 +19,7 @@ class MemberFactory extends Factory
         $endDate = (clone $startDate)->modify('+30 days');
 
         return [
+            'membership_no'            => 'MEM-' . fake()->unique()->numberBetween(100000, 999999),
             'first_name'               => fake()->firstName(),
             'last_name'                => fake()->lastName(),
             'contact_number'           => fake()->phoneNumber(),
