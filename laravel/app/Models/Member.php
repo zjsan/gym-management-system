@@ -45,18 +45,23 @@ class Member extends Model
     }
 
     /**
-     * Check if 30 days have passed since registration OR last renewal.
-     * Members cannot renew early until this condition passes.
+     * Accessor: Determines if the RENEW button should be enabled.
+     * Enforces the 30-day lockout window OR allows immediate renewal if already expired.
      */
-    public function getCanRenewAttribute()
+    public function getCanRenewAttribute(): bool
     {
+        // RULE EXCEPTION: If they are already expired, they must be allowed to renew immediately.
+        if ($this->isExpired()) {
+            return true;
+        }
+
         $baselineDate = $this->last_renewal_at ?? $this->created_at;
         
-        // If there's no baseline (unsaved model instance), fallback safely to true
         if (!$baselineDate) {
             return true;
         }
 
+        // Strict checking
         return now()->diffInDays($baselineDate) >= 30;
     }
 
