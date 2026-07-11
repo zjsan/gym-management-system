@@ -467,7 +467,7 @@ const { member } = storeToRefs(memberStore);
 const loadPage = async (pageNumber, searchKeyword = searchQuery.value) => {
     try {
         errorMessage.value = ""; //clear any existing error messages before attempting to load new data
-        await memberStore.fetchAllowedEmails(
+        await memberStore.fetchMembers(
             pageNumber,
             memberStore.itemsPerPage,
             searchKeyword,
