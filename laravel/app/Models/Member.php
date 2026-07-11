@@ -30,10 +30,18 @@ class Member extends Model
 
     protected $appends = ['age', 'can_renew']; // Automatically append custom runtime properties to serialized JSON outputs
 
-    // Check if membership is expired (based on 30-day rule)
-    public function isExpired()
+    /**
+     * Check if membership is expired.
+     * Compares against the end of the expiration day to protect member access.
+     */
+    public function isExpired(): bool
     {
-        return now()->greaterThan($this->membership_end);
+        if (!$this->membership_end) {
+            return true;
+        }
+
+        // Production Fix: Enforce expiration at the absolute end of the operational day (23:59:59)
+        return now()->greaterThan($this->membership_end->endOfDay());
     }
 
     /**
