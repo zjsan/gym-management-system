@@ -82,12 +82,23 @@ class Member extends Model
         $this->save();
     }
 
-    //function to adjust membership end date by adding 1 day
-    public function adjust_membership($days = 1)
+    /**
+     * Business Logic: Adjusts membership end date for gym closures.
+     * Handles both positive extensions (+1d) and negative manual testing adjustments (-1d).
+     */
+    public function adjust_membership(int $days = 1): void
     {
-        // Use the existing end date as the starting point
         $currentEnd = $this->membership_end ?? now();
-        $this->membership_end = $currentEnd->addDays($days);
+        $this->membership_end = $currentEnd->addDays($days)->endOfDay();
+        
+        // If manually reducing days for testing, roll back the lockout tracking
+        // so that manual date testing doesn't break the 30-day "can_renew" calculations.
+        if ($days < 0 && $this->last_renewal_at) {
+            $this->last_renewal_at = $this->last_renewal_at->addDays($days);
+        } elseif ($days < 0 && !$this->last_renewal_at && $this->created_at) {
+            $this->created_at = $this->created_at->addDays($days);
+        }
+
         $this->save();
     }
 
