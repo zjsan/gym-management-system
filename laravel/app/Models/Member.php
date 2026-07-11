@@ -60,20 +60,25 @@ class Member extends Model
         if (!$baselineDate) {
             return true;
         }
-
+    
         // Strict checking
         return now()->diffInDays($baselineDate) >= 30;
     }
 
-    // Logic to renew: always adds 30 days
-    public function renew()
+    /**
+     * Business Logic: Renews membership for a fixed 30 days.
+     */
+    public function renew(): void
     {
-        $this->membership_start = now();
-
-        // Always adds 30 days to their current end date if active, or from now if expired
+        // If expired, start from today. If active, chain it onto their current expiration date.
         $base = $this->isExpired() ? now() : $this->membership_end;
         
-        $this->membership_end = $base->addDays(30);
+        $this->membership_start = now()->startOfDay();
+        $this->membership_end = $base->addDays(30)->endOfDay();
+        
+        // CRITICAL: Update the lockout tracking timestamp to right now!
+        $this->last_renewal_at = now(); 
+        
         $this->save();
     }
 
