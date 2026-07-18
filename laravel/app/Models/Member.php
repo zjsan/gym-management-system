@@ -13,7 +13,7 @@ class Member extends Model
 {
 
     use HasFactory;//needed for creating dummy records in the database
-    
+
     //
     protected $fillable = [
         'membership_no', 'first_name', 'last_name', 'contact_number', 'emergency_contact_number',
@@ -25,10 +25,12 @@ class Member extends Model
         'membership_start' => 'datetime',
         'membership_end' => 'datetime',
         'last_renewal_at' => 'datetime',
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
         'is_active' => 'boolean',
     ];
 
-    protected $appends = ['age', 'can_renew']; // Automatically append custom runtime properties to serialized JSON outputs
+    protected $appends = ['age', 'can_renew', 'photo_url']; // Automatically append custom runtime properties to serialized JSON outputs
 
     /**
      * Check if membership is expired.
