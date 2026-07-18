@@ -32,7 +32,7 @@ class MemberResource extends JsonResource
             'can_renew' => $this->can_renew, // Accesses model attribute/getter
             
             // Seamlessly compute public URLs for images
-            'photo_url' => $this->photo_url,
+            'photo_url' => $this->photoUrl()->get(),
         ];
     
     }
