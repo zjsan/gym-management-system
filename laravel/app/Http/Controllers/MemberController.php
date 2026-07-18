@@ -95,22 +95,6 @@ class MemberController extends Controller
         }
     }
 
-    public function toggleStatus(Member $member): JsonResponse
-    {
-        try {
-            $member->is_active = !$member->is_active;
-            $member->save();
-
-            return response()->json([
-                'message' => 'Status updated successfully.',
-                'member' => new MemberResource($member)
-            ], 200);
-        } catch (Exception $e) {
-            Log::error("Failed toggling member status ID {$member->id}: " . $e->getMessage());
-            return response()->json(['error' => 'Failed to update member status.'], 500);
-        }
-    }
-
     /**
      * Flexible Day Adjustment Endpoint
      * Allows staff to increase or decrease days manually if business was shut down unexpectedly.

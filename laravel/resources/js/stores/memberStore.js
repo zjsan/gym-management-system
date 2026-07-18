@@ -131,23 +131,6 @@ export const useMemberStore = defineStore("memberStore", {
             }
         },
 
-        async toggleStatus(id) {
-            this.loading = true;
-            this.errors = null;
-            try {
-                const res = await api.put(`/members/${id}/toggle-status`);
-                const updatedMember = this.unpackResource(res);
-
-                this.updateLocalState(id, updatedMember);
-                return { success: true };
-            } catch (err) {
-                const message = this.handleError(err, "Toggle status error occurred");
-                return { success: false, message };
-            } finally {
-                this.loading = false;
-            }
-        },
-
         async renewMember(id) {
             this.loading = true;
             this.errors = null;
