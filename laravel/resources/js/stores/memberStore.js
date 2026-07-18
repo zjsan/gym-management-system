@@ -54,13 +54,17 @@ export const useMemberStore = defineStore("memberStore", {
 
                 // Update only if the request wasn't aborted
                 if (!controller.signal.aborted) {
-                    this.members = payload.data || [];
+                    // Unpack arrays uniformly supporting root arrays, nested resources, or raw page blocks
+                    this.members = payload.data || (Array.isArray(payload) ? payload : []);
 
-                    // Update pagination info
-                    this.currentPage = payload.meta?.current_page || page;
-                    this.itemsPerPage = payload.meta?.per_page || perPage;
-                    this.lastPage = payload.meta?.last_page || 1;
-                    this.totalItems = payload.meta?.total || 0;
+                    // Determine if meta keys are nested (API Resource) or flat root-level parameters (Raw Pagination)
+                    const paginationSource = payload.meta || payload;
+
+                    // Fall back gracefully to local default variables if values are missing
+                    this.currentPage = paginationSource.current_page || page;
+                    this.itemsPerPage = paginationSource.per_page || perPage;
+                    this.lastPage = paginationSource.last_page || 1;
+                    this.totalItems = paginationSource.total || 0;
 
                     // Clean up controller reference on successful completion
                     if (this.currentAbortController === controller) {

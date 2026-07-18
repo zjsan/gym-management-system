@@ -117,6 +117,22 @@ class Member extends Model
             $member->membership_no = 'GYM-' . str_pad($member->id, 4, '0', STR_PAD_LEFT);
             $member->saveQuietly(); // saveQuietly avoids triggering infinite boot loops
         });
+
+        static::retrieved(function (Member $member) {
+            // If they are marked active in DB, but their date has passed...
+            if ($member->is_active && $member->expiration_date && Carbon::parse($member->expiration_date)->isPast()) {
+                // Silently update the database status without firing more events
+                $member->timestamps = false; // Prevent updating 'updated_at' unnecessarily
+                $member->updateQuietly(['is_active' => false]);
+            }
+        });
+
+        static::saving(function (Member $member) {
+            // Force status to inactive if they are expired, no matter what the input try to set
+            if ($member->expiration_date && Carbon::parse($member->expiration_date)->isPast()) {
+                $member->is_active = false;
+            }
+        });
     }
 
     protected function photoUrl(): Attribute
