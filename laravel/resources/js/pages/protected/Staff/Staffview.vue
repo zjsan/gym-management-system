@@ -141,7 +141,7 @@
                                 <th class="p-4">Name</th>
                                 <th class="p-4 text-center">Age</th>
                                 <th class="p-4">Membership Window</th>
-                                <th class="p-4 text-center">Status Toggle</th>
+                                <th class="p-4 text-center">Status</th>
                                 <th class="p-4 text-right">
                                     Actions / Adjustment Controls
                                 </th>
@@ -230,8 +230,7 @@
                                     </div>
                                 </td>
                                 <td class="p-4 text-center">
-                                    <button
-                                        @click="handleToggleStatus(member.id)"
+                                    <p
                                         :class="
                                             member.is_active
                                                 ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
@@ -244,7 +243,7 @@
                                                 ? "ACTIVE"
                                                 : "INACTIVE"
                                         }}
-                                    </button>
+                                    </p>
                                 </td>
                                 <td class="p-4 text-right space-x-2">
                                     <button
@@ -634,10 +633,6 @@ const submitForm = async () => {
 // ---------------------------------------------------
 // Member Additional Operations
 // ---------------------------------------------------
-const handleToggleStatus = async (id) => {
-    const res = await memberStore.toggleStatus(id);
-    if (!res.success) alert(res.message);
-};
 
 const handleRenew = async (id) => {
     if (confirm("Confirm membership extension by 30 days?")) {
