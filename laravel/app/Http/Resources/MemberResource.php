@@ -5,6 +5,7 @@ namespace App\Http\Resources;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Facades\Storage;
+use Carbon\Carbon;
 
 class MemberResource extends JsonResource
 {
@@ -15,6 +16,9 @@ class MemberResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
+        // Evaluate expiry right here to ensure the API payload is 100% accurate
+        $isExpired = $this->expiration_date && Carbon::parse($this->expiration_date)->isPast();
+
         return [
             'id' => $this->id,
             'membership_no' => $this->membership_no, // Handled by your Model boot
@@ -26,7 +30,8 @@ class MemberResource extends JsonResource
             'address' => $this->address,
             'date_of_birth' => $this->date_of_birth,
             'gender' => $this->gender,
-            'is_active' => (bool) $this->is_active,
+            // If expired, force false, otherwise use the database value
+            'is_active' => $isExpired ? false : (bool)$this->is_active,
             'membership_start' => $this->membership_start ? $this->membership_start->toIso8601String() : null,
             'membership_end' => $this->membership_end ? $this->membership_end->toIso8601String() : null,
             'can_renew' => $this->can_renew, // Accesses model attribute/getter
