@@ -230,20 +230,20 @@
                                     </div>
                                 </td>
                                 <td class="p-4 text-center">
-                                    <p
+                                    <span
                                         :class="
                                             member.is_active
                                                 ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
                                                 : 'bg-rose-50 text-rose-700 border-rose-200'
                                         "
-                                        class="px-3 py-1 rounded-full text-xs font-bold border hover:opacity-80 transition shadow-sm"
+                                        class="inline-block px-3 py-1 rounded-full text-xs font-bold border shadow-sm select-none"
                                     >
                                         {{
                                             member.is_active
                                                 ? "ACTIVE"
                                                 : "INACTIVE"
                                         }}
-                                    </p>
+                                    </span>
                                 </td>
                                 <td class="p-4 text-right space-x-2">
                                     <button
