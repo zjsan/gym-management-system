@@ -439,15 +439,14 @@
         </div>
     </div>
 </template>
-
 <script setup>
 import { ref, computed, onMounted, watch, onUnmounted } from "vue";
 import { useMemberStore } from "@/stores/memberStore";
-import debounce from "lodash.debounce"; //for debouncing search input
+import debounce from "lodash.debounce";
 import { usePagination } from "@/composables/usePagination";
 import { storeToRefs } from "pinia";
 
-//local states
+// Local states
 const memberStore = useMemberStore();
 const isEditing = ref(false);
 const currentMemberId = ref(null);
@@ -458,26 +457,29 @@ const successMessage = ref("");
 const errorMessage = ref("");
 const modalErrorMessage = ref("");
 
-//extract states from the store while maintaining reactivity
-const { member } = storeToRefs(memberStore);
+// FIXED: Extracted 'members' instead of non-existent 'member' key
+const { members, loading: isStoreLoading } = storeToRefs(memberStore);
 
 // ---------------------------------------------------
 // Search and Pagination Logic
 // ---------------------------------------------------
 const loadPage = async (pageNumber, searchKeyword = searchQuery.value) => {
     try {
-        errorMessage.value = ""; //clear any existing error messages before attempting to load new data
+        errorMessage.value = "";
         await memberStore.fetchMembers(
             pageNumber,
             memberStore.itemsPerPage,
             searchKeyword,
         );
     } catch (err) {
-        errorMessage.value = err?.message || err || "Failed to load registry.";
+        errorMessage.value =
+            err?.response?.data?.message ||
+            err?.message ||
+            "Failed to load registry.";
     }
 };
 
-// Custom pagination composable to manage pagination state and logic
+// Custom pagination composable setup
 const {
     currentPage,
     lastPage,
@@ -491,15 +493,11 @@ const {
     goToPage,
 } = usePagination(memberStore, loadPage);
 
-//debounced search function to limit API calls while typing in the search input
 const debouncedSearch = debounce((targetQuery) => {
     loadPage(1, targetQuery);
 }, 500);
 
-//watch the searchQuery for changes and trigger the debounced search function
 watch(searchQuery, (newVal, oldVal) => {
-    //trim the search query to prevent unnecessary API calls on whitespace changes
-    //fall back to empty string if newVal or oldVal is null or undefined to prevent errors
     const currentText = newVal?.trim() || "";
     const previousText = oldVal?.trim() || "";
 
@@ -513,21 +511,16 @@ watch(searchQuery, (newVal, oldVal) => {
 // ---------------------------------------------------
 // Mobile Number Validation
 // ---------------------------------------------------
-
-// Matches: 09171234567, +639171234567, 639171234567
 const phMobileRegex = /^(?:\+63|63|0)?9\d{9}$/;
 
-// Checks if the primary contact number is valid
 const isContactNumberValid = computed(() => {
     return phMobileRegex.test(memberForm.value.contact_number || "");
 });
 
-// Checks if the emergency contact number is valid
 const isEmergencyContactValid = computed(() => {
     return phMobileRegex.test(memberForm.value.emergency_contact_number || "");
 });
 
-// Overall form contact validity (Both must be valid to submit)
 const isContactInfoValid = computed(() => {
     return isContactNumberValid.value && isEmergencyContactValid.value;
 });
@@ -535,7 +528,6 @@ const isContactInfoValid = computed(() => {
 // ---------------------------------------------------
 // Form States
 // ---------------------------------------------------
-
 const initialState = {
     first_name: "",
     last_name: "",
@@ -560,7 +552,6 @@ const editMember = (member) => {
     isEditing.value = true;
     currentMemberId.value = member.id;
 
-    // Direct mapping to standard HTML date format parameters (YYYY-MM-DD)
     const rawBirthDate = member.date_of_birth
         ? member.date_of_birth.substring(0, 10)
         : "";
@@ -580,7 +571,6 @@ const editMember = (member) => {
 // ---------------------------------------------------
 // Photo Handling
 // ---------------------------------------------------
-
 const handleFileUpload = (event) => {
     if (event.target.files.length > 0) {
         memberForm.value.photo = event.target.files[0];
@@ -590,15 +580,12 @@ const handleFileUpload = (event) => {
 // ---------------------------------------------------
 // Form Submission
 // ---------------------------------------------------
-
 const submitForm = async () => {
-    //block submission upon missing mobile number
     if (!isContactInfoValid.value) {
         alert("Please provide valid Philippine mobile numbers.");
         return;
     }
 
-    //data initial preparation
     const data = new FormData();
     Object.keys(memberForm.value).forEach((key) => {
         if (key !== "photo" && memberForm.value[key] !== null) {
@@ -613,6 +600,7 @@ const submitForm = async () => {
     try {
         let result;
         if (isEditing.value) {
+            // Laravel-friendly spoofing fallback method for multipart PUT configurations
             data.append("_method", "PUT");
             result = await memberStore.updateMember(
                 currentMemberId.value,
@@ -623,7 +611,11 @@ const submitForm = async () => {
         }
 
         if (result && result.success) {
+            successMessage.value = isEditing.value
+                ? "Member updated successfully!"
+                : "Member added successfully!";
             resetForm();
+            loadPage(currentPage.value); // Hot-reload current dataset view
         } else {
             alert(
                 result?.message ||
@@ -631,23 +623,20 @@ const submitForm = async () => {
             );
         }
     } catch (error) {
-        // catch unexpected infrastructure errors (Network drop, 500 error, etc.)
         console.error("Form submission failed:", error);
-
-        // Extract a helpful message from the error object if your HTTP client (like Axios) provides it
-        const errorMessage =
+        const errMsg =
             error.response?.data?.message ||
             "A network error occurred. Please try again later.";
-        alert(errorMessage);
+        alert(errMsg);
     }
 };
 
 // ---------------------------------------------------
 // Member Additional Operations
 // ---------------------------------------------------
-
 const handleToggleStatus = async (id) => {
-    await memberStore.toggleStatus(id);
+    const res = await memberStore.toggleStatus(id);
+    if (!res.success) alert(res.message);
 };
 
 const handleRenew = async (id) => {
@@ -660,7 +649,8 @@ const handleRenew = async (id) => {
 };
 
 const handleDayAdjustment = async (id, days) => {
-    await memberStore.adjustMemberDays(id, days);
+    const res = await memberStore.adjustMemberDays(id, days);
+    if (!res.success) alert(res.message);
 };
 
 const isExpired = (endDateString) => {
@@ -683,20 +673,13 @@ const formatDate = (dateString) => {
 // ---------------------------------------------------
 // Mounting Guards
 // ---------------------------------------------------
-
 onMounted(() => {
     console.log("Component mounted, loading initial data.");
-
-    loadPage(currentPage.value, searchQuery.value.trim() || ""); //caputre the initial search query value to ensure the first load respects any default search state
+    loadPage(currentPage.value, searchQuery.value.trim() || "");
 });
 
 onUnmounted(() => {
-    // console.log(
-    //     "Component unmounted, cancelling pending debounced search calls.",
-    // );
-    debouncedSearch.cancel(); //cancel any pending debounce calls
-
-    //cancel any api request upon unmount
+    debouncedSearch.cancel();
     if (memberStore.currentAbortController) {
         memberStore.currentAbortController.abort();
     }
