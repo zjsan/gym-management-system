@@ -8,11 +8,9 @@ export const useMemberStore = defineStore("memberStore", {
         errors: null, // Holds validation arrays or global strings
         currentPage: 1,
         itemsPerPage: 10,
-        lastPage: 1, //for disabling next button when on the last page
+        lastPage: 1, // For disabling next button when on the last page
         totalItems: 0,
-        loading: false,
-        errors: null,
-        currentAbortController: null, // to manage request cancellation
+        currentAbortController: null, // To manage request cancellation
     }),
 
     actions: {
@@ -36,27 +34,26 @@ export const useMemberStore = defineStore("memberStore", {
             this.loading = true;
             this.errors = null;
 
-            //clear ongoing request before starting new one
+            // Clear ongoing request before starting a new one
             if (this.currentAbortController) {
                 this.currentAbortController.abort();
             }
 
-            //intializing a new abort controller for new request and assigning it to the store's state to track it
+            // Initializing a new abort controller for the new request
             const controller = new AbortController();
             this.currentAbortController = controller;
 
             try {
                 const res = await api.get("/members", {
                     params: { page, per_page: perPage, search },
-                    signal: controller.signal, //track the local reference of the abort controller for this specific request
+                    signal: controller.signal,
                 });
 
-                const payload = res.data; //extract response data from the controller
+                const payload = res.data;
                 console.log("API Response:", payload); // Debugging log
 
-                //update only the states if the request are not aborted
+                // Update only if the request wasn't aborted
                 if (!controller.signal.aborted) {
-                    // If backend returns a Resource, it might be response.data.data
                     this.members = payload.data || [];
 
                     // Update pagination info
@@ -65,28 +62,28 @@ export const useMemberStore = defineStore("memberStore", {
                     this.lastPage = payload.meta?.last_page || 1;
                     this.totalItems = payload.meta?.total || 0;
 
-                    //clean up the abort controller reference since the request has completed
+                    // Clean up controller reference on successful completion
                     if (this.currentAbortController === controller) {
                         this.currentAbortController = null;
                     }
                 }
             } catch (err) {
-                //handle request cancellation separately to avoid showing error messages for aborted requests
+                // FIXED: Changed 'error' references to 'err' matching catch signature
                 if (
-                    error.name === "AbortError" ||
-                    error.name === "CanceledError" ||
-                    api.isCancel(error)
+                    err.name === "AbortError" ||
+                    err.name === "CanceledError" ||
+                    api.isCancel?.(err)
                 ) {
-                    console.log("Organizations fetch request safely aborted.");
+                    console.log("Members fetch request safely aborted.");
                     return; // Graceful exit
                 }
-                //handle backend/network errors
-                const errMsg =
-                    error.response?.data?.message || "Failed to load members.";
+                
+                // Handle backend/network errors
+                const errMsg = err.response?.data?.message || "Failed to load members.";
                 this.errors = errMsg;
-                throw error;
+                throw err;
             } finally {
-                //only set loading to false if the current request is the one that just finished
+                // Only set loading to false if this is the active request tracking execution
                 if (
                     this.currentAbortController === controller ||
                     this.currentAbortController === null
@@ -104,15 +101,10 @@ export const useMemberStore = defineStore("memberStore", {
                 const newMember = this.unpackResource(res);
 
                 this.members.push(newMember);
-                return {
-                    success: true,
-                };
+                return { success: true };
             } catch (err) {
                 const message = this.handleError(err, "Create error occurred");
-                return {
-                    success: false,
-                    message,
-                };
+                return { success: false, message };
             } finally {
                 this.loading = false;
             }
@@ -126,15 +118,10 @@ export const useMemberStore = defineStore("memberStore", {
                 const updatedMember = this.unpackResource(res);
 
                 this.updateLocalState(id, updatedMember);
-                return {
-                    success: true,
-                };
+                return { success: true };
             } catch (err) {
                 const message = this.handleError(err, "Update error occurred");
-                return {
-                    success: false,
-                    message,
-                };
+                return { success: false, message };
             } finally {
                 this.loading = false;
             }
@@ -148,24 +135,15 @@ export const useMemberStore = defineStore("memberStore", {
                 const updatedMember = this.unpackResource(res);
 
                 this.updateLocalState(id, updatedMember);
-                return {
-                    success: true,
-                };
+                return { success: true };
             } catch (err) {
-                const message = this.handleError(
-                    err,
-                    "Toggle status error occurred",
-                );
-                return {
-                    success: false,
-                    message,
-                };
+                const message = this.handleError(err, "Toggle status error occurred");
+                return { success: false, message };
             } finally {
                 this.loading = false;
             }
         },
 
-        // Renamed to match the exact method called in the Vue file
         async renewMember(id) {
             this.loading = true;
             this.errors = null;
@@ -174,16 +152,10 @@ export const useMemberStore = defineStore("memberStore", {
                 const updatedMember = this.unpackResource(res);
 
                 this.updateLocalState(id, updatedMember);
-                return {
-                    success: true,
-                };
+                return { success: true };
             } catch (err) {
-                // FIXED syntax error here
                 const message = this.handleError(err, "Renewal error occurred");
-                return {
-                    success: false,
-                    message,
-                };
+                return { success: false, message };
             } finally {
                 this.loading = false;
             }
@@ -199,18 +171,10 @@ export const useMemberStore = defineStore("memberStore", {
                 const updatedMember = this.unpackResource(res);
 
                 this.updateLocalState(id, updatedMember);
-                return {
-                    success: true,
-                };
+                return { success: true };
             } catch (err) {
-                const message = this.handleError(
-                    err,
-                    "Failed to adjust membership dates.",
-                );
-                return {
-                    success: false,
-                    message,
-                };
+                const message = this.handleError(err, "Failed to adjust membership dates.");
+                return { success: false, message };
             } finally {
                 this.loading = false;
             }
