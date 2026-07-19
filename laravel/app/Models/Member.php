@@ -19,7 +19,7 @@ class Member extends Model
     protected $fillable = [
         'membership_no', 'first_name', 'last_name', 'contact_number', 'emergency_contact_number',
         'address', 'gender', 'date_of_birth', 'photo_path', 'is_active',
-        'membership_start', 'membership_end', 'last_renewal_at'
+        'membership_start', 'membership_end', 'last_renewal_at', 'membership_fee'
     ];
 
     protected $casts = [
