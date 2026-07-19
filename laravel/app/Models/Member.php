@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Filesystem\FilesystemAdapter;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Member extends Model
 {
@@ -147,5 +148,10 @@ class Member extends Model
 
             return $disk->url($this->photo_path);
         });
+    }
+
+    public function attendanceLogs()
+    {
+        return $this->hasMany(AttendanceLogging::class);
     }
 }
