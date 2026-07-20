@@ -34,11 +34,7 @@ class AttendanceController extends Controller
      */
     public function store(Request $request): JsonResponse
     {
-        $validated = $request->validate([
-            'entry_method' => ['required', Rule::in(['qr_scan', 'manual_member', 'manual_walkin'])],
-            'membership_no' => ['required_if:entry_method,qr_scan,manual_member', 'nullable', 'string'],
-            'walkin_name' => ['required_if:entry_method,manual_walkin', 'nullable', 'string', 'max:255'],
-        ]);
+        $validated = $request->validated();
 
         try {
             $recorderId = Auth::id();
@@ -129,7 +125,7 @@ class AttendanceController extends Controller
 
         return response()->json($members);
     }
-    
+
     /**
      * Update the specified resource in storage.
      */
