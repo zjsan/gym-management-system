@@ -5,6 +5,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\MemberController;
+use App\Http\Controllers\AttendanceController;
 
 Route::get('/user', function (Request $request) {
     return $request->user();
@@ -35,6 +36,12 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
         // routes for GET, POST, PUT, DELETE /api/users
         Route::apiResource('members', MemberController::class);
+
+        // Autocomplete lookup route
+        Route::get('/attendance/search', [AttendanceController::class, 'search']);
+    
+        // Core RESTful Attendance API Endpoints (handles index and store)
+        Route::apiResource('attendance', AttendanceController::class)->only(['index', 'store']);
         
     });
     
