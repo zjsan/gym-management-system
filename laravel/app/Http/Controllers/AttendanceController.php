@@ -107,8 +107,29 @@ class AttendanceController extends Controller
     public function show(string $id)
     {
         //
+
     }
 
+    /**
+     * Search members dynamically for autocomplete lookup.
+     */
+    public function search(Request $request): JsonResponse
+    {
+        $query = $request->query('query');
+
+        if (empty($query)) {
+            return response()->json([]);
+        }
+
+        $members = Member::where('membership_no', 'LIKE', "%{$query}%")
+            ->orWhere('first_name', 'LIKE', "%{$query}%")
+            ->orWhere('last_name', 'LIKE', "%{$query}%")
+            ->limit(5)
+            ->get(['id', 'membership_no', 'first_name', 'last_name', 'photo_path', 'is_active']);
+
+        return response()->json($members);
+    }
+    
     /**
      * Update the specified resource in storage.
      */
