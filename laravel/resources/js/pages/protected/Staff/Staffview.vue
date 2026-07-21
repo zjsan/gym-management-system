@@ -4,6 +4,15 @@
             Gym Management Dashboard
         </h1>
 
+        <div>
+            <button
+                @click="goToAttendance"
+                class="bg-blue-500 text-white font-semibold rounded-lg shadow hover:bg-red-600 transition"
+            >
+                Click here for Attendance
+            </button>
+        </div>
+
         <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
             <div
                 class="lg:col-span-1 bg-white p-5 rounded-xl shadow-sm border border-gray-100"
@@ -444,6 +453,14 @@ import { useMemberStore } from "@/stores/memberStore";
 import debounce from "lodash.debounce";
 import { usePagination } from "@/composables/usePagination";
 import { storeToRefs } from "pinia";
+import { useRouter } from "vue-router";
+
+//navigation
+const router = useRouter();
+
+const goToAttendance = () => {
+    router.push({ name: "attendance" });
+};
 
 // Local states
 const memberStore = useMemberStore();

@@ -28,7 +28,7 @@ const routes = [
     },
     {
         path: "/attendance",
-        name: "attendance.dashboard",
+        name: "attendance",
         component: AttendanceDashboard,
         meta: { requiresAdmin: true, role: "staff" },
     },
