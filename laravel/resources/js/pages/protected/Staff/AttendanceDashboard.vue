@@ -165,7 +165,7 @@
                             :disabled="
                                 !selectedMemberNo || attendanceStore.isLoading
                             "
-                            class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2.5 rounded-lg text-sm transition disabled:opacity-50"
+                            class="w-full bg-blue-800 hover:bg-indigo-700 text-white font-semibold py-2.5 rounded-lg text-sm transition disabled:opacity-50 cursor-pointer"
                         >
                             Check-In Member
                         </button>
