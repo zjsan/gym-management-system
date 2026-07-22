@@ -9,6 +9,14 @@
                     Scan member QR codes or record manual check-ins.
                 </p>
             </div>
+            <div>
+                <button
+                    class="bg-blue-500 text-white font-semibold rounded-lg shadow hover:bg-red-600 transition"
+                    @click="goBack"
+                >
+                    Go Back
+                </button>
+            </div>
         </div>
 
         <!-- Feedback Banners -->
@@ -276,6 +284,13 @@
 import { ref, onMounted, onBeforeUnmount } from "vue";
 import { Html5Qrcode } from "html5-qrcode";
 import { useAttendanceStore } from "@/stores/attendance";
+import { useRouter } from "vue-router";
+
+const router = useRouter();
+
+const goBack = () => {
+    router.push({ name: "Dashboard" });
+};
 
 const attendanceStore = useAttendanceStore();
 
