@@ -1,5 +1,5 @@
 import { defineStore } from "pinia";
-import api from "../api/api"; // Or your custom configured axios instance/wrapper
+import api from "../api/api";
 
 export const useAttendanceStore = defineStore("attendance", {
     state: () => ({
@@ -16,7 +16,7 @@ export const useAttendanceStore = defineStore("attendance", {
         async fetchLiveFeed() {
             this.isLoading = true;
             try {
-                const response = await api.get("/api/attendance");
+                const response = await api.get("/attendance");
                 this.liveFeed = response.data;
             } catch (error) {
                 this.errorMessage =
@@ -35,7 +35,7 @@ export const useAttendanceStore = defineStore("attendance", {
             this.searchLoading = true;
             try {
                 const response = await api.get(
-                    `/api/attendance/search?query=${query}`,
+                    `/attendance/search?query=${query}`,
                 );
                 this.searchResults = response.data;
             } catch (error) {
@@ -52,7 +52,7 @@ export const useAttendanceStore = defineStore("attendance", {
             this.successData = null;
 
             try {
-                const response = await api.post("/api/attendance", payload);
+                const response = await api.post("/attendance", payload);
 
                 // Push the newly created log to the top of the live feed array instantly
                 this.liveFeed.unshift(response.data.log);
