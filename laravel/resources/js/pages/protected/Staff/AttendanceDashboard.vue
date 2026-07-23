@@ -317,6 +317,7 @@ const searchQuery = ref("");
 const selectedMemberNo = ref("");
 const walkinName = ref("");
 const isScanning = ref(false);
+const cameraError = ref(null);
 let html5QrCode = null;
 let debounceTimeout = null;
 
@@ -330,19 +331,42 @@ onBeforeUnmount(() => {
 
 // --- QR SCANNER LOGIC ---
 const startScanner = async () => {
+    cameraError.value = null;
+
     try {
+        // Check if camera devices exist first
+        const devices = await Html5Qrcode.getCameras();
+        if (!devices || devices.length === 0) {
+            cameraError.value = "No camera devices detected on this system.";
+            return;
+        }
+
+        await nextTick(); // Ensure DOM element is fully rendered
+
         if (!html5QrCode) {
             html5QrCode = new Html5Qrcode("qr-reader");
         }
+
         isScanning.value = true;
+
         await html5QrCode.start(
             { facingMode: "environment" },
             { fps: 10, qrbox: { width: 200, height: 200 } },
             onScanSuccess,
         );
     } catch (err) {
-        console.error("Camera failed to start:", err);
+        console.warn("Camera access failed:", err);
         isScanning.value = false;
+        cameraError.value =
+            "Unable to start camera. Hardware missing or access blocked.";
+
+        // Clean up instance if it failed
+        if (html5QrCode) {
+            try {
+                await html5QrCode.clear();
+            } catch (e) {}
+            html5QrCode = null;
+        }
     }
 };
 
