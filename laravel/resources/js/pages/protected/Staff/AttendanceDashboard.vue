@@ -299,7 +299,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onBeforeUnmount } from "vue";
+import { ref, onMounted, onBeforeUnmount, nextTick } from "vue";
 import { Html5Qrcode } from "html5-qrcode";
 import { useAttendanceStore } from "@/stores/attendance";
 import { useRouter } from "vue-router";
@@ -444,6 +444,7 @@ const submitWalkin = async () => {
 
 // Helper format function
 const formatTime = (dateStr) => {
+    if (!dateStr) return "";
     return new Date(dateStr).toLocaleTimeString([], {
         hour: "2-digit",
         minute: "2-digit",
