@@ -322,7 +322,6 @@ let debounceTimeout = null;
 
 onMounted(() => {
     attendanceStore.fetchLiveFeed();
-    startScanner();
 });
 
 onBeforeUnmount(() => {
