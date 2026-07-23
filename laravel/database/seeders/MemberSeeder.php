@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use App\Models\Member;
+use Illuminate\Database\Eloquent\Factories\Sequence;
 
 class MemberSeeder extends Seeder
 {
@@ -15,6 +16,9 @@ class MemberSeeder extends Seeder
     {
         //
         // Generates exactly 30 structured members
-        Member::factory()->count(30)->create();
+        Member::factory()->count(30)->sequence(fn (Sequence $sequence) => [
+            'membership_no' => 'GYM-' . str_pad($sequence->index + 1, 4, '0', STR_PAD_LEFT),
+        ])
+        ->create();
     }
 }
