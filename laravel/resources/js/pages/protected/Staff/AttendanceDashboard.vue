@@ -1,5 +1,6 @@
 <template>
     <div class="p-6 max-w-7xl mx-auto space-y-6">
+        <!-- Header with Back Button -->
         <div class="flex items-center justify-between border-b pb-4">
             <div>
                 <h1 class="text-2xl font-bold text-gray-800">
@@ -9,17 +10,15 @@
                     Scan member QR codes or record manual check-ins.
                 </p>
             </div>
-            <div>
-                <button
-                    class="bg-blue-500 text-white font-semibold rounded-lg shadow hover:bg-red-600 transition"
-                    @click="goBack"
-                >
-                    Go Back
-                </button>
-            </div>
+            <router-link
+                :to="{ name: 'members.index' }"
+                class="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 text-sm font-semibold rounded-lg transition border shadow-sm flex items-center gap-2"
+            >
+                &larr; Back to Member Management
+            </router-link>
         </div>
 
-        <!-- Feedback Banners -->
+        <!-- Alert Notifications -->
         <div
             v-if="attendanceStore.errorMessage"
             class="p-4 bg-rose-100 border border-rose-300 text-rose-800 rounded-lg flex items-center justify-between"
@@ -52,7 +51,7 @@
 
         <!-- Main Split-Pane Layout -->
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
-            <!-- LEFT PANE: Input Controls (Span 5) -->
+            <!-- LEFT PANE: Input Controls -->
             <div class="lg:col-span-5 space-y-6">
                 <!-- Webcam Scanner Card -->
                 <div class="bg-white p-4 rounded-xl border shadow-sm">
@@ -64,17 +63,27 @@
                         </h2>
                         <button
                             @click="toggleScanner"
-                            class="text-xs px-2 py-1 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded border"
+                            class="text-xs px-2.5 py-1 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded border font-medium"
                         >
                             {{ isScanning ? "Stop Camera" : "Start Camera" }}
                         </button>
                     </div>
 
                     <div
-                        id="qr-reader"
-                        class="w-full bg-gray-900 rounded-lg overflow-hidden min-h-[220px] flex items-center justify-center text-gray-400 text-xs"
+                        class="relative w-full bg-gray-900 rounded-lg overflow-hidden min-h-[220px] flex items-center justify-center"
                     >
-                        <span v-if="!isScanning">Camera turned off</span>
+                        <!-- QR Mount Element (Kept untouched by Vue conditional rendering) -->
+                        <div id="qr-reader" class="w-full"></div>
+
+                        <div
+                            v-if="!isScanning"
+                            class="absolute inset-0 flex items-center justify-center bg-gray-900 text-gray-400 text-xs p-4 text-center"
+                        >
+                            <span>{{
+                                cameraError ||
+                                'Camera inactive. Click "Start Camera" to scan.'
+                            }}</span>
+                        </div>
                     </div>
                 </div>
 
@@ -82,31 +91,33 @@
                 <div class="bg-white p-5 rounded-xl border shadow-sm">
                     <div class="flex border-b mb-4">
                         <button
+                            type="button"
                             @click="activeTab = 'member'"
                             :class="
                                 activeTab === 'member'
                                     ? 'border-b-2 border-indigo-600 text-indigo-600 font-bold'
-                                    : 'text-gray-500'
+                                    : 'text-gray-500 hover:text-gray-700'
                             "
-                            class="flex-1 py-2 text-center text-sm"
+                            class="flex-1 py-2 text-center text-sm transition-colors"
                         >
                             Member Search
                         </button>
                         <button
+                            type="button"
                             @click="activeTab = 'walkin'"
                             :class="
                                 activeTab === 'walkin'
                                     ? 'border-b-2 border-indigo-600 text-indigo-600 font-bold'
-                                    : 'text-gray-500'
+                                    : 'text-gray-500 hover:text-gray-700'
                             "
-                            class="flex-1 py-2 text-center text-sm"
+                            class="flex-1 py-2 text-center text-sm transition-colors"
                         >
                             Walk-in Guest
                         </button>
                     </div>
 
                     <!-- TAB 1: Member Lookup Form -->
-                    <div v-if="activeTab === 'member'" class="space-y-4">
+                    <div v-show="activeTab === 'member'" class="space-y-4">
                         <div class="relative">
                             <label
                                 class="block text-xs font-semibold text-gray-600 mb-1"
@@ -114,16 +125,16 @@
                             >
                             <input
                                 v-model="searchQuery"
-                                @input="handleSearch"
+                                @input="handleInstantSearch"
                                 type="text"
-                                placeholder="Type 'GYM-0001' or name..."
+                                placeholder="Type member name or ID..."
                                 class="w-full border rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-indigo-500 outline-none"
                             />
 
-                            <!-- Search Results Autocomplete Dropdown -->
+                            <!-- Instant Autocomplete Dropdown -->
                             <div
                                 v-if="attendanceStore.searchResults.length > 0"
-                                class="absolute z-10 w-full mt-1 bg-white border rounded-lg shadow-lg max-h-48 overflow-y-auto"
+                                class="absolute z-20 w-full mt-1 bg-white border rounded-lg shadow-xl max-h-48 overflow-y-auto"
                             >
                                 <div
                                     v-for="member in attendanceStore.searchResults"
@@ -161,18 +172,19 @@
                         </div>
 
                         <button
+                            type="button"
                             @click="submitManualMember"
                             :disabled="
                                 !selectedMemberNo || attendanceStore.isLoading
                             "
-                            class="w-full bg-blue-800 hover:bg-indigo-700 text-white font-semibold py-2.5 rounded-lg text-sm transition disabled:opacity-50 cursor-pointer"
+                            class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2.5 rounded-lg text-sm transition disabled:opacity-50"
                         >
                             Check-In Member
                         </button>
                     </div>
 
                     <!-- TAB 2: Walk-In Form -->
-                    <div v-if="activeTab === 'walkin'" class="space-y-4">
+                    <div v-show="activeTab === 'walkin'" class="space-y-4">
                         <div>
                             <label
                                 class="block text-xs font-semibold text-gray-600 mb-1"
@@ -186,6 +198,7 @@
                             />
                         </div>
                         <button
+                            type="button"
                             @click="submitWalkin"
                             :disabled="
                                 !walkinName.trim() || attendanceStore.isLoading
@@ -198,7 +211,7 @@
                 </div>
             </div>
 
-            <!-- RIGHT PANE: Live Check-In Feed (Span 7) -->
+            <!-- RIGHT PANE: Live Check-In Feed -->
             <div class="lg:col-span-7">
                 <div class="bg-white p-5 rounded-xl border shadow-sm">
                     <h2
@@ -235,7 +248,7 @@
                         >
                             <div class="flex items-center gap-3">
                                 <div
-                                    class="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center font-bold text-gray-600 text-sm"
+                                    class="w-10 h-10 rounded-full bg-indigo-50 text-indigo-700 flex items-center justify-center font-bold text-sm border border-indigo-100"
                                 >
                                     {{
                                         log.member
@@ -261,7 +274,12 @@
                                         }}
                                         •
                                         <span class="capitalize">{{
-                                            log.entry_method.replace("_", " ")
+                                            log.entry_method
+                                                ? log.entry_method.replace(
+                                                      "_",
+                                                      " ",
+                                                  )
+                                                : "Manual"
                                         }}</span>
                                     </p>
                                 </div>
