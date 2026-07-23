@@ -430,10 +430,13 @@ const submitManualMember = async () => {
 
 // --- WALKIN SUBMISSION ---
 const submitWalkin = async () => {
+    if (!walkinName.value.trim()) return;
+
     const res = await attendanceStore.submitCheckIn({
         entry_method: "manual_walkin",
         walkin_name: walkinName.value,
     });
+
     if (res.success) {
         walkinName.value = "";
     }
