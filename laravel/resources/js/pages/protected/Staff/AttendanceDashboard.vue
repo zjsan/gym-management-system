@@ -415,10 +415,13 @@ const selectMember = (member) => {
 };
 
 const submitManualMember = async () => {
+    if (!selectedMemberNo.value) return;
+
     const res = await attendanceStore.submitCheckIn({
         entry_method: "manual_member",
         membership_no: selectedMemberNo.value,
     });
+
     if (res.success) {
         searchQuery.value = "";
         selectedMemberNo.value = "";
