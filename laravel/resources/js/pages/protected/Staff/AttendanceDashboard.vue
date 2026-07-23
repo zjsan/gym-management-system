@@ -372,8 +372,15 @@ const startScanner = async () => {
 
 const stopScanner = async () => {
     if (html5QrCode && isScanning.value) {
-        await html5QrCode.stop();
-        isScanning.value = false;
+        try {
+            await html5QrCode.stop();
+            await html5QrCode.clear();
+        } catch (e) {
+            console.error("Scanner stop failed:", e);
+        } finally {
+            html5QrCode = null;
+            isScanning.value = false;
+        }
     }
 };
 
