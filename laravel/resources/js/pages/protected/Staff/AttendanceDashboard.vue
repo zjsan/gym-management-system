@@ -10,12 +10,12 @@
                     Scan member QR codes or record manual check-ins.
                 </p>
             </div>
-            <router-link
-                :to="{ name: 'members.index' }"
-                class="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 text-sm font-semibold rounded-lg transition border shadow-sm flex items-center gap-2"
+            <button
+                @click="goBack"
+                class="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 text-sm font-semibold rounded-lg transition border shadow-sm flex items-center gap-2 cursor-pointer"
             >
                 &larr; Back to Member Management
-            </router-link>
+            </button>
         </div>
 
         <!-- Alert Notifications -->
