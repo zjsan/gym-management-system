@@ -325,7 +325,11 @@ onMounted(() => {
     attendanceStore.fetchLiveFeed();
 });
 
+// Clear timer when component unmounts to prevent memory leaks
 onBeforeUnmount(() => {
+    if (debounceTimeout) {
+        clearTimeout(debounceTimeout);
+    }
     stopScanner();
 });
 
