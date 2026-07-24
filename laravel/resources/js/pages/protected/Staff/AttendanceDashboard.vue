@@ -125,9 +125,9 @@
                             >
                             <input
                                 v-model="searchQuery"
-                                @input="handleInstantSearch"
+                                @input="handleSearch"
                                 type="text"
-                                placeholder="Type member name or ID..."
+                                placeholder="Type member name or Membership Number..."
                                 class="w-full border rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-indigo-500 outline-none"
                             />
 
@@ -403,6 +403,11 @@ const onScanSuccess = async (decodedText) => {
 // --- MANUAL MEMBER SEARCH ---
 const handleSearch = () => {
     clearTimeout(debounceTimeout);
+    if (!searchQuery.value.trim()) {
+        attendanceStore.searchResults = [];
+        selectedMemberNo.value = "";
+        return;
+    }
     debounceTimeout = setTimeout(() => {
         attendanceStore.searchMembers(searchQuery.value);
     }, 300);
