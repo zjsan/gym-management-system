@@ -40,8 +40,16 @@ class AttendanceController extends Controller
             $recorderId = Auth::id();
             $checkInTime = now();
 
+            //member lookup for both QR scan and manual member entry
             if (in_array($validated['entry_method'], ['qr_scan', 'manual_member'])) {
-                $member = Member::where('membership_no', $validated['membership_no'])->first();
+
+                $inputNo = trim($validated['membership_no']);
+
+                // Attempt direct match first ("GYM-0001" or whatever was scanned/typed)
+                $member = Member::where('membership_no', $inputNo)
+                    // If they typed just "0001" or "1", match "GYM-0001" -> this is a fallback mechainsm
+                    ->orWhere('membership_no', 'LIKE', "%" . ltrim($inputNo, '0') . "%")
+                    ->first();
 
                 if (!$member) {
                     return response()->json(['error' => 'Invalid membership number. Member not found.'], 404);
