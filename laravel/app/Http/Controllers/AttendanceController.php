@@ -45,11 +45,19 @@ class AttendanceController extends Controller
 
                 $inputNo = trim($validated['membership_no']);
 
-                // Attempt direct match first ("GYM-0001" or whatever was scanned/typed)
+                // Standardize the input, Ensure 'GYM-' prefix is attached if user typed just '0001' or '1'
+                $formattedNo = $inputNo;
+                if (!str_starts_with(strtoupper($inputNo), 'GYM-')) {
+                    // Extract numbers and pad to 4 digits if needed (e.g., '1' -> '0001')
+                    $digitsOnly = preg_replace('/\D/', '', $inputNo);
+                    if (!empty($digitsOnly)) {
+                        $formattedNo = 'GYM-' . str_pad($digitsOnly, 4, '0', STR_PAD_LEFT);
+                    }
+                }
+
+                // Strict, exact match only: Check raw input first, then formatted version
                 $member = Member::where('membership_no', $inputNo)
-                    //need to further check this new implementation
-                    // If they typed just "0001" or "1", match "GYM-0001" -> this is a fallback mechainsm
-                    ->orWhere('membership_no', 'LIKE', "%" . ltrim($inputNo, '0') . "%")
+                    ->orWhere('membership_no', $formattedNo)
                     ->first();
 
                 if (!$member) {
