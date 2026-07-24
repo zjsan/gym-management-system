@@ -402,7 +402,7 @@ const onScanSuccess = async (decodedText) => {
 
 // --- MANUAL MEMBER SEARCH ---
 const handleSearch = () => {
-    clearTimeout(debounceTimeout);
+    clearTimeout(debounceTimeout); //need to define this function
     if (!searchQuery.value.trim()) {
         attendanceStore.searchResults = [];
         selectedMemberNo.value = "";

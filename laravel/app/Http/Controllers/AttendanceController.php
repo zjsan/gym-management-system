@@ -47,6 +47,7 @@ class AttendanceController extends Controller
 
                 // Attempt direct match first ("GYM-0001" or whatever was scanned/typed)
                 $member = Member::where('membership_no', $inputNo)
+                    //need to further check this new implementation
                     // If they typed just "0001" or "1", match "GYM-0001" -> this is a fallback mechainsm
                     ->orWhere('membership_no', 'LIKE', "%" . ltrim($inputNo, '0') . "%")
                     ->first();
