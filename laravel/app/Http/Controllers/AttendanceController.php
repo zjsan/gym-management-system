@@ -111,15 +111,27 @@ class AttendanceController extends Controller
      */
     public function search(Request $request): JsonResponse
     {
-        $query = $request->query('query');
+        $query = trim($request->query('query', ''));
 
         if (empty($query)) {
             return response()->json([]);
         }
 
-        $members = Member::where('membership_no', 'LIKE', "%{$query}%")
-            ->orWhere('first_name', 'LIKE', "%{$query}%")
-            ->orWhere('last_name', 'LIKE', "%{$query}%")
+        // Strip out non-digit characters to handle numbers like "0001" searching for "GYM-0001"
+        $digitsOnly = preg_replace('/\D/', '', $query);
+
+        $members = Member::where(function ($q) use ($query, $digitsOnly) {
+                // Match standard first name or last name
+                $q->where('first_name', 'LIKE', "%{$query}%")
+                ->orWhere('last_name', 'LIKE', "%{$query}%")
+                // Match exact/partial membership number (e.g., "GYM-0001")
+                ->orWhere('membership_no', 'LIKE', "%{$query}%");
+
+                // If the user typed numbers (e.g. "0001" or "01"), search inside the numeric part of membership_no
+                if (!empty($digitsOnly)) {
+                    $q->orWhere('membership_no', 'LIKE', "%{$digitsOnly}%");
+                }
+            })
             ->limit(5)
             ->get(['id', 'membership_no', 'first_name', 'last_name', 'photo_path', 'is_active']);
 
