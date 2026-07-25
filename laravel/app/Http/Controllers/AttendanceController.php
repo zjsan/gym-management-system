@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreAttendanceRequest;
 use App\Models\Member;
 use App\Models\Walkin;
 use App\Models\AttendanceLogging;
@@ -32,7 +33,7 @@ class AttendanceController extends Controller
      * Store a newly created attendance log in storage (Hybrid QR & Manual).
      * Replaces checkIn()
      */
-    public function store(Request $request): JsonResponse
+    public function store(StoreAttendanceRequest $request): JsonResponse
     {
         $validated = $request->validated();
 
