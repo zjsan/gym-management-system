@@ -12,7 +12,14 @@
                 Click here for Attendance
             </button>
         </div>
-
+        <div class="w-50 mt-5">
+            <Input
+                v-model="searchQuery"
+                type="text"
+                placeholder="Search member..."
+                class="w-full pl-9 pr-4 py-2 text-sm border border-slate-200 rounded-lg focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none bg-white transition-all text-slate-700 placeholder:text-slate-400/90 shadow-inner"
+            />
+        </div>
         <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
             <div
                 class="lg:col-span-1 bg-white p-5 rounded-xl shadow-sm border border-gray-100"
@@ -136,7 +143,6 @@
                     </div>
                 </form>
             </div>
-
             <div
                 class="lg:col-span-3 bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden"
             >
