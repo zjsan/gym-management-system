@@ -1,0 +1,13 @@
+{
+    "compilerOptions": {
+        "paths": {
+            "@/*": ["./resources/js/*"]
+        }
+    },
+    "include": [
+        "resources/js",
+        "resources/js/**/*.vue",
+        "resources/js/**/*.js",
+        "resources/js/**/*.ts"
+    ]
+}

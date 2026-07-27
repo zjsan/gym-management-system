@@ -460,6 +460,7 @@ import debounce from "lodash.debounce";
 import { usePagination } from "@/composables/usePagination";
 import { storeToRefs } from "pinia";
 import { useRouter } from "vue-router";
+import { Input } from "@/components/ui/input";
 
 //navigation
 const router = useRouter();
