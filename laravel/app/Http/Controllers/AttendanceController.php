@@ -65,11 +65,11 @@ class AttendanceController extends Controller
                     return response()->json(['error' => 'Invalid membership number. Member not found.'], 404);
                 }
 
-                if (!$member->is_active || ($member->membership_end && Carbon::parse($member->membership_end)->isPast())) {
-                    return response()->json([
-                        'error' => 'Access Denied. This membership has expired or is inactive.',
-                        'member_name' => "{$member->first_name} {$member->last_name}"
-                    ], 422);
+                if (!$member->is_active) {
+                        return response()->json([
+                            'error' => 'Access Denied. This membership has expired or is inactive.',
+                            'member_name' => "{$member->first_name} {$member->last_name}"
+                        ], 422);
                 }
 
                 $log = AttendanceLogging::create([
