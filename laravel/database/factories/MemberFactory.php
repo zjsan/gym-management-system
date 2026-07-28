@@ -14,12 +14,16 @@ class MemberFactory extends Factory
 
     public function definition(): array
     {
-        $startDate = fake()->dateTimeBetween('-2 months', 'now');
-        // Clone the start date and add 30 days for the end date logic
+        // Generate start dates: half in the past, half recently/today
+        $startDate = fake()->dateTimeBetween('-1 month', 'now');
         $endDate = (clone $startDate)->modify('+30 days');
 
+        // A member is only truly active if their end date hasn't passed 
+        // AND they haven't been manually deactivated/flagged
+        $isNotExpired = $endDate >= new \DateTime();
+        $isActive = $isNotExpired && fake()->boolean(85); 
+
         return [
-            // 'membership_no' is removed here so the Model's static::created hook takes over
             'first_name'               => fake()->firstName(),
             'last_name'                => fake()->lastName(),
             'contact_number'           => fake()->phoneNumber(),
@@ -28,10 +32,10 @@ class MemberFactory extends Factory
             'gender'                   => fake()->randomElement(['Male', 'Female', 'Other']),
             'date_of_birth'            => fake()->date('Y-m-d', '-18 years'),
             'photo_path'               => null,
-            'is_active'                => fake()->boolean(80),
+            'is_active'                => $isActive,
             'membership_start'         => $startDate,
             'membership_end'           => $endDate,
-            'last_renewal_at'          => fake()->optional(0.5)->dateTimeBetween('-1 month', 'now'),
+            'last_renewal_at'          => $isNotExpired ? fake()->optional(0.4)->dateTimeBetween($startDate, 'now') : null,
         ];
     }
 }
