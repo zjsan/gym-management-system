@@ -111,6 +111,21 @@ class Member extends Model
         return Carbon::parse($this->date_of_birth)->age;
     }
 
+    /**
+     * Real-time computed active status based on calendar date.
+     */
+    public function getIsActiveAttribute($value): bool
+    {
+
+        // Calendar Date Expiration Guard
+        // If today is past the membership_end date, they are inactive regardless of time.
+        if ($this->membership_end && today()->greaterThan(Carbon::parse($this->membership_end)->startOfDay())) {
+            return false;
+        }
+
+        return true;
+    }
+
     protected static function booted()
     {
         static::created(function ($member) {
