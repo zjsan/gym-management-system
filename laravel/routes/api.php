@@ -42,6 +42,9 @@ Route::middleware(['auth:sanctum'])->group(function () {
     
         // Core RESTful Attendance API Endpoints (handles index and store)
         Route::apiResource('attendance', AttendanceController::class)->only(['index', 'store']);
+
+        //preview member details fo the attendance modal
+        Route::get('/members/lookup', [AttendanceController::class, 'lookup']); 
         
     });
     
