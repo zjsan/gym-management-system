@@ -114,6 +114,12 @@ export const useAttendanceStore = defineStore("attendance", {
             }
         },
 
+        // Clear single member verification data
+        clearLookup() {
+            this.lookupMemberData = null;
+            this.errorMessage = null;
+        },
+
         // Clear alert windows / success alerts
         clearStatus() {
             this.errorMessage = null;
