@@ -48,6 +48,33 @@ export const useAttendanceStore = defineStore("attendance", {
             }
         },
 
+        /**
+         * Look up a single member for pre-check-in verification
+         */
+        async lookupMember(query) {
+            if (!query.trim()) return { success: false };
+
+            this.lookupLoading = true;
+            this.errorMessage = null;
+            this.lookupMemberData = null;
+
+            try {
+                const response = await api.get(
+                    `/members/lookup?query=${query}`,
+                );
+                this.lookupMemberData = response.data.data;
+                return { success: true, data: response.data.data };
+            } catch (error) {
+                this.errorMessage =
+                    error.response?.data?.message ||
+                    error.response?.data?.error ||
+                    "Member not found.";
+                return { success: false };
+            } finally {
+                this.lookupLoading = false;
+            }
+        },
+
         // 3. Submit a Check-In (QR or Manual)
         async submitCheckIn(payload) {
             this.isLoading = true;
