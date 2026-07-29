@@ -157,6 +157,39 @@ class AttendanceController extends Controller
     }
 
     /**
+     * Look up a member by membership number or ID for pre-check-in verification.
+     */
+    public function lookup(Request $request): JsonResponse
+    {
+        $query = $request->query('query');
+
+        if (!$query) {
+            return response()->json(['message' => 'Please provide a search query.'], 400);
+        }
+
+        $member = Member::where('membership_no', $query)
+            ->orWhere('id', $query)
+            ->first();
+
+        if (!$member) {
+            return response()->json(['message' => 'Member not found.'], 404);
+        }
+
+        return response()->json([
+            'data' => [
+                'id'               => $member->id,
+                'membership_no'    => $member->membership_no,
+                'full_name'        => "{$member->first_name} {$member->last_name}",
+                'photo_url'        => $member->photo_path ? asset('storage/' . $member->photo_path) : null,
+                'is_active'        => $member->is_active, // Dynamic getter
+                'membership_start' => Carbon::parse($member->membership_start)->format('M d, Y'),
+                'membership_end'   => Carbon::parse($member->membership_end)->format('M d, Y'),
+                'is_expired'       => !$member->is_active,
+            ]
+        ]);
+    }
+    
+    /**
      * Update the specified resource in storage.
      */
     public function update(Request $request, string $id)
