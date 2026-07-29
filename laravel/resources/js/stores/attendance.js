@@ -9,6 +9,9 @@ export const useAttendanceStore = defineStore("attendance", {
         searchLoading: false,
         errorMessage: null,
         successData: null, // Holds details of the last successful check-in (e.g., photo, name)
+        lookupMemberData: null, // NEW: Holds single member profile for verification modal
+        lookupLoading: false, // NEW: Dedicated loading state for single member lookup
+        successData: null, // Holds details of the last successful check-in (e.g., photo, name)
     }),
 
     actions: {
