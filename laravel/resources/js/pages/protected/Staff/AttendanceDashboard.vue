@@ -303,6 +303,7 @@ import { ref, onMounted, onBeforeUnmount, nextTick } from "vue";
 import { Html5Qrcode } from "html5-qrcode";
 import { useAttendanceStore } from "@/stores/attendance";
 import { useRouter } from "vue-router";
+import MemberVerificationModal from "@/pages/protected/Staff/MemberVerificationModal.vue";
 
 const router = useRouter();
 
@@ -320,6 +321,7 @@ const isScanning = ref(false);
 const cameraError = ref(null);
 let html5QrCode = null;
 let debounceTimeout = null;
+const isModalOpen = ref(false);
 
 onMounted(() => {
     attendanceStore.fetchLiveFeed();
@@ -405,7 +407,7 @@ const onScanSuccess = async (decodedText) => {
 };
 
 // --- MANUAL MEMBER SEARCH ---
-const handleSearch = () => {
+const handleSearch = async () => {
     if (debounceTimeout) {
         clearTimeout(debounceTimeout);
     }
@@ -414,6 +416,13 @@ const handleSearch = () => {
         selectedMemberNo.value = "";
         return;
     }
+
+    const result = await attendanceStore.lookupMember(searchQuery.value);
+    if (result.success) {
+        searchQuery.value = ""; // clear input for next scan
+        isModalOpen.value = true; // Open Shadcn AlertDialog
+    }
+
     debounceTimeout = setTimeout(() => {
         attendanceStore.searchMembers(searchQuery.value);
     }, 300);
