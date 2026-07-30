@@ -314,6 +314,9 @@
                     </div>
                 </div>
             </div>
+
+            <!-- Shadcn Member Verification Modal -->
+            <MemberVerificationModal v-model:open="isModalOpen" />
         </div>
     </div>
 </template>
