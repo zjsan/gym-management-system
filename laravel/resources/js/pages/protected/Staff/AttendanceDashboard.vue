@@ -169,6 +169,26 @@
                                     </span>
                                 </div>
                             </div>
+                            <button
+                                @click="handleSearch"
+                                :disabled="attendanceStore.lookupLoading"
+                                class="px-4 py-2 bg-primary text-primary-foreground text-sm font-medium rounded-md hover:bg-primary/90 transition"
+                            >
+                                {{
+                                    attendanceStore.lookupLoading
+                                        ? "Verifying..."
+                                        : "Verify Member"
+                                }}
+                            </button>
+                            <!-- Error Banner on main view if member lookup fails -->
+                            <div
+                                v-if="
+                                    attendanceStore.errorMessage && !isModalOpen
+                                "
+                                class="p-3 bg-destructive/10 text-destructive text-sm rounded-md max-w-md"
+                            >
+                                {{ attendanceStore.errorMessage }}
+                            </div>
                         </div>
 
                         <button
