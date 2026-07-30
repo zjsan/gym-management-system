@@ -18,14 +18,15 @@
         "vite": "^7.0.7"
     },
     "dependencies": {
-        "@lucide/vue": "^1.27.0",
+        "@lucide/vue": "^1.28.0",
         "@vitejs/plugin-vue": "^6.0.5",
-        "@vueuse/core": "^14.3.0",
+        "@vueuse/core": "^14.4.0",
         "class-variance-authority": "^0.7.1",
         "clsx": "^2.1.1",
         "html5-qrcode": "^2.3.8",
         "lodash.debounce": "^4.0.8",
         "pinia": "^3.0.4",
+        "reka-ui": "^2.10.1",
         "tailwind-merge": "^3.6.0",
         "vue": "^3.5.30",
         "vue-router": "^5.0.3"
