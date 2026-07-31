@@ -440,12 +440,6 @@ const handleSearch = async () => {
         return;
     }
 
-    const result = await attendanceStore.lookupMember(searchQuery.value);
-    if (result.success) {
-        searchQuery.value = ""; // clear input for next scan
-        isModalOpen.value = true; // Open Shadcn AlertDialog
-    }
-
     debounceTimeout = setTimeout(() => {
         attendanceStore.searchMembers(searchQuery.value);
     }, 300);
