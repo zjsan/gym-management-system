@@ -29,17 +29,18 @@ export const useAttendanceStore = defineStore("attendance", {
             }
         },
 
-        // 2. Search members for manual lookup (Debounced externally in the component)
+
         async searchMembers(query) {
-            if (!query.trim()) {
+            const term = typeof query === 'string' ? query.trim() : '';
+            if (!term) {
                 this.searchResults = [];
                 return;
             }
             this.searchLoading = true;
             try {
-                const response = await api.get(
-                    `/attendance/search?query=${query}`,
-                );
+                const response = await api.get(`/attendance/search`, {
+                    params: { query: term } // Best practice: use params object instead of manual string interpolation
+                });
                 this.searchResults = response.data;
             } catch (error) {
                 console.error("Member search failed:", error);
@@ -48,20 +49,18 @@ export const useAttendanceStore = defineStore("attendance", {
             }
         },
 
-        /**
-         * Look up a single member for pre-check-in verification
-         */
         async lookupMember(query) {
-            if (!query.trim()) return { success: false };
+            const term = typeof query === 'string' ? query.trim() : '';
+            if (!term) return { success: false };
 
             this.lookupLoading = true;
             this.errorMessage = null;
             this.lookupMemberData = null;
 
             try {
-                const response = await api.get(
-                    `/members/lookup?query=${query}`,
-                );
+                const response = await api.get(`/members/lookup`, {
+                    params: { query: term }
+                });
                 this.lookupMemberData = response.data.data;
                 return { success: true, data: response.data.data };
             } catch (error) {
