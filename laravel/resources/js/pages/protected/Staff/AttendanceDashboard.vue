@@ -170,7 +170,7 @@
                                 </div>
                             </div>
                             <button
-                                @click="handleSearch"
+                                @click="handleDirectLookup"
                                 :disabled="attendanceStore.lookupLoading"
                                 class="px-4 py-2 bg-primary text-primary-foreground text-sm font-medium rounded-md hover:bg-primary/90 transition"
                             >
@@ -443,6 +443,19 @@ const handleSearch = async () => {
     debounceTimeout = setTimeout(() => {
         attendanceStore.searchMembers(searchQuery.value);
     }, 300);
+};
+
+//Triggered on Enter press or clicking a dropdown result / Verify button
+const handleDirectLookup = async (queryToLookup = null) => {
+    const term = queryToLookup || searchQuery.value;
+    if (!term.trim()) return;
+
+    const result = await attendanceStore.lookupMember(term);
+    if (result.success) {
+        searchQuery.value = "";
+        attendanceStore.searchResults = []; // Clear dropdown suggestions
+        isModalOpen.value = true;
+    }
 };
 
 const selectMember = (member) => {
