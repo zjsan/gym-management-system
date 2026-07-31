@@ -169,6 +169,11 @@ class AttendanceController extends Controller
 
         $member = Member::where('membership_no', $query)
             ->orWhere('id', $query)
+            // Match exact first_name + last_name combined
+            ->orWhereRaw("CONCAT(first_name, ' ', last_name) LIKE ?", ["%{$query}%"])
+            // Or individual name fields
+            ->orWhere('first_name', 'LIKE', "%{$query}%")
+            ->orWhere('last_name', 'LIKE', "%{$query}%")
             ->first();
 
         if (!$member) {
