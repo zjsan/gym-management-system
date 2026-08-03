@@ -171,23 +171,6 @@
                                 </div>
                             </div>
 
-                            <!-- Optional explicit button if manual text click is preferred -->
-                            <button
-                                type="button"
-                                @click="handleDirectLookup()"
-                                :disabled="
-                                    attendanceStore.lookupLoading ||
-                                    !searchQuery.trim()
-                                "
-                                class="mt-3 w-full px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium rounded-lg transition disabled:opacity-50"
-                            >
-                                {{
-                                    attendanceStore.lookupLoading
-                                        ? "Verifying..."
-                                        : "Verify Member"
-                                }}
-                            </button>
-
                             <!-- Error Banner -->
                             <div
                                 v-if="
