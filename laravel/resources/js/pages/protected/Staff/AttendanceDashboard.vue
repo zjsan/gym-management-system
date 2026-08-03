@@ -430,11 +430,13 @@ const toggleScanner = () => {
 };
 
 const onScanSuccess = async (decodedText) => {
-    // When a QR is scanned, submit directly as 'qr_scan'
-    await attendanceStore.submitCheckIn({
-        entry_method: "qr_scan",
-        membership_no: decodedText,
-    });
+    if (decodedText) {
+        // When a QR is scanned, submit directly as 'qr_scan'
+        await attendanceStore.submitCheckIn({
+            entry_method: "qr_scan",
+            membership_no: decodedText,
+        });
+    }
 };
 
 // --- MANUAL MEMBER SEARCH ---
