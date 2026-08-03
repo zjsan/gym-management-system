@@ -447,13 +447,17 @@ const handleSearch = async () => {
 
 //Triggered on Enter press or clicking a dropdown result / Verify button
 const handleDirectLookup = async (queryToLookup = null) => {
-    const term = queryToLookup || searchQuery.value;
-    if (!term.trim()) return;
+    // If triggered by a native click event, ignore it and fallback to searchQuery.value
+    const term =
+        typeof queryToLookup === "string" ? queryToLookup : searchQuery.value;
 
-    const result = await attendanceStore.lookupMember(term);
+    if (!term || typeof term !== "string" || !term.trim()) return;
+
+    const result = await attendanceStore.lookupMember(term.trim());
     if (result.success) {
         searchQuery.value = "";
-        attendanceStore.searchResults = []; // Clear dropdown suggestions
+        selectedMemberNo.value = "";
+        attendanceStore.searchResults = [];
         isModalOpen.value = true;
     }
 };
