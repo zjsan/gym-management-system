@@ -126,8 +126,9 @@
                             <input
                                 v-model="searchQuery"
                                 @input="handleSearch"
+                                @keydown.enter.prevent="handleDirectLookup()"
                                 type="text"
-                                placeholder="Type member name or Membership Number..."
+                                placeholder="Type member name, ID, or scan barcode..."
                                 class="w-full border rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-indigo-500 outline-none"
                             />
 
@@ -139,7 +140,7 @@
                                 <div
                                     v-for="member in attendanceStore.searchResults"
                                     :key="member.id"
-                                    @click="selectMember(member)"
+                                    @click="handleSelectAndVerify(member)"
                                     class="p-2.5 hover:bg-indigo-50 cursor-pointer flex items-center justify-between border-b last:border-b-0"
                                 >
                                     <div>
@@ -169,10 +170,16 @@
                                     </span>
                                 </div>
                             </div>
+
+                            <!-- Optional explicit button if manual text click is preferred -->
                             <button
-                                @click="handleDirectLookup"
-                                :disabled="attendanceStore.lookupLoading"
-                                class="px-4 py-2 bg-primary text-primary-foreground text-sm font-medium rounded-md hover:bg-primary/90 transition"
+                                type="button"
+                                @click="handleDirectLookup()"
+                                :disabled="
+                                    attendanceStore.lookupLoading ||
+                                    !searchQuery.trim()
+                                "
+                                class="mt-3 w-full px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium rounded-lg transition disabled:opacity-50"
                             >
                                 {{
                                     attendanceStore.lookupLoading
@@ -180,12 +187,13 @@
                                         : "Verify Member"
                                 }}
                             </button>
-                            <!-- Error Banner on main view if member lookup fails -->
+
+                            <!-- Error Banner -->
                             <div
                                 v-if="
                                     attendanceStore.errorMessage && !isModalOpen
                                 "
-                                class="p-3 bg-destructive/10 text-destructive text-sm rounded-md max-w-md"
+                                class="mt-2 p-3 bg-rose-50 text-rose-700 text-sm rounded-md"
                             >
                                 {{ attendanceStore.errorMessage }}
                             </div>
