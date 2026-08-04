@@ -426,6 +426,7 @@ const onScanSuccess = async (decodedText) => {
 
 // --- MANUAL MEMBER SEARCH ---
 const handleSearch = async () => {
+    activeIndex.value = -1; // Reset highlight on new query
     if (debounceTimeout) {
         clearTimeout(debounceTimeout);
     }
