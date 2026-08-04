@@ -490,6 +490,7 @@ const handleDirectLookup = async (queryToLookup = null) => {
 const handleSelectAndVerify = (member) => {
     attendanceStore.searchResults = []; // Clear suggestions
     searchQuery.value = "";
+    activeIndex.value = -1; //reset the index for keyboard navigation
     // Automatically query using the exact unique membership number
     handleDirectLookup(member.membership_no);
 };
