@@ -26,8 +26,14 @@ Route::middleware(['auth:sanctum'])->group(function () {
         
     });
 
-        // staff routes
+    // staff routes
     Route::middleware(['can:access-front-desk'])->group(function () {
+
+        //preview member details for the attendance modal
+        Route::get('/members/lookup', [AttendanceController::class, 'lookup']); 
+
+        // Autocomplete lookup route
+        Route::get('/attendance/search', [AttendanceController::class, 'search']);
 
         //custom route for toggling member status
         Route::put('members/{member}/toggle-status', [MemberController::class, 'toggleStatus']);
@@ -36,15 +42,9 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
         // routes for GET, POST, PUT, DELETE /api/users
         Route::apiResource('members', MemberController::class);
-
-        // Autocomplete lookup route
-        Route::get('/attendance/search', [AttendanceController::class, 'search']);
     
         // Core RESTful Attendance API Endpoints (handles index and store)
         Route::apiResource('attendance', AttendanceController::class)->only(['index', 'store']);
-
-        //preview member details fo the attendance modal
-        Route::get('/members/lookup', [AttendanceController::class, 'lookup']); 
         
     });
     

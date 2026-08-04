@@ -162,6 +162,9 @@ class AttendanceController extends Controller
      */
      public function lookup(Request $request): JsonResponse
      {
+        // TEMPORARY TEST
+        return response()->json(['data' => ['test' => 'Hello World']]);
+
         try {
             $query = trim($request->query('query', ''));
 
@@ -213,7 +216,7 @@ class AttendanceController extends Controller
             ], 500);
         }
     }   
-     
+
     /**
      * Update the specified resource in storage.
      */
