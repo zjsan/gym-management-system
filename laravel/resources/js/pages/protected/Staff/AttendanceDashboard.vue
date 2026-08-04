@@ -443,6 +443,32 @@ const handleSearch = async () => {
     }, 300);
 };
 
+//keyboard navigation and selection logic for dropdown
+const navigateDropdown = (direction) => {
+    const results = attendanceStore.searchResults;
+    if (!results.length) return;
+
+    if (direction === "down") {
+        activeIndex.value = (activeIndex.value + 1) % results.length;
+    } else if (direction === "up") {
+        activeIndex.value =
+            activeIndex.value <= 0 ? results.length - 1 : activeIndex.value - 1;
+    }
+};
+
+const handleEnterKey = () => {
+    const results = attendanceStore.searchResults;
+
+    // If an item is highlighted via keyboard arrows, select it
+    if (activeIndex.value >= 0 && results[activeIndex.value]) {
+        handleSelectAndVerify(results[activeIndex.value]);
+        activeIndex.value = -1;
+    } else {
+        // Otherwise, fallback to direct text lookup (e.g., barcode scanners or hitting enter on a typed ID)
+        handleDirectLookup();
+    }
+};
+
 //Triggered on Enter press or clicking a dropdown result / Verify button
 const handleDirectLookup = async (queryToLookup = null) => {
     // If triggered by a native click event, ignore it and fallback to searchQuery.value
