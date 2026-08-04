@@ -126,7 +126,9 @@
                             <input
                                 v-model="searchQuery"
                                 @input="handleSearch"
-                                @keydown.enter.prevent="handleDirectLookup()"
+                                @keydown.down.prevent="navigateDropdown('down')"
+                                @keydown.up.prevent="navigateDropdown('up')"
+                                @keydown.enter.prevent="handleEnterKey"
                                 type="text"
                                 placeholder="Type member name, ID, or scan barcode..."
                                 class="w-full border rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-indigo-500 outline-none"
