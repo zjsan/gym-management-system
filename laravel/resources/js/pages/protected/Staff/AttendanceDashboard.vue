@@ -327,6 +327,7 @@ const goBack = () => {
 
 const attendanceStore = useAttendanceStore();
 
+//local component states
 const activeTab = ref("member");
 const searchQuery = ref("");
 const selectedMemberNo = ref("");
@@ -335,7 +336,8 @@ const isScanning = ref(false);
 const cameraError = ref(null);
 let html5QrCode = null;
 let debounceTimeout = null;
-const isModalOpen = ref(false);
+const isModalOpen = ref(false); // tracking of modal state
+const activeIndex = ref(-1); // For keyboard navigation in the dropdown
 
 onMounted(() => {
     attendanceStore.fetchLiveFeed();
