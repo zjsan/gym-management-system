@@ -162,8 +162,6 @@ class AttendanceController extends Controller
      */
      public function lookup(Request $request): JsonResponse
      {
-        // TEMPORARY TEST
-        return response()->json(['data' => ['test' => 'Hello World']]);
 
         try {
             $query = trim($request->query('query', ''));
