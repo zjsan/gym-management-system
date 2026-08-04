@@ -197,8 +197,8 @@ class AttendanceController extends Controller
                     'full_name'        => "{$member->first_name} {$member->last_name}",
                     'photo_url'        => $member->photo_path ? asset('storage/' . $member->photo_path) : null,
                     'is_active'        => (bool) $member->is_active, 
-                    'membership_start' => $member->membership_start ? parse($member->membership_start)->format('M d, Y') : null,
-                    'membership_end'   => $member->membership_end ? parse($member->membership_end)->format('M d, Y') : null,
+                    'membership_start' => $member->membership_start ? Carbon::parse($member->membership_start)->format('M d, Y') : null,
+                    'membership_end'   => $member->membership_end ? Carbon::parse($member->membership_end)->format('M d, Y') : null,
                     'is_expired'       => !$member->is_active,
                 ]
             ]);
