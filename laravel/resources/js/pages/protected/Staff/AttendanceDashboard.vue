@@ -140,10 +140,18 @@
                                 class="absolute z-20 w-full mt-1 bg-white border rounded-lg shadow-xl max-h-48 overflow-y-auto"
                             >
                                 <div
-                                    v-for="member in attendanceStore.searchResults"
+                                    v-for="(
+                                        member, index
+                                    ) in attendanceStore.searchResults"
                                     :key="member.id"
                                     @click="handleSelectAndVerify(member)"
-                                    class="p-2.5 hover:bg-indigo-50 cursor-pointer flex items-center justify-between border-b last:border-b-0"
+                                    @mouseenter="activeIndex = index"
+                                    :class="[
+                                        'p-2.5 cursor-pointer flex items-center justify-between border-b last:border-b-0 transition-colors',
+                                        activeIndex === index
+                                            ? 'bg-indigo-100'
+                                            : 'hover:bg-indigo-50',
+                                    ]"
                                 >
                                     <div>
                                         <p
