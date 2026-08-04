@@ -136,25 +136,11 @@ class AttendanceController extends Controller
             return response()->json([]);
         }
 
-        // Strip out non-digit characters to handle numbers like "0001" searching for "GYM-0001"
-        $digitsOnly = preg_replace('/\D/', '', $query);
-
-        $members = Member::where(function ($q) use ($query, $digitsOnly) {
-                // Match standard first name or last name
-                $q->where('first_name', 'LIKE', "%{$query}%")
-                ->orWhere('last_name', 'LIKE', "%{$query}%")
-                // Match exact/partial membership number (e.g., "GYM-0001")
-                ->orWhere('membership_no', 'LIKE', "%{$query}%");
-
-                // If the user typed numbers (e.g. "0001" or "01"), search inside the numeric part of membership_no
-                if (!empty($digitsOnly)) {
-                    $q->orWhere('membership_no', 'LIKE', "%{$digitsOnly}%");
-                }
-            })
+        $members = Member::searchQuery($query)
             ->limit(5)
-            ->get(['id', 'membership_no', 'first_name', 'last_name', 'photo_path', 'is_active']);
+            ->get();
 
-        return response()->json($members);
+        return MemberResource::collection($members);
     }
 
     /**
@@ -162,52 +148,23 @@ class AttendanceController extends Controller
      */
      public function lookup(Request $request): JsonResponse
      {
-
         try {
-            $query = trim($request->query('query', ''));
+            $query = $request->query('query', '');
 
-            if (empty($query)) {
+            if (empty(trim($query))) {
                 return response()->json(['message' => 'Please provide a search query.'], 400);
             }
 
-            $digitsOnly = preg_replace('/\D/', '', $query);
-
-            $member = Member::where(function ($q) use ($query, $digitsOnly) {
-                    $q->where('membership_no', $query) // Exact match first for speed
-                    ->orWhere('id', $query)
-                    ->orWhere('first_name', 'LIKE', "%{$query}%")
-                    ->orWhere('last_name', 'LIKE', "%{$query}%")
-                    ->orWhereRaw("CONCAT(first_name, ' ', last_name) LIKE ?", ["%{$query}%"])
-                    ->orWhere('membership_no', 'LIKE', "%{$query}%");
-
-                    if (!empty($digitsOnly)) {
-                        $q->orWhere('membership_no', 'LIKE', "%{$digitsOnly}%");
-                    }
-                })
-                ->first();
+            $member = Member::searchQuery($query)->first();
 
             if (!$member) {
                 return response()->json(['message' => 'Member not found.'], 404);
             }
 
-            return response()->json([
-                'data' => [
-                    'id'               => $member->id,
-                    'membership_no'    => $member->membership_no,
-                    'full_name'        => "{$member->first_name} {$member->last_name}",
-                    'photo_url'        => $member->photo_path ? asset('storage/' . $member->photo_path) : null,
-                    'is_active'        => (bool) $member->is_active, 
-                    'membership_start' => $member->membership_start ? Carbon::parse($member->membership_start)->format('M d, Y') : null,
-                    'membership_end'   => $member->membership_end ? Carbon::parse($member->membership_end)->format('M d, Y') : null,
-                    'is_expired'       => !$member->is_active,
-                ]
-            ]);
+            return new MemberResource($member);
 
         } catch (\Exception $e) {
-            error('Member lookup error: ' . $e->getMessage(), [
-                'query' => $request->query('query'),
-                'trace' => $e->getTraceAsString()
-            ]);
+            Log::error('Member lookup error: ' . $e->getMessage());
 
             return response()->json([
                 'message' => 'An internal error occurred during member lookup.'
