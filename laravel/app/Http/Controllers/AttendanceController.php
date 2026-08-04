@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreAttendanceRequest;
+use App\Http\Resources\MemberResource;
 use App\Models\Member;
 use App\Models\Walkin;
 use App\Models\AttendanceLogging;
@@ -13,6 +14,7 @@ use Illuminate\Validation\Rule;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class AttendanceController extends Controller
 {
@@ -128,7 +130,7 @@ class AttendanceController extends Controller
     /**
      * Search members dynamically for autocomplete lookup.
      */
-    public function search(Request $request): JsonResponse
+    public function search(Request $request): AnonymousResourceCollection|JsonResponse
     {
         $query = trim($request->query('query', ''));
 
@@ -146,7 +148,7 @@ class AttendanceController extends Controller
     /**
      * Look up a member by membership number or ID for pre-check-in verification.
      */
-     public function lookup(Request $request): JsonResponse
+     public function lookup(Request $request): MemberResource|JsonResponse
      {
         try {
             $query = $request->query('query', '');
