@@ -165,6 +165,32 @@ class Member extends Model
         });
     }
 
+     /**
+     * Lookup and search logic for member information 
+     */
+    public function scopeSearchQuery($query, string $searchTerm)
+    {
+        $term = trim($searchTerm);
+        if (empty($term)) {
+            return $query;
+        }
+
+        $digitsOnly = preg_replace('/\D/', '', $term);
+
+        return $query->where(function ($q) use ($term, $digitsOnly) {
+            $q->where('membership_no', $term) // Exact match priority
+            ->orWhere('id', $term)
+            ->orWhere('first_name', 'LIKE', "%{$term}%")
+            ->orWhere('last_name', 'LIKE', "%{$term}%")
+            ->orWhereRaw("CONCAT(first_name, ' ', last_name) LIKE ?", ["%{$term}%"])
+            ->orWhere('membership_no', 'LIKE', "%{$term}%");
+
+            if (!empty($digitsOnly)) {
+                $q->orWhere('membership_no', 'LIKE', "%{$digitsOnly}%");
+            }
+        });
+    }
+
     public function attendanceLogs()
     {
         return $this->hasMany(AttendanceLogging::class);
