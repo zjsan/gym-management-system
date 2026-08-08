@@ -222,9 +222,7 @@
                                         <span class="text-gray-400"
                                             >Start:</span
                                         >
-                                        {{
-                                            formatDate(member.membership_start)
-                                        }}
+                                        {{ member.membership_start }}
                                     </div>
                                     <div
                                         class="font-semibold"
@@ -237,7 +235,7 @@
                                         <span class="text-gray-400 font-normal"
                                             >Ends:</span
                                         >
-                                        {{ formatDate(member.membership_end) }}
+                                        {{ member.membership_end }}
                                     </div>
                                 </td>
                                 <td class="p-4 text-center">
