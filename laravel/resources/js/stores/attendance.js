@@ -41,7 +41,13 @@ export const useAttendanceStore = defineStore("attendance", {
                 const response = await api.get(`/attendance/search`, {
                     params: { query: term } // Best practice: use params object instead of manual string interpolation
                 });
-                this.searchResults = response.data;
+
+                // Handle both Laravel API Resource wrapping ({ data: [...] }) and raw arrays
+                const responseData = response.data;
+                this.searchResults = Array.isArray(responseData) 
+                    ? responseData 
+                    : (responseData?.data ?? []);
+                    
             } catch (error) {
                 console.error("Member search failed:", error);
             } finally {
