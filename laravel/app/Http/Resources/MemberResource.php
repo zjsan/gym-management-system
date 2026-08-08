@@ -21,6 +21,7 @@ class MemberResource extends JsonResource
 
         return [
             'id' => $this->id,
+            'age' => $this->date_of_birth ? Carbon::parse($this->date_of_birth)->age : null,
             'membership_no' => $this->membership_no, // Handled by your Model boot
             'first_name' => $this->first_name,
             'last_name' => $this->last_name,
