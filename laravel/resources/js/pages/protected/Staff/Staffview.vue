@@ -193,11 +193,7 @@
                                 <td class="p-4">
                                     <div class="flex items-center space-x-3">
                                         <img
-                                            :src="
-                                                member.photo_path
-                                                    ? `/storage/${member.photo_path}`
-                                                    : '/placeholder.png'
-                                            "
+                                            :src="member.photo_url"
                                             class="w-11 h-11 rounded-full border border-gray-100 object-cover bg-gray-50"
                                         />
                                         <div>
