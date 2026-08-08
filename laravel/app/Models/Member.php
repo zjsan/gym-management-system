@@ -25,6 +25,7 @@ class Member extends Model
     protected $casts = [
         'membership_start' => 'datetime',
         'membership_end' => 'datetime',
+        'date_of_birth' => 'date',
         'last_renewal_at' => 'datetime',
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
