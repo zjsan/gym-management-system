@@ -32,8 +32,8 @@ class MemberResource extends JsonResource
             'gender' => $this->gender,
             // If expired, force false, otherwise use the database value
             'is_active' => $isExpired ? false : (bool)$this->is_active,
-            'membership_start' => $this->membership_start ? $this->membership_start->toIso8601String() : null,
-            'membership_end' => $this->membership_end ? $this->membership_end->toIso8601String() : null,
+            'membership_start' => $this->membership_start ? $this->membership_start->format('F j, Y - g:i A') : null,
+            'membership_end' => $this->membership_end ? $this->membership_end->format('F j, Y - g:i A') : null,
             'can_renew' => $this->can_renew, // Accesses model attribute/getter
             
             // Seamlessly compute public URLs for images
