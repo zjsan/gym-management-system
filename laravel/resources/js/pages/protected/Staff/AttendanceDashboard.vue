@@ -497,7 +497,8 @@ const handleDirectLookup = async (queryToLookup = null) => {
 // Triggered instantly when a dropdown list item is clicked
 const handleSelectAndVerify = (member) => {
     attendanceStore.searchResults = []; // Clear suggestions
-    searchQuery.value = "";
+    searchQuery.value = `${member.first_name} ${member.last_name}`; // Optional: show name in input
+    selectedMemberNo.value = member.membership_no;
     activeIndex.value = -1; //reset the index for keyboard navigation
     // Automatically query using the exact unique membership number
     handleDirectLookup(member.membership_no);
