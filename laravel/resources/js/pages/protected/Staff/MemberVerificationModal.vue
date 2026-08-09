@@ -147,14 +147,24 @@ const handleClose = () => {
 };
 
 const handleConfirmCheckIn = async () => {
-    if (!member.value || !member.value.is_active) return;
+    if (!member.value || !member.value.is_active || !member.value.id) {
+        console.warn("Attempted check-in with invalid or null member state.");
+        return;
+    }
 
-    const res = await attendanceStore.submitCheckIn({
-        member_id: member.value.id,
-    });
+    try {
+        const res = await attendanceStore.submitCheckIn({
+            member_id: member.value.id,
+            entry_method: "manual_member", //Keep consistent if your backend tracks entry method
+        });
 
-    if (res.success) {
-        isOpen.value = false;
+        if (res?.success) {
+            isOpen.value = false;
+            // Clear the member reference safely after success
+            attendanceStore.clearLookup();
+        }
+    } catch (error) {
+        console.error("Check-in submission error:", error);
     }
 };
 </script>
