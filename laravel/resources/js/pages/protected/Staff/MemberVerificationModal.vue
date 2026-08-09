@@ -147,20 +147,32 @@ const handleClose = () => {
 };
 
 const handleConfirmCheckIn = async () => {
-    if (!member.value || !member.value.is_active || !member.value.id) {
-        console.warn("Attempted check-in with invalid or null member state.");
+    // 1. Debug what fields are actually present in member.value
+    console.log("Full member object received in modal:", member.value);
+
+    // 2. Fallback to whatever unique identifier your backend expects
+    // (Check if your backend wants the database 'id' or the 'membership_no' string)
+    const targetId = member.value?.id || member.value?.membership_no;
+    const isMemberActive = member.value?.is_active;
+
+    if (!targetId || !isMemberActive) {
+        console.warn(
+            "Attempted check-in with invalid state. Target ID:",
+            targetId,
+            "Active:",
+            isMemberActive,
+        );
         return;
     }
 
     try {
         const res = await attendanceStore.submitCheckIn({
-            member_id: member.value.id,
-            entry_method: "manual_member", //Keep consistent if your backend tracks entry method
+            member_id: targetId,
+            entry_method: "manual_member",
         });
 
         if (res?.success) {
             isOpen.value = false;
-            // Clear the member reference safely after success
             attendanceStore.clearLookup();
         }
     } catch (error) {
