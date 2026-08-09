@@ -469,7 +469,9 @@ const handleEnterKey = () => {
 
     // If an item is highlighted via keyboard arrows, select it
     if (activeIndex.value >= 0 && results[activeIndex.value]) {
-        handleSelectAndVerify(results[activeIndex.value]);
+        const member = results[activeIndex.value];
+        selectedMemberNo.value = member.membership_no;
+        handleSelectAndVerify(member);
         activeIndex.value = -1;
     } else {
         // Otherwise, fallback to direct text lookup (e.g., barcode scanners or hitting enter on a typed ID)
