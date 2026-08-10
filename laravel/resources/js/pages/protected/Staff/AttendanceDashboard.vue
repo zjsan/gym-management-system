@@ -191,17 +191,6 @@
                                 {{ attendanceStore.errorMessage }}
                             </div>
                         </div>
-
-                        <button
-                            type="button"
-                            @click="submitManualMember"
-                            :disabled="
-                                !selectedMemberNo || attendanceStore.isLoading
-                            "
-                            class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2.5 rounded-lg text-sm transition disabled:opacity-50"
-                        >
-                            Check-In Member
-                        </button>
                     </div>
 
                     <!-- TAB 2: Walk-In Form -->
@@ -504,20 +493,6 @@ const handleSelectAndVerify = (member) => {
     activeIndex.value = -1; //reset the index for keyboard navigation
     // Automatically query using the exact unique membership number
     handleDirectLookup(member.membership_no);
-};
-
-const submitManualMember = async () => {
-    if (!selectedMemberNo.value) return;
-
-    const res = await attendanceStore.submitCheckIn({
-        entry_method: "manual_member",
-        membership_no: selectedMemberNo.value,
-    });
-
-    if (res.success) {
-        searchQuery.value = "";
-        selectedMemberNo.value = "";
-    }
 };
 
 // --- WALKIN SUBMISSION ---
