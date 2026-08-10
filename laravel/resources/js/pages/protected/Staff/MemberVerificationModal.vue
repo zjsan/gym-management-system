@@ -147,23 +147,13 @@ const handleClose = () => {
 };
 
 const handleConfirmCheckIn = async () => {
-    // 1. Debug what fields are actually present in member.value
-    console.log("Full member object received in modal:", member.value);
-
-    // 2. Fallback to whatever unique identifier your backend expects
-    // (Check if your backend wants the database 'id' or the 'membership_no' string)
-    const targetId = member.value?.id || member.value?.membership_no;
-    const isMemberActive = member.value?.is_active;
-
-    if (!targetId || !isMemberActive) {
-        console.warn(
-            "Attempted check-in with invalid state. Target ID:",
-            targetId,
-            "Active:",
-            isMemberActive,
-        );
+    if (!member.value) {
+        console.warn("Verification modal triggered with missing member data.");
         return;
     }
+
+    // Determine target ID based on what your backend expects (id or membership_no)
+    const targetId = member.value.id || member.value.membership_no;
 
     try {
         const res = await attendanceStore.submitCheckIn({
@@ -174,6 +164,7 @@ const handleConfirmCheckIn = async () => {
         if (res?.success) {
             isOpen.value = false;
             attendanceStore.clearLookup();
+            attendanceStore.fetchLiveFeed(); // Refresh the live feed on the dashboard
         }
     } catch (error) {
         console.error("Check-in submission error:", error);
