@@ -459,7 +459,6 @@ const handleEnterKey = () => {
     // If an item is highlighted via keyboard arrows, select it
     if (activeIndex.value >= 0 && results[activeIndex.value]) {
         const member = results[activeIndex.value];
-        selectedMemberNo.value = member.membership_no;
         handleSelectAndVerify(member);
         activeIndex.value = -1;
     } else {
@@ -481,17 +480,16 @@ const handleDirectLookup = async (queryToLookup = null) => {
         searchQuery.value = "";
         selectedMemberNo.value = "";
         attendanceStore.searchResults = [];
-        isModalOpen.value = true;
+        activeIndex.value = -1;
+        isModalOpen.value = true; // This triggers your Verification Modal
     }
 };
 
 // Triggered instantly when a dropdown list item is clicked
 const handleSelectAndVerify = (member) => {
-    attendanceStore.searchResults = []; // Clear suggestions
-    searchQuery.value = `${member.first_name} ${member.last_name}`; // Optional: show name in input
-    selectedMemberNo.value = member.membership_no;
-    activeIndex.value = -1; //reset the index for keyboard navigation
-    // Automatically query using the exact unique membership number
+    attendanceStore.searchResults = [];
+    activeIndex.value = -1;
+    // Pass the unique membership number straight to lookup
     handleDirectLookup(member.membership_no);
 };
 
