@@ -158,11 +158,14 @@ const handleConfirmCheckIn = async () => {
         return;
     }
 
-    const targetId = currentMember.id || currentMember.membership_no;
-    console.log(targetId);
+    // Force it to use membership_no explicitly if available
+    const membershipNo = currentMember.membership_no || currentMember.id;
+
+    console.log("Submitting membership_no:", membershipNo); // Debug log
+
     try {
         const res = await attendanceStore.submitCheckIn({
-            member_id: targetId,
+            membership_no: membershipNo, // Explicitly match backend validation field
             entry_method: "manual_member",
         });
 
