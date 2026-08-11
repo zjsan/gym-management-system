@@ -127,6 +127,10 @@ const props = defineProps({
         type: Boolean,
         required: true,
     },
+    member: {
+        type: Object,
+        default: null,
+    },
 });
 
 const emit = defineEmits(["update:open"]);
@@ -139,25 +143,23 @@ const isOpen = computed({
     set: (val) => emit("update:open", val),
 });
 
-const member = computed(() => attendanceStore.lookupMemberData);
-
 const handleClose = () => {
-    attendanceStore.clearLookup();
     isOpen.value = false;
+    setTimeout(() => {
+        attendanceStore.clearLookup();
+    }, 200);
 };
 
 const handleConfirmCheckIn = async () => {
-    //  Capture the member data immediately into a local variable
-    const currentMember = member.value;
+    const currentMember = props.member;
 
     if (!currentMember) {
         console.warn("Verification modal triggered with missing member data.");
         return;
     }
 
-    // Safely extract target ID from the captured snapshot
     const targetId = currentMember.id || currentMember.membership_no;
-
+    console.log(targetId);
     try {
         const res = await attendanceStore.submitCheckIn({
             member_id: targetId,
@@ -165,14 +167,11 @@ const handleConfirmCheckIn = async () => {
         });
 
         if (res?.success) {
-            //  Close modal UI state
             isOpen.value = false;
-
-            // Delay clearing store data slightly to let the close event resolve cleanly
             setTimeout(() => {
                 attendanceStore.clearLookup();
                 attendanceStore.fetchLiveFeed();
-            }, 150);
+            }, 200);
         }
     } catch (error) {
         console.error("Check-in submission error:", error);
