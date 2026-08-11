@@ -147,13 +147,16 @@ const handleClose = () => {
 };
 
 const handleConfirmCheckIn = async () => {
-    if (!member.value) {
+    //  Capture the member data immediately into a local variable
+    const currentMember = member.value;
+
+    if (!currentMember) {
         console.warn("Verification modal triggered with missing member data.");
         return;
     }
 
-    // Determine target ID based on what your backend expects (id or membership_no)
-    const targetId = member.value.id || member.value.membership_no;
+    // Safely extract target ID from the captured snapshot
+    const targetId = currentMember.id || currentMember.membership_no;
 
     try {
         const res = await attendanceStore.submitCheckIn({
@@ -162,9 +165,14 @@ const handleConfirmCheckIn = async () => {
         });
 
         if (res?.success) {
+            //  Close modal UI state
             isOpen.value = false;
-            attendanceStore.clearLookup();
-            attendanceStore.fetchLiveFeed(); // Refresh the live feed on the dashboard
+
+            // Delay clearing store data slightly to let the close event resolve cleanly
+            setTimeout(() => {
+                attendanceStore.clearLookup();
+                attendanceStore.fetchLiveFeed();
+            }, 150);
         }
     } catch (error) {
         console.error("Check-in submission error:", error);
