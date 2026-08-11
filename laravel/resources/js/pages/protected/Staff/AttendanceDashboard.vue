@@ -306,7 +306,10 @@
             </div>
 
             <!-- Shadcn Member Verification Modal -->
-            <MemberVerificationModal v-model:open="isModalOpen" />
+            <MemberVerificationModal
+                v-model:open="isModalOpen"
+                :member="attendanceStore.lookupMemberData"
+            />
         </div>
     </div>
 </template>
