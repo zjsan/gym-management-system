@@ -469,7 +469,6 @@ const handleEnterKey = () => {
 
 //Triggered on Enter press or clicking a dropdown result / Verify button
 const handleDirectLookup = async (queryToLookup = null) => {
-    // If triggered by a native click event, ignore it and fallback to searchQuery.value
     const term =
         typeof queryToLookup === "string" ? queryToLookup : searchQuery.value;
 
@@ -477,11 +476,16 @@ const handleDirectLookup = async (queryToLookup = null) => {
 
     const result = await attendanceStore.lookupMember(term.trim());
     if (result.success) {
-        searchQuery.value = "";
-        selectedMemberNo.value = "";
-        attendanceStore.searchResults = [];
-        activeIndex.value = -1;
-        isModalOpen.value = true; // This triggers your Verification Modal
+        // Open modal first so the store data remains fully locked in
+        isModalOpen.value = true;
+
+        // Clear query fields slightly after the modal opens to avoid race conditions
+        setTimeout(() => {
+            searchQuery.value = "";
+            selectedMemberNo.value = "";
+            attendanceStore.searchResults = [];
+            activeIndex.value = -1;
+        }, 100);
     }
 };
 
