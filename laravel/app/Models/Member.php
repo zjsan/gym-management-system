@@ -150,6 +150,23 @@ class Member extends Model
                 $member->is_active = false;
             }
         });
+
+        //create a unique QR token for each member upon creation
+        static::creating(function (Member $member) {
+            if (empty($member->qr_token)) {
+                $member->qr_token = static::generateUniqueQrToken();
+            }
+        });
+    }
+
+    public static function generateUniqueQrToken(): string
+    {
+        do {
+            // Secure prefix + uppercase random string + UUID prefix
+            $token = 'GYM-' . Str::upper(Str::random(8)) . '-' . Str::uuid();
+        } while (static::where('qr_token', $token)->exists());
+
+        return $token;
     }
 
     protected function photoUrl(): Attribute
