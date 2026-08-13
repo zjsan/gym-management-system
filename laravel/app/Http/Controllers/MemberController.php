@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Storage;
 use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Database\Eloquent\Builder;
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 class MemberController extends Controller
 {
@@ -93,6 +94,29 @@ class MemberController extends Controller
             Log::error("Member creation failed: " . $e->getMessage());
             return response()->json(['error' => 'Could not create member. Server error.'], 500);
         }
+    }
+
+
+     /**
+     * 
+     * QR Code Image Rendering Endpoint
+     */
+
+    public function getQrCode(Member $member)
+    {
+        // Ensure existing members without a token get one on demand
+        if (!$member->qr_token) {
+            $member->qr_token = Member::generateUniqueQrToken();
+            $member->save();
+        }
+
+        // Generate clean SVG payload encoding the qr_token
+        $qrSvg = QrCode::size(250)
+            ->margin(1)
+            ->errorCorrection('H') // High error-correction for fast camera scanning
+            ->generate($member->qr_token);
+
+        return response($qrSvg)->header('Content-Type', 'image/svg+xml');
     }
 
     /**
