@@ -196,7 +196,8 @@ class Member extends Model
         $digitsOnly = preg_replace('/\D/', '', $term);
 
         return $query->where(function ($q) use ($term, $digitsOnly) {
-            $q->where('membership_no', $term) // Exact match priority
+            $q->where('qr_token', $term) // Exact match priority
+            ->orWhere('membership_no', $term)
             ->orWhere('id', $term)
             ->orWhere('first_name', 'LIKE', "%{$term}%")
             ->orWhere('last_name', 'LIKE', "%{$term}%")
