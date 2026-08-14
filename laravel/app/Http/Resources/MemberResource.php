@@ -39,6 +39,9 @@ class MemberResource extends JsonResource
             
             // Seamlessly compute public URLs for images
             'photo_url' => $this->photo_path ? asset('storage/' . $this->photo_path) : null,
+
+            'qr_token' => $this->qr_token,
+            'qr_code_url' => route('api.members.qrcode', $this->id), // if using a dedicated endpoint route
         ];
     
     }
