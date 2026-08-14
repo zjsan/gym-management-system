@@ -430,11 +430,19 @@ const toggleScanner = () => {
 
 const onScanSuccess = async (decodedText) => {
     if (decodedText) {
-        // When a QR is scanned, submit directly as 'qr_scan'
+        // Stop or pause the scanner briefly to prevent duplicate rapid-fire scans of the same pass
+        await stopScanner();
+
+        // Send the scanned token as qr_token to match backend verification logic
         await attendanceStore.submitCheckIn({
             entry_method: "qr_scan",
-            membership_no: decodedText,
+            qr_token: decodedText.trim(),
         });
+
+        // restart the scanner after a short delay so staff can scan the next person
+        setTimeout(() => {
+            startScanner();
+        }, 2000);
     }
 };
 
