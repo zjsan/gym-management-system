@@ -33,6 +33,11 @@ export const useMemberStore = defineStore("memberStore", {
             return err.response?.data?.message || fallbackMessage;
         },
 
+         /* 
+            STANDARD CRUD OPERATION END POINTS
+        */
+
+
         async fetchMembers(page = 1, perPage = 10, search = "") {
             this.loading = true;
             this.errors = null;
@@ -175,6 +180,56 @@ export const useMemberStore = defineStore("memberStore", {
             if (index !== -1) {
                 this.members.splice(index, 1, updatedMember);
             }
+        },
+
+        /* 
+            QR CODE ACTIONS
+        */
+
+        //  Fetch Member QR Code (for viewing / printing modal)
+        async fetchMemberQrCode(id) {
+            this.qrLoading = true;
+            this.errors = null;
+            try {
+                const res = await api.get(`/members/${id}/qr-code`);
+                const data = this.unpackResource(res);
+                this.qrData = data;
+                return { success: true, data };
+            } catch (err) {
+                const message = this.handleError(err, "Failed to load member QR code.");
+                return { success: false, message };
+            } finally {
+                this.qrLoading = false;
+            }
+        },
+
+        // Regenerate Member QR Token
+        async regenerateMemberQrToken(id) {
+            this.qrLoading = true;
+            this.errors = null;
+            try {
+                const res = await api.post(`/members/${id}/regenerate-qr`);
+                const updatedMember = this.unpackResource(res);
+
+                // Update the member record in local store array
+                this.updateLocalState(id, updatedMember);
+                
+                // Update current active qrData if modal is open
+                this.qrData = updatedMember;
+
+                return { success: true, data: updatedMember };
+            } catch (err) {
+                const message = this.handleError(err, "Failed to regenerate QR code token.");
+                return { success: false, message };
+            } finally {
+                this.qrLoading = false;
+            }
+        },
+
+        //  Clear QR state when closing the modal
+        clearQrData() {
+            this.qrData = null;
+            this.qrLoading = false;
         },
     },
 });
