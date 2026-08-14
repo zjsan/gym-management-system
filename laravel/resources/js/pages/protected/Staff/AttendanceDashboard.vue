@@ -367,16 +367,28 @@ const startScanner = async () => {
 
         await nextTick(); // Ensure DOM element is fully rendered
 
-        if (!html5QrCode) {
-            html5QrCode = new Html5Qrcode("qr-reader");
+        //  Ensure previous instances are cleared before creating a new one
+        if (html5QrCode) {
+            try {
+                await html5QrCode.stop();
+                await html5QrCode.clear();
+            } catch (e) {
+                // Suppress errors if scanner wasn't running
+            }
         }
 
+        html5QrCode = new Html5Qrcode("qr-reader");
         isScanning.value = true;
 
         await html5QrCode.start(
             { facingMode: "environment" },
-            { fps: 10, qrbox: { width: 200, height: 200 } },
+            {
+                fps: 10, // Frames per second
+                qrbox: { width: 220, height: 220 }, // Target scanning region
+                aspectRatio: 1.0,
+            },
             onScanSuccess,
+            onScanFailure,
         );
     } catch (err) {
         console.warn("Camera access failed:", err);
