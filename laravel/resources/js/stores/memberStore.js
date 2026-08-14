@@ -11,6 +11,9 @@ export const useMemberStore = defineStore("memberStore", {
         lastPage: 1, // For disabling next button when on the last page
         totalItems: 0,
         currentAbortController: null, // To manage request cancellation
+        qrLoading: false,
+        qrData: null,
+
     }),
 
     actions: {
