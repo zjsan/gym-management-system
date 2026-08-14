@@ -21,9 +21,11 @@ export const useAttendanceStore = defineStore("attendance", {
             try {
                 const response = await api.get("/attendance");
                 this.liveFeed = response.data;
-            } catch (error) {
+           } catch (error) {
                 this.errorMessage =
-                    error.response?.data?.error || "Failed to fetch live feed.";
+                error.response?.data?.message ||
+                error.response?.data?.error ||
+                "Failed to fetch live feed.";
             } finally {
                 this.isLoading = false;
             }
@@ -69,11 +71,11 @@ export const useAttendanceStore = defineStore("attendance", {
                 });
                 this.lookupMemberData = response.data.data;
                 return { success: true, data: response.data.data };
-            } catch (error) {
+           } catch (error) {
                 this.errorMessage =
-                    error.response?.data?.message ||
-                    error.response?.data?.error ||
-                    "Member not found.";
+                error.response?.data?.message ||
+                error.response?.data?.error ||
+                "Member not found.";
                 return { success: false };
             } finally {
                 this.lookupLoading = false;
@@ -101,18 +103,19 @@ export const useAttendanceStore = defineStore("attendance", {
                 };
 
                 return { success: true };
-            } catch (error) {
+           } catch (error) {
                 this.errorMessage =
-                    error.response?.data?.error ||
-                    "An error occurred during check-in.";
+                error.response?.data?.message ||
+                error.response?.data?.error ||
+                "An error occurred during check-in.";
 
-                // If it returns specific data (like an expired member name), keep it for the layout banner
+                // Keep member context if check-in failed due to expired membership or warnings
                 if (error.response?.data?.member_name) {
-                    this.successData = {
-                        name: error.response.data.member_name,
-                    };
-                }
-
+                this.successData = {
+                    name: error.response.data.member_name,
+                    expired: true,
+                };
+            }
                 return { success: false };
             } finally {
                 this.isLoading = false;
