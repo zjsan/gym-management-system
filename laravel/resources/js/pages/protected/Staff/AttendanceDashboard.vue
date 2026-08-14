@@ -543,3 +543,20 @@ const formatTime = (dateStr) => {
     });
 };
 </script>
+
+<style scoped>
+/* Remove html5-qrcode default borders and status bars */
+:deep(#qr-reader) {
+    border: none !important;
+}
+
+:deep(#qr-reader img) {
+    display: none !important; /* Hides default image icons */
+}
+
+:deep(#qr-reader video) {
+    object-fit: cover;
+    border-radius: 0.5rem;
+    width: 100% !important;
+}
+</style>
