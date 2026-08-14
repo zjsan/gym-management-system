@@ -119,6 +119,18 @@ class MemberController extends Controller
         return response($qrSvg)->header('Content-Type', 'image/svg+xml');
     }
 
+    public function regenerateQrToken(Member $member): JsonResponse
+    {
+        $member->update([
+            'qr_token' => Member::generateUniqueQrToken()
+        ]);
+
+        return response()->json([
+            'message' => 'QR Code successfully regenerated.',
+            'qr_token' => $member->qr_token
+        ]);
+    }
+
     /**
      * Flexible Day Adjustment Endpoint
      * Allows staff to increase or decrease days manually if business was shut down unexpectedly.
