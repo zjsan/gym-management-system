@@ -160,6 +160,7 @@
                                 <th class="p-4 text-right">
                                     Actions / Adjustment Controls
                                 </th>
+                                <th class="p-4 text-right">QR Code</th>
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-gray-50">
@@ -308,6 +309,13 @@
                                         </button>
                                     </span>
                                 </td>
+                                <button
+                                    @click="openQrModal(member)"
+                                    class="text-indigo-600 hover:text-indigo-900 font-bold text-xs tracking-wide uppercase transition"
+                                    title="View/Print Member QR Badge"
+                                >
+                                    QR BADGE
+                                </button>
                             </tr>
                         </tbody>
                     </table>
