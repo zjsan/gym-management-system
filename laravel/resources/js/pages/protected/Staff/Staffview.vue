@@ -776,6 +776,67 @@ const formatDate = (dateString) => {
           });
 };
 
+//  Open Modal & Fetch QR Code
+const openQrModal = async (member) => {
+    selectedQrMember.value = member;
+    showQrModal.value = true;
+    await memberStore.fetchMemberQrCode(member.id);
+};
+
+//  Close Modal & Clear State
+const closeQrModal = () => {
+    showQrModal.value = false;
+    selectedQrMember.value = null;
+    memberStore.clearQrData();
+};
+
+//  Regenerate QR Token Handler
+const handleRegenerateQr = async () => {
+    if (!selectedQrMember.value) return;
+
+    const confirmed = confirm(
+        "Regenerating this QR code will invalidate any existing printed pass. Proceed?",
+    );
+    if (!confirmed) return;
+
+    const res = await memberStore.regenerateMemberQrToken(
+        selectedQrMember.value.id,
+    );
+    if (!res.success) {
+        alert(res.message);
+    }
+};
+
+//  Print Badge Handler
+const printQrBadge = () => {
+    const badgeElement = document.getElementById("printable-qr-badge");
+    if (!badgeElement) return;
+
+    const printWindow = window.open("", "_blank", "width=600,height=600");
+    printWindow.document.write(`
+        <html>
+            <head>
+                <title>Print QR Badge - ${selectedQrMember.value?.first_name || "Member"}</title>
+                <style>
+                    body { font-family: sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+                    .badge { text-align: center; border: 1px solid #ccc; padding: 20px; border-radius: 8px; }
+                    svg { width: 200px; height: 200px; }
+                </style>
+            </head>
+            <body>
+                <div class="badge">
+                    <h2>${selectedQrMember.value?.first_name} ${selectedQrMember.value?.last_name}</h2>
+                    ${badgeElement.innerHTML}
+                </div>
+            </body>
+        </html>
+    `);
+    printWindow.document.close();
+    printWindow.focus();
+    printWindow.print();
+    printWindow.close();
+};
+
 // ---------------------------------------------------
 // Mounting Guards
 // ---------------------------------------------------
