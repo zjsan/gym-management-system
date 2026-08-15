@@ -1,16 +1,11 @@
-# 1. Use PHP 8.4 for the latest features
+# 1. Base Image
 FROM php:8.4-fpm-bullseye
 
-# 2. Set working directory to match your project structure
-WORKDIR /var/www/laravel
-
-# 3. Timezone configuration
+# 2. Timezone configuration
 ENV TZ=Asia/Manila
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
-# 4. Install system dependencies + PHP Extensions
-# Added: libpng/libjpeg (for images), libzip (for backups/exports)
-# 1. System dependencies & PHP extensions (OS Level)
+# 3. Install system dependencies & PHP extensions
 RUN apt-get update && apt-get install -y \
     curl \
     zip \
@@ -26,25 +21,25 @@ RUN apt-get update && apt-get install -y \
     && docker-php-ext-configure gd --with-freetype --with-jpeg \
     && docker-php-ext-install pdo pdo_mysql bcmath gd zip
 
-# 2. Install Composer globally inside the image
+# 4. Copy Composer binary from official image
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-# 3. Copy project files and install PHP dependencies (Application Level)
-WORKDIR /var/www/laravel
-COPY . .
-RUN composer install --no-interaction --optimize-autoloader
-
-# 5. Modern way to get Composer (Cleaner than readfile)
-COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
-
-# 6. User Management (Crucial for WSL/Linux)
+# 5. User Management (WSL/Linux compatibility)
 RUN groupadd -g 1000 www-data-group \
     && useradd -u 1000 -ms /bin/bash -g www-data-group www-user
 
-# Set permissions for the working directory
+# 6. Set Working Directory
+WORKDIR /var/www/laravel
+
+# 7. Copy Laravel subfolder contents into working directory
+COPY ./laravel .
+
+# 8. Set ownership before running composer
 RUN chown -R www-user:www-data-group /var/www/laravel
 
+# 9. Switch to non-root user and install dependencies
 USER www-user
+RUN composer install --no-interaction --optimize-autoloader
 
 EXPOSE 9000
 CMD ["php-fpm"]
