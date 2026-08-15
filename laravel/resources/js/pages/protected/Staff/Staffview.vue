@@ -558,6 +558,10 @@ const isEditing = ref(false);
 const currentMemberId = ref(null);
 const searchQuery = ref("");
 
+//  QR Badge Modal States
+const showQrModal = ref(false);
+const selectedQrMember = ref(null);
+
 // Component-level feedback states
 const successMessage = ref("");
 const errorMessage = ref("");
