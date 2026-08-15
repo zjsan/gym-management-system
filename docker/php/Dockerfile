@@ -10,17 +10,29 @@ RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
 # 4. Install system dependencies + PHP Extensions
 # Added: libpng/libjpeg (for images), libzip (for backups/exports)
+# 1. System dependencies & PHP extensions (OS Level)
 RUN apt-get update && apt-get install -y \
     curl \
     zip \
     unzip \
     git \
     libpng-dev \
+    libjpeg-dev \
+    libfreetype6-dev \
     libonig-dev \
     libxml2-dev \
     libzip-dev \
     && apt-get clean && rm -rf /var/lib/apt/lists/* \
+    && docker-php-ext-configure gd --with-freetype --with-jpeg \
     && docker-php-ext-install pdo pdo_mysql bcmath gd zip
+
+# 2. Install Composer globally inside the image
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+
+# 3. Copy project files and install PHP dependencies (Application Level)
+WORKDIR /var/www/laravel
+COPY . .
+RUN composer install --no-interaction --optimize-autoloader
 
 # 5. Modern way to get Composer (Cleaner than readfile)
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
