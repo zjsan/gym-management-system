@@ -187,9 +187,10 @@ class Member extends Model
      /**
      * Lookup and search logic for member information 
      */
-    public function scopeSearchQuery($query, string $searchTerm)
+    public function scopeSearchQuery($query, ?string $searchTerm)
     {
-        $term = trim($searchTerm);
+        $term = trim($searchTerm ?? '');
+        
         if (empty($term)) {
             return $query;
         }
@@ -197,12 +198,15 @@ class Member extends Model
         $digitsOnly = preg_replace('/\D/', '', $term);
 
         return $query->where(function ($q) use ($term, $digitsOnly) {
-            $q->where('qr_token', $term) // Exact match priority
+            $q->where('qr_token', $term) 
             ->orWhere('membership_no', $term)
             ->orWhere('id', $term)
             ->orWhere('first_name', 'LIKE', "%{$term}%")
             ->orWhere('last_name', 'LIKE', "%{$term}%")
-            ->orWhereRaw("CONCAT(first_name, ' ', last_name) LIKE ?", ["%{$term}%"])
+            
+            // Database-safe concatenation
+            ->orWhereRaw("CONCAT_WS(' ', first_name, last_name) LIKE ?", ["%{$term}%"])
+            
             ->orWhere('membership_no', 'LIKE', "%{$term}%");
 
             if (!empty($digitsOnly)) {
