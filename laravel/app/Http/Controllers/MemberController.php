@@ -110,13 +110,22 @@ class MemberController extends Controller
             $member->save();
         }
 
+        $token = $member->qr_token ?? $member->member_code;
+
         // Generate clean SVG payload encoding the qr_token
         $qrSvg = QrCode::size(250)
             ->margin(1)
             ->errorCorrection('H') // High error-correction for fast camera scanning
-            ->generate($member->qr_token);
+            ->generate($token);
 
-        return response($qrSvg)->header('Content-Type', 'image/svg+xml');
+        //  Explicitly return a JSON response object
+        return response()->json([
+            'success' => true,
+            'data' => [
+                'qr_code' => (string) $qrSvg,
+                'qr_token' => $token,
+            ]
+        ]);
     }
 
     public function regenerateQrToken(Member $member): JsonResponse
