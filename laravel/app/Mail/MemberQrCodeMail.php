@@ -14,14 +14,28 @@ class MemberQrCodeMail extends Mailable
 {
     use Queueable, SerializesModels;
 
+    public $member;
+    public $qrSvg;
+
     /**
      * Create a new message instance.
      */
     public function __construct()
     {
         //
+        $this->member = $member;
+        $token = $member->qr_token ?? $member->member_code;
+        
+        // Generate SVG string for inline embedding
+        $this->qrSvg = (string) QrCode::size(250)->format('svg')->generate($token);
     }
 
+    public function build()
+    {
+        return $this->subject('Your Gym Access QR Pass Code')
+                    ->view('emails.member-qr-code');
+    }
+    
     /**
      * Get the message envelope.
      */
