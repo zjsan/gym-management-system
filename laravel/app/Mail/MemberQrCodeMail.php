@@ -17,7 +17,6 @@ class MemberQrCodeMail extends Mailable implements ShouldQueue
     use Queueable, SerializesModels;
 
     public $member;
-    public $qrSvg;
 
     /**
      * Create a new message instance.
@@ -26,10 +25,6 @@ class MemberQrCodeMail extends Mailable implements ShouldQueue
     {
         //
         $this->member = $member;
-        $token = $member->qr_token ?? $member->member_code;
-        
-        // Generate SVG string for inline embedding
-        $this->qrSvg = (string) QrCode::size(250)->format('svg')->generate($token);
     }
     
     /**
@@ -47,8 +42,16 @@ class MemberQrCodeMail extends Mailable implements ShouldQueue
      */
    public function content(): Content
     {
+        //runs later when the background worker actually executes the email
+        //to keep avoid bloating the database with a potentially large QR code string
+        $token = $this->member->qr_token ?? $this->member->member_code;
+        $qrSvg = (string) QrCode::size(250)->format('svg')->generate($token);
+
         return new Content(
-            view: 'emails.member-qr-code', 
+            view: 'emails.member-qr-code',
+            with: [
+                'qrSvg' => $qrSvg, // Safely passes the code to your Blade view
+            ],
         );
     }
 
