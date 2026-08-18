@@ -9,6 +9,7 @@ use Illuminate\Mail\Mailables\Attachment;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 class MemberQrCodeMail extends Mailable
 {
