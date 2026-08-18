@@ -2,6 +2,7 @@
 
 namespace App\Mail;
 
+use App\Models\Member;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
@@ -11,7 +12,7 @@ use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
-class MemberQrCodeMail extends Mailable
+class MemberQrCodeMail extends Mailable implements ShouldQueue
 {
     use Queueable, SerializesModels;
 
@@ -21,7 +22,7 @@ class MemberQrCodeMail extends Mailable
     /**
      * Create a new message instance.
      */
-    public function __construct()
+    public function __construct(Member $member)
     {
         //
         $this->member = $member;
@@ -30,12 +31,6 @@ class MemberQrCodeMail extends Mailable
         // Generate SVG string for inline embedding
         $this->qrSvg = (string) QrCode::size(250)->format('svg')->generate($token);
     }
-
-    public function build()
-    {
-        return $this->subject('Your Gym Access QR Pass Code')
-                    ->view('emails.member-qr-code');
-    }
     
     /**
      * Get the message envelope.
@@ -43,17 +38,17 @@ class MemberQrCodeMail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Member Qr Code Mail',
+            subject: 'Your Gym Access QR Pass Code',
         );
     }
 
     /**
      * Get the message content definition.
      */
-    public function content(): Content
+   public function content(): Content
     {
         return new Content(
-            view: 'view.name',
+            view: 'emails.member-qr-code', 
         );
     }
 
