@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('first_name');
             $table->string('last_name');
             $table->string('contact_number');
+            $table->string('email')->nullable()->unique();  
             $table->string('emergency_contact_number')->nullable();
             $table->text('address');
             $table->enum('gender', ['male', 'female', 'other']);
