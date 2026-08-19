@@ -13,7 +13,6 @@ export const useMemberStore = defineStore("memberStore", {
         currentAbortController: null, // To manage request cancellation
         qrLoading: false,
         qrData: null,
-
     }),
 
     actions: {
@@ -33,10 +32,9 @@ export const useMemberStore = defineStore("memberStore", {
             return err.response?.data?.message || fallbackMessage;
         },
 
-         /* 
+        /* 
             STANDARD CRUD OPERATION END POINTS
         */
-
 
         async fetchMembers(page = 1, perPage = 10, search = "") {
             this.loading = true;
@@ -63,7 +61,8 @@ export const useMemberStore = defineStore("memberStore", {
                 // Update only if the request wasn't aborted
                 if (!controller.signal.aborted) {
                     // Unpack arrays uniformly supporting root arrays, nested resources, or raw page blocks
-                    this.members = payload.data || (Array.isArray(payload) ? payload : []);
+                    this.members =
+                        payload.data || (Array.isArray(payload) ? payload : []);
 
                     // Determine if meta keys are nested (API Resource) or flat root-level parameters (Raw Pagination)
                     const paginationSource = payload.meta || payload;
@@ -89,9 +88,10 @@ export const useMemberStore = defineStore("memberStore", {
                     console.log("Members fetch request safely aborted.");
                     return; // Graceful exit
                 }
-                
+
                 // Handle backend/network errors
-                const errMsg = err.response?.data?.message || "Failed to load members.";
+                const errMsg =
+                    err.response?.data?.message || "Failed to load members.";
                 this.errors = errMsg;
                 throw err;
             } finally {
@@ -168,7 +168,10 @@ export const useMemberStore = defineStore("memberStore", {
                 this.updateLocalState(id, updatedMember);
                 return { success: true };
             } catch (err) {
-                const message = this.handleError(err, "Failed to adjust membership dates.");
+                const message = this.handleError(
+                    err,
+                    "Failed to adjust membership dates.",
+                );
                 return { success: false, message };
             } finally {
                 this.loading = false;
@@ -196,7 +199,10 @@ export const useMemberStore = defineStore("memberStore", {
                 this.qrData = data;
                 return { success: true, data };
             } catch (err) {
-                const message = this.handleError(err, "Failed to load member QR code.");
+                const message = this.handleError(
+                    err,
+                    "Failed to load member QR code.",
+                );
                 return { success: false, message };
             } finally {
                 this.qrLoading = false;
@@ -213,16 +219,44 @@ export const useMemberStore = defineStore("memberStore", {
 
                 // Update the member record in local store array
                 this.updateLocalState(id, updatedMember);
-                
+
                 // Update current active qrData if modal is open
                 this.qrData = updatedMember;
 
                 return { success: true, data: updatedMember };
             } catch (err) {
-                const message = this.handleError(err, "Failed to regenerate QR code token.");
+                const message = this.handleError(
+                    err,
+                    "Failed to regenerate QR code token.",
+                );
                 return { success: false, message };
             } finally {
                 this.qrLoading = false;
+            }
+        },
+
+        //send QR code to member email
+        async sendQrCodeEmail(id) {
+            this.loading = true;
+
+            try {
+                const response = await api.post(`/members/${id}/sendQrEmail`);
+                return {
+                    success: true,
+                    message:
+                        response.data.message || "Email sent successfully!",
+                };
+            } catch (error) {
+                const message = this.handleError(
+                    error,
+                    "Failed to send QR code email.",
+                );
+                return {
+                    success: false,
+                    message: message || "Failed to send email.",
+                };
+            } finally {
+                this.loading = false;
             }
         },
 
