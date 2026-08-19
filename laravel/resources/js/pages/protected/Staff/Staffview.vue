@@ -526,6 +526,14 @@
                 </button>
 
                 <button
+                    @click="handleSendQrEmail"
+                    :disabled="isEmailingQr"
+                    class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md text-sm font-medium disabled:opacity-50"
+                >
+                    {{ isEmailingQr ? "Sending..." : "✉️ Email QR Code" }}
+                </button>
+
+                <button
                     @click="handleRegenerateQr"
                     :disabled="memberStore.qrLoading"
                     class="w-full py-2 px-4 text-xs font-semibold text-rose-600 bg-rose-50 hover:bg-rose-100 rounded-lg border border-rose-200 transition disabled:opacity-50"
