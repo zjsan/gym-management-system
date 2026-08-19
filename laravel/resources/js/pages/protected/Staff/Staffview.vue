@@ -567,6 +567,8 @@ const successMessage = ref("");
 const errorMessage = ref("");
 const modalErrorMessage = ref("");
 
+const isEmailingQr = ref(false);
+
 // FIXED: Extracted 'members' instead of non-existent 'member' key
 const { members, loading: isStoreLoading } = storeToRefs(memberStore);
 
@@ -835,6 +837,21 @@ const printQrBadge = () => {
     printWindow.focus();
     printWindow.print();
     printWindow.close();
+};
+
+//QR code email sending function
+const handleSendQrEmail = async () => {
+    if (!selectedQrMember.value) return;
+
+    isEmailingQr.value = true;
+    const res = await memberStore.sendQrCodeEmail(selectedQrMember.value.id);
+    isEmailingQr.value = false;
+
+    if (res.success) {
+        alert("QR Code email has been queued for sending.");
+    } else {
+        alert(res.message || "Failed to queue QR Code email.");
+    }
 };
 
 // ---------------------------------------------------
