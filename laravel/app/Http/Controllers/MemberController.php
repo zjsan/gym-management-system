@@ -14,6 +14,8 @@ use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Database\Eloquent\Builder;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
+use App\Mail\MemberQrCodeMail;
+use Illuminate\Support\Facades\Mail;
 
 class MemberController extends Controller
 {
@@ -126,6 +128,34 @@ class MemberController extends Controller
                 'qr_token' => $token,
             ]
         ]);
+    }
+
+    public function sendQrCodeEmail(Member $member): JsonResponse
+    {
+
+        if (!$member->email) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Member does not have an active email address registered.'
+                ], 422);
+        }
+
+        try{
+            Mail::to($member->email)->queue(new MemberQrCodeMail($member));
+
+            return response()->json([
+                'success' => true,
+                'message' => 'QR Code email has been queued for sending.'
+            ]);
+
+        }
+        catch (Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to send email: ' . $e->getMessage()
+            ], 500);
+        }
+       
     }
 
     public function regenerateQrToken(Member $member): JsonResponse
