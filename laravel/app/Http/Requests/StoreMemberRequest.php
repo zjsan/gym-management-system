@@ -53,6 +53,13 @@ class StoreMemberRequest extends FormRequest
                 $phPhoneRegex, 
                 Rule::unique('members', 'contact_number')->ignore($memberId),
             ],
+            'email' => [
+                'required',
+                'string',
+                'lowercase',
+                'max:255',
+                    
+            ],
             'emergency_contact_number' => [
                 'required', 
                 'string', 
