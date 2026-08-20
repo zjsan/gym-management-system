@@ -54,14 +54,19 @@ class StoreMemberRequest extends FormRequest
                 Rule::unique('members', 'contact_number')->ignore($memberId),
             ],
             'email' => [
-                'required',
-                'string',   
-                'lowercase',
-                'max:255',
-                'email:rfc', // Strict RFC formatting
+            'required',
+            'string',   
+            'lowercase',
+            'max:255',
+            
+            //  Production-grade email structural & spoof checks
+            Rule::email()
+                ->rfcCompliant()
+                ->preventSpoofing(),
 
-                Rule::unique('members', 'email')->ignore($memberId),//ignore email when updating member record
-
+            // Database uniqueness check with record exclusion
+            Rule::unique('members', 'email')
+                ->ignore($memberId),
             ],
             'emergency_contact_number' => [
                 'required', 
