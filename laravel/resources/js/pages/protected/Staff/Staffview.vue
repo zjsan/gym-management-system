@@ -653,6 +653,7 @@ const initialState = {
     last_name: "",
     contact_number: "",
     emergency_contact_number: "",
+    email: "",
     address: "",
     date_of_birth: "",
     gender: "",
