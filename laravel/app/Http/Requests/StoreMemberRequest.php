@@ -24,6 +24,7 @@ class StoreMemberRequest extends FormRequest
             'first_name' => $this->first_name ? ucwords(strtolower(trim($this->first_name))) : null,
             'last_name'  => $this->last_name ? ucwords(strtolower(trim($this->last_name))) : null,
             'contact_number' => $this->contact_number ? $this->normalizePhPhoneNumber($this->contact_number) : null,
+            'email' => $this->email ? strtolower(trim($this->email)) : null,
             'emergency_contact_number' => $this->emergency_contact_number ? $this->normalizePhPhoneNumber($this->emergency_contact_number) : null,  
             'address' => $this->address ? ucfirst(trim($this->address)) : null,
         ]);
