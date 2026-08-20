@@ -651,6 +651,18 @@ const isContactInfoValid = computed(() => {
     return isContactNumberValid.value && isEmergencyContactValid.value;
 });
 
+// email format validation using standard email validation regex pattern
+const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+
+//  Computed validation flag
+const isEmailInvalid = computed(() => {
+    // If the input is empty, let required handle it
+    if (!memberForm.value.email) return false;
+
+    // Returns true if the email fails the regex test
+    return !emailRegex.test(memberForm.value.email);
+});
+
 // ---------------------------------------------------
 // Form States
 // ---------------------------------------------------
