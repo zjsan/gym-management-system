@@ -55,10 +55,13 @@ class StoreMemberRequest extends FormRequest
             ],
             'email' => [
                 'required',
-                'string',
+                'string',   
                 'lowercase',
                 'max:255',
-                    
+                'email:rfc', // Strict RFC formatting
+
+                Rule::unique('members', 'email')->ignore($memberId),//ignore email when updating member record
+
             ],
             'emergency_contact_number' => [
                 'required', 
