@@ -27,6 +27,7 @@ class MemberResource extends JsonResource
             'last_name' => $this->last_name,
             'full_name' => trim("{$this->first_name} {$this->last_name}"),
             'contact_number' => $this->contact_number,
+            'email' => $this->email,
             'emergency_contact_number' => $this->emergency_contact_number,
             'address' => $this->address,
             'date_of_birth' => $this->date_of_birth,
