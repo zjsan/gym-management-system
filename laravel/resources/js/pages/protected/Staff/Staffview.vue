@@ -682,6 +682,7 @@ const editMember = (member) => {
         last_name: member.last_name,
         contact_number: member.contact_number,
         emergency_contact_number: member.emergency_contact_number,
+        email: member.email,
         address: member.address,
         date_of_birth: rawBirthDate,
         gender: member.gender,
