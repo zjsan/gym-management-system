@@ -16,6 +16,7 @@ use Illuminate\Database\Eloquent\Builder;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use App\Mail\MemberQrCodeMail;
 use Illuminate\Support\Facades\Mail;
+use Throwable;
 
 class MemberController extends Controller
 {
@@ -69,32 +70,39 @@ class MemberController extends Controller
         $uploadedPath = null;
 
         try {
-            return DB::transaction(function () use ($request, $validated, &$uploadedPath) {
+            // 1. Handle file upload outside the DB transaction to minimize connection lock time
+            if ($request->hasFile('photo')) {
+                $uploadedPath = $request->file('photo')->store('members', 'public');
+                $validated['photo_path'] = $uploadedPath;
+            }
 
-                if ($request->hasFile('photo')) {
-                    $uploadedPath = $request->file('photo')->store('members', 'public');
-                    $validated['photo_path'] = $uploadedPath;
-                }
-
+            // 2. Wrap only database operations in the transaction
+            $member = DB::transaction(function () use ($validated) {
                 $validated['membership_start'] = now();
                 $validated['membership_end'] = now()->addDays(30);
                 $validated['is_active'] = true;
 
-                // 1. This creates the row, database generates a unique sequential ID (e.g., 42)
-                // 2. The Model's booted() method triggers and sets membership_no to GYM-0042
-                $member = Member::create($validated);
-
-               return (new MemberResource($member))
-                    ->response()
-                    ->setStatusCode(201);   
+                return Member::create($validated);
             });
-        } catch (Exception $e) {
-            // Delete uploaded file if DB engine fails to commit
+
+            return (new MemberResource($member))
+                ->response()
+                ->setStatusCode(201);
+
+        } catch (Throwable $e) { // Catch Throwable to capture both Exceptions and Errors
+            // Clean up uploaded file if it exists
             if ($uploadedPath) {
                 Storage::disk('public')->delete($uploadedPath);
             }
-            Log::error("Member creation failed: " . $e->getMessage());
-            return response()->json(['error' => 'Could not create member. Server error.'], 500);
+
+            Log::error("Member creation failed: " . $e->getMessage(), [
+                'exception' => $e,
+                'payload' => $request->except(['photo'])
+            ]);
+
+            return response()->json([
+                'message' => 'Could not create member. Please try again later.'
+            ], 500);
         }
     }
 
