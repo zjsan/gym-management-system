@@ -69,6 +69,12 @@
                         required
                     />
                     <input
+                        v-model="memberForm.email"
+                        placeholder="Email"
+                        class="w-full border p-2.5 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500"
+                        required
+                    />
+                    <input
                         v-model="memberForm.address"
                         placeholder="Residential Address"
                         class="w-full border p-2.5 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500"
