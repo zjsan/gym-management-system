@@ -27,6 +27,7 @@ class MemberFactory extends Factory
             'first_name'               => fake()->firstName(),
             'last_name'                => fake()->lastName(),
             'contact_number'           => fake()->phoneNumber(),
+            'email'                    => fake()->unique()->safeEmail(), 
             'emergency_contact_number' => fake()->phoneNumber(),
             'address'                  => fake()->address(),
             'gender'                   => fake()->randomElement(['Male', 'Female', 'Other']),
