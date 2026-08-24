@@ -13,8 +13,8 @@
         <h2>Hello, {{ $member->first_name }}!</h2>
         <p>Here is your digital access badge for entry at the gym front desk scanner.</p>
         
-        <div class="qr-container">
-            {!! $qrSvg !!}
+        <div class="qr-container" style="display: inline-block; width: 220px; height: 220px; margin: 20px auto;">
+             {!! $qrSvg !!}
         </div>
 
         <p class="code">Badge ID: {{ $member->qr_token ?? $member->member_code }}</p>
