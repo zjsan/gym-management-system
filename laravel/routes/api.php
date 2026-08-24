@@ -43,7 +43,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
         // QR Routes
         Route::get('/members/{member}/qr-code', [MemberController::class, 'getQrCode'])->name('api.members.getQrCode');
         Route::post('/members/{member}/regenerate-qr', [MemberController::class, 'regenerateQrToken'])->name('api.members.regenerateQrToken');
-        Route::post('/members/{member}/send-qr-email', [MemberController::class, 'sendQrEmail']);
+        Route::post('/members/{member}/send-qr-email', [MemberController::class, 'sendQrCodeEmail']);
 
         // routes for GET, POST, PUT, DELETE /api/users
         Route::apiResource('members', MemberController::class);

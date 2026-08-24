@@ -240,7 +240,7 @@ export const useMemberStore = defineStore("memberStore", {
             this.loading = true;
 
             try {
-                const response = await api.post(`/members/${id}/sendQrEmail`);
+                const response = await api.post(`/members/${id}/send-qr-email`);
                 return {
                     success: true,
                     message:
