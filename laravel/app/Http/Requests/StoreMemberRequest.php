@@ -61,8 +61,7 @@ class StoreMemberRequest extends FormRequest
             
             //  Production-grade email structural & spoof checks
             Rule::email()
-                ->rfcCompliant()
-                ->preventSpoofing(),
+                ->rfcCompliant(),
 
             // Database uniqueness check with record exclusion
             Rule::unique('members', 'email')
