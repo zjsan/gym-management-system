@@ -42,15 +42,17 @@ class MemberQrCodeMail extends Mailable implements ShouldQueue
      */
    public function content(): Content
     {
-        //runs later when the background worker actually executes the email
-        //to keep avoid bloating the database with a potentially large QR code string
-        $token = $this->member->qr_token ?? $this->member->member_code;
+        // Fallback safely to prevent null type errors during previews or incomplete records
+        $token = $this->member->qr_token 
+        ?? $this->member->member_code 
+        ?? 'PREVIEW-FALLBACK-' . ($this->member->id ?? 'unknown');
+
         $qrSvg = (string) QrCode::size(250)->format('svg')->generate($token);
 
         return new Content(
             view: 'emails.member-qr-code',
             with: [
-                'qrSvg' => $qrSvg, // Safely passes the code to your Blade view
+                'qrSvg' => $qrSvg,
             ],
         );
     }
