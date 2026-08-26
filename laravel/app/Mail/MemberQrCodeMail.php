@@ -44,7 +44,7 @@ class MemberQrCodeMail extends Mailable implements ShouldQueue
     {
         // Fallback safely to prevent null type errors during previews or incomplete records
         $token = $this->member->qr_token 
-        ?? $this->member->member_code 
+        ?? $this->member->membership_no
         ?? 'PREVIEW-FALLBACK-' . ($this->member->id ?? 'unknown');
 
         $qrSvg = (string) QrCode::size(250)->format('svg')->generate($token);
