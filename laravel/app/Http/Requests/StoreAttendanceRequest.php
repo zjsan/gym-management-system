@@ -69,6 +69,7 @@ class StoreAttendanceRequest extends FormRequest
                 'required_if:entry_method,manual_walkin', 
                 'nullable', 
                 'string', 
+                'min:3',
                 'max:255'
             ],
         ];
