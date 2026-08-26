@@ -22,7 +22,7 @@
              {!! $qrSvg !!}
         </div>
 
-        <p class="code">Badge ID: {{ $member->qr_token ?? $member->membership_no }}</p>
+        <p class="code">Badge ID: {{ $member->membership_no }}</p>
         <p><small>Show this QR code on your mobile phone upon entry.</small></p>
     </div>
 </body>
