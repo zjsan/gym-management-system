@@ -583,9 +583,6 @@ const modalErrorMessage = ref("");
 
 const isEmailingQr = ref(false);
 
-// FIXED: Extracted 'members' instead of non-existent 'member' key
-const { members, loading: isStoreLoading } = storeToRefs(memberStore);
-
 // ---------------------------------------------------
 // Search and Pagination Logic
 // ---------------------------------------------------
