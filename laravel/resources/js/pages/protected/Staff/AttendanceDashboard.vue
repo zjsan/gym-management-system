@@ -388,7 +388,7 @@ const startScanner = async () => {
                 aspectRatio: 1.0,
             },
             onScanSuccess,
-            onScanFailure,
+            //onScanFailure,
         );
     } catch (err) {
         console.warn("Camera access failed:", err);
