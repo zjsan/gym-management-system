@@ -435,7 +435,7 @@ const onScanSuccess = async (decodedText) => {
         // Stop or pause the scanner briefly to prevent duplicate rapid-fire scans of the same pass
         await stopScanner();
         try {
-            member_entry_method = "qr_scan";
+            member_entry_method.value = "qr_scan";
 
             const scannedToken = decodedText.trim();
 
@@ -444,7 +444,7 @@ const onScanSuccess = async (decodedText) => {
         } catch (error) {
             console.warn("Invalid or unreadable QR Code.");
         } finally {
-            member_entry_method = "manual_member";
+            member_entry_method.value = "manual_member";
             // restart the scanner after a short delay so staff can scan the next person
             setTimeout(() => {
                 startScanner();
