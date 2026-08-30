@@ -309,6 +309,7 @@
             <MemberVerificationModal
                 v-model:open="isModalOpen"
                 :member="attendanceStore.lookupMemberData"
+                :entry-method="member_entry_method"
             />
         </div>
     </div>
