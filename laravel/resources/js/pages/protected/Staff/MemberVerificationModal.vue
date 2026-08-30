@@ -131,6 +131,10 @@ const props = defineProps({
         type: Object,
         default: null,
     },
+    entryMethod: {
+        type: String,
+        default: "manual_member",
+    },
 });
 
 const emit = defineEmits(["update:open"]);
