@@ -433,11 +433,10 @@ const onScanSuccess = async (decodedText) => {
         // Stop or pause the scanner briefly to prevent duplicate rapid-fire scans of the same pass
         await stopScanner();
 
-        // Send the scanned token as qr_token to match backend verification logic
-        await attendanceStore.submitCheckIn({
-            entry_method: "qr_scan",
-            qr_token: decodedText.trim(),
-        });
+        const scannedToken = decodedText.trim();
+
+        // calls attendanceStore.lookupMember and sets isModalOpen.value = true
+        await handleDirectLookup(scannedToken);
 
         // restart the scanner after a short delay so staff can scan the next person
         setTimeout(() => {
