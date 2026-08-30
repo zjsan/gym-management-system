@@ -92,7 +92,7 @@
         </DialogContent>
     </Dialog>
 </template>
-<script setup lang="ts">
+<script setup>
 import {
     Dialog,
     DialogContent,
@@ -108,26 +108,30 @@ import {
     QrCode as QrCodeIcon,
 } from "lucide-vue-next";
 
-// Define Props
-interface Member {
-    first_name?: string;
-    last_name?: string;
-    membership_no?: string;
-}
-
-defineProps<{
-    modelValue: boolean;
-    member: Member | null;
-    qrData: { qr_code?: string } | null;
-    isLoading: boolean;
-    isEmailing: boolean;
-}>();
+// Define Props for JavaScript
+defineProps({
+    modelValue: {
+        type: Boolean,
+        required: true,
+    },
+    member: {
+        type: Object,
+        default: null,
+    },
+    qrData: {
+        type: Object,
+        default: null,
+    },
+    isLoading: {
+        type: Boolean,
+        default: false,
+    },
+    isEmailing: {
+        type: Boolean,
+        default: false,
+    },
+});
 
 // Define Emits
-const emit = defineEmits<{
-    (e: "update:modelValue", value: boolean): void;
-    (e: "print"): void;
-    (e: "email"): void;
-    (e: "regenerate"): void;
-}>();
+const emit = defineEmits(["update:modelValue", "print", "email", "regenerate"]);
 </script>
