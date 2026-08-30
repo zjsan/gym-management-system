@@ -170,7 +170,7 @@ const handleConfirmCheckIn = async () => {
     try {
         const res = await attendanceStore.submitCheckIn({
             membership_no: membershipNo, // Explicitly match backend validation field
-            entry_method: "manual_member",
+            entry_method: props.entryMethod, //attach the prop value
         });
 
         if (res?.success) {
