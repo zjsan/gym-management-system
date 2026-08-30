@@ -309,7 +309,7 @@
             <MemberVerificationModal
                 v-model:open="isModalOpen"
                 :member="attendanceStore.lookupMemberData"
-                :entry-method="member_entry_method"
+                :entryMethod="member_entry_method"
             />
         </div>
     </div>
@@ -442,9 +442,9 @@ const onScanSuccess = async (decodedText) => {
             // calls attendanceStore.lookupMember and sets isModalOpen.value = true
             await handleDirectLookup(scannedToken);
         } catch (error) {
+            member_entry_method.value = "manual_member";
             console.warn("Invalid or unreadable QR Code.");
         } finally {
-            member_entry_method.value = "manual_member";
             // restart the scanner after a short delay so staff can scan the next person
             setTimeout(() => {
                 startScanner();
