@@ -27,9 +27,9 @@ class StoreAttendanceRequest extends FormRequest
         $walkinName = null;
 
         if (in_array($entryMethod, ['qr_scan', 'manual_member'])) {
-            // Trim spaces from membership number. 
-            // If it's a full QR URL payload, y extract the ID h
-            $membershipNo = $this->membership_no ? trim($this->membership_no) : null;
+            // Accept either membership_no or qr_token sent from the frontend scanner
+            $rawToken = $this->membership_no ?? $this->qr_token;
+            $membershipNo = $rawToken ? trim($rawToken) : null;
         }
 
         if ($entryMethod === 'manual_walkin') {
