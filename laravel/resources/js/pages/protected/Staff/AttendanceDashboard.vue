@@ -340,6 +340,7 @@ let html5QrCode = null;
 let debounceTimeout = null;
 const isModalOpen = ref(false); // tracking of modal state
 const activeIndex = ref(-1); // For keyboard navigation in the dropdown
+const member_entry_method = ref("manual_member"); //default entry for members
 
 onMounted(() => {
     attendanceStore.fetchLiveFeed();
@@ -432,16 +433,22 @@ const onScanSuccess = async (decodedText) => {
     if (decodedText) {
         // Stop or pause the scanner briefly to prevent duplicate rapid-fire scans of the same pass
         await stopScanner();
+        try {
+            member_entry_method = "qr_scan";
 
-        const scannedToken = decodedText.trim();
+            const scannedToken = decodedText.trim();
 
-        // calls attendanceStore.lookupMember and sets isModalOpen.value = true
-        await handleDirectLookup(scannedToken);
-
-        // restart the scanner after a short delay so staff can scan the next person
-        setTimeout(() => {
-            startScanner();
-        }, 2000);
+            // calls attendanceStore.lookupMember and sets isModalOpen.value = true
+            await handleDirectLookup(scannedToken);
+        } catch (error) {
+            console.warn("Invalid or unreadable QR Code.");
+        } finally {
+            member_entry_method = "manual_member";
+            // restart the scanner after a short delay so staff can scan the next person
+            setTimeout(() => {
+                startScanner();
+            }, 2000);
+        }
     }
 };
 
