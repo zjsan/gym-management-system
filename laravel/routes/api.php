@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\MemberController;
 use App\Http\Controllers\AttendanceController;
+use App\Http\Controllers\GymSettingsController;
 
 Route::get('/user', function (Request $request) {
     return $request->user();
@@ -23,6 +24,10 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
         // routes for GET, POST, PUT, DELETE /api/users
         Route::apiResource('users', UserController::class);
+
+        // Fee Management (Admin Only)
+        Route::get('/gym-settings', [GymSettingsController::class, 'index']);
+        Route::put('/gym-settings', [GymSettingsController::class, 'update']);
         
     });
 
