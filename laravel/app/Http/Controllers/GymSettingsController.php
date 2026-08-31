@@ -20,9 +20,26 @@ class GymSettingsController extends Controller
     }
 
     /**
-     * Admin-only access to update gym fees
+     * 
      */
     public function store(Request $request)
+    {
+    
+
+    }
+
+    /**
+     * Display the specified resource.
+     */
+    public function show(string $id)
+    {
+        //
+    }
+
+    /**
+     * Admin-only access to update gym fees
+     */
+    public function update(Request $request)
     {
         //check role privellege 
         Gate::authorize("admin-only");
@@ -40,23 +57,6 @@ class GymSettingsController extends Controller
         } 
         
         return response()->json(['message' => 'Gym fees updated successfully.']);
-
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
     }
 
     /**
