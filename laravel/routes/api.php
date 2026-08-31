@@ -7,6 +7,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\MemberController;
 use App\Http\Controllers\AttendanceController;
 use App\Http\Controllers\GymSettingsController;
+use App\Http\Controllers\PaymentController;
 
 Route::get('/user', function (Request $request) {
     return $request->user();
@@ -55,6 +56,12 @@ Route::middleware(['auth:sanctum'])->group(function () {
     
         // Core RESTful Attendance API Endpoints (handles index and store)
         Route::apiResource('attendance', AttendanceController::class)->only(['index', 'store']);
+
+        // Central Payment Ledger & Transaction History (Staff + Admin)
+        Route::get('/payments', [PaymentController::class, 'index']);
+        
+        // Helper route to get current rates (for front-desk UI calculation)
+        Route::get('/gym-settings/fees', [GymSettingsController::class, 'getActiveFees']);
         
     });
     
