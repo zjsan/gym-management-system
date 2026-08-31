@@ -27,7 +27,6 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::apiResource('users', UserController::class);
 
         // Fee Management (Admin Only)
-        Route::get('/gym-settings', [GymSettingsController::class, 'index']);
         Route::put('/gym-settings', [GymSettingsController::class, 'update']);
         
     });
@@ -59,9 +58,10 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
         // Central Payment Ledger & Transaction History (Staff + Admin)
         Route::get('/payments', [PaymentController::class, 'index']);
+
+        // Fetch current active fee rates (accessible by Staff + Admin)
+        Route::get('/gym-settings', [GymSettingsController::class, 'index']);
         
-        // Helper route to get current rates (for front-desk UI calculation)
-        Route::get('/gym-settings/fees', [GymSettingsController::class, 'getActiveFees']);
         
     });
     

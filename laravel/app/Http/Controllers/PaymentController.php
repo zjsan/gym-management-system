@@ -18,7 +18,7 @@ class PaymentController extends Controller
 
         // Filter by Date
         if ($request->filled('date')) {
-            $query->whereDate('paid_at', $request->date);
+            $query->whereDate('paid_at', $request->date);   
         }
 
         // Filter by Category
