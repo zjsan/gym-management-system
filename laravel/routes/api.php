@@ -20,7 +20,17 @@ Route::middleware(['web'])->group(function () {
 
 Route::middleware(['auth:sanctum'])->group(function () {
     
-    // admin routes
+    Route::middleware(['can:get-active-fee-rates'])->group(function (){
+
+        // Fetch current active fee rates (accessible by Staff + Admin)
+        Route::get('/gym-settings', [GymSettingsController::class, 'index']);
+
+         // Central Payment Ledger & Transaction History (Staff + Admin)
+        Route::get('/payments', [PaymentController::class, 'index']);  
+
+    });
+
+    // admin routes only
     Route::middleware(['can:admin-only'])->group(function () {
 
         // routes for GET, POST, PUT, DELETE /api/users
@@ -31,7 +41,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
         
     });
 
-    // staff routes
+    // staff routes only
     Route::middleware(['can:access-front-desk'])->group(function () {
 
         //preview member details for the attendance modal
@@ -55,14 +65,6 @@ Route::middleware(['auth:sanctum'])->group(function () {
     
         // Core RESTful Attendance API Endpoints (handles index and store)
         Route::apiResource('attendance', AttendanceController::class)->only(['index', 'store']);
-
-        // Central Payment Ledger & Transaction History (Staff + Admin)
-        Route::get('/payments', [PaymentController::class, 'index']);
-
-        // Fetch current active fee rates (accessible by Staff + Admin)
-        Route::get('/gym-settings', [GymSettingsController::class, 'index']);
-        
-        
     });
     
 });
