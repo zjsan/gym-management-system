@@ -31,7 +31,6 @@ return new class extends Migration
             $table->timestamp('membership_end')->nullable();
             $table->timestamp('last_renewal_at')->nullable();
 
-            $table->integer('membership_fee')->default(1100);
             $table->timestamps();
           
         });

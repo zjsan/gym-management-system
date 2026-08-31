@@ -11,7 +11,6 @@ return new class extends Migration
         Schema::create('walkins', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->integer('fee')->default(100); // Spec requirement
             $table->timestamps();
         });
     }

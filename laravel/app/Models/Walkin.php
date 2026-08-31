@@ -8,7 +8,7 @@ use App\Models\AttendanceLogging;
 
 class Walkin extends Model
 {
-    protected $fillable = ['name', 'walkin_fee'];
+    protected $fillable = ['name'];
 
     public function attendanceLogs(): HasMany
     {
