@@ -29,5 +29,9 @@ class AppServiceProvider extends ServiceProvider
         Gate::define('access-front-desk', function (User $user) {
             return $user->role?->slug === 'staff';
         });
+
+        Gate::define('get-active-fee-rates', function (User $user){
+            return in_array(strtolower(trim( $user->role?->slug ?? '')), ['admin','staff']);
+        });
     } 
 }
