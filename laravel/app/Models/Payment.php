@@ -42,4 +42,16 @@ class Payment extends Model
         return $this->belongsTo(User::class, 'processed_by');
     }
     
+
+      /**
+     *
+     * Generates a unique, human-readable reference number for every 
+     * cash transaction formatted by date and sequential count
+     */
+    private function generateReceiptNumber(): string
+    {
+        $dateStr = now()->format('Ymd');
+        $count = Payment::whereDate('created_at', now()->today())->count() + 1;
+        return 'PAY-' . $dateStr . '-' . str_pad($count, 4, '0', STR_PAD_LEFT);
+    }
 }
