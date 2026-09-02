@@ -92,25 +92,48 @@ class AttendanceController extends Controller
                 ], 201);
             }
 
+            // Walk-in Guest Entry + Immediate Payment Processing
             if ($validated['entry_method'] === 'manual_walkin') {
-                $walkin = Walkin::create([
-                    'name' => $validated['walkin_name'],
-                ]);
+            
+                return DB::transaction(function () use ($validated, $recorderId, $checkInTime) {
+                    // 1. Fetch current active walk-in fee rate from settings table
+                    $walkinFee = GymSetting::where('key', 'walkin_daily_fee')->value('value') ?? 100.00;
 
-                $log = AttendanceLogging::create([
-                    'recorded_by' => $recorderId,
-                    'member_id' => null,
-                    'walkin_id' => $walkin->id,
-                    'entry_method' => 'manual_walkin',
-                    'check_in' => $checkInTime,
-                ]);
+                    // 2. Create Walk-in Guest Profile
+                    $walkin = Walkin::create([
+                        'name' => $validated['walkin_name'],
+                    ]);
 
-                return response()->json([
-                    'message' => 'Walk-in recorded successfully.',
-                    'type' => 'walkin',
-                    'name' => $walkin->name,
-                    'log' => $log->load('walkin')
-                ], 201);
+                    // 3. Log Attendance
+                    $log = AttendanceLogging::create([
+                        'recorded_by' => $recorderId,
+                        'member_id' => null,
+                        'walkin_id' => $walkin->id,
+                        'entry_method' => 'manual_walkin',
+                        'check_in' => $checkInTime,
+                    ]);
+
+                    // 4. Record Cash Payment in Ledger
+                    $payment = Payment::create([
+                        'receipt_no' => Payment::generateReceiptNumber(),
+                        'member_id' => null,
+                        'walkin_id' => $walkin->id,
+                        'processed_by' => $recorderId,
+                        'category' => 'walkin_fee',
+                        'amount' => $walkinFee,
+                        'payment_method' => 'cash',
+                        'paid_at' => $checkInTime,
+                        'notes' => 'Walk-in daily pass payment',
+                    ]);
+
+                    return response()->json([
+                        'message' => 'Walk-in recorded and payment processed successfully.',
+                        'type' => 'walkin',
+                        'name' => $walkin->name,
+                        'log' => $log->load('walkin'),
+                        'payment' => $payment
+                    ], 201);
+                 });
             }
 
         } catch (Exception $e) {
