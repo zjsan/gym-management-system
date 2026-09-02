@@ -6,15 +6,20 @@ use App\Http\Requests\StoreAttendanceRequest;
 use App\Http\Resources\MemberResource;
 use App\Models\Member;
 use App\Models\Walkin;
+use App\Models\GymSetting;
+use App\Models\Payment;
 use App\Models\AttendanceLogging;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
-use Carbon\Carbon;
-use Exception;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+
+use Illuminate\Support\Facades\DB;
+
+use Carbon\Carbon;
+use Exception;
 
 class AttendanceController extends Controller
 {
