@@ -21,6 +21,7 @@ class DatabaseSeeder extends Seeder
              UserSeeder::class,
             // You can add other seeders here
              MemberSeeder::class,
+             GymSettingSeeder::class,
         ]);
     }
 }
