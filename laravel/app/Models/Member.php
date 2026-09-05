@@ -82,6 +82,7 @@ class Member extends Model
         $this->membership_start = now()->startOfDay();
         $this->membership_end = $base->copy()->addDays(30)->endOfDay();
         $this->last_renewal_at = now(); 
+        $this->is_active = true; // Ensure member is set to active upon renewal
         
         $this->save();
     }
