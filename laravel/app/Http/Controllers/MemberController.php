@@ -247,8 +247,10 @@ class MemberController extends Controller
                 'payment' => $result['payment'],
             ], 200);
 
-        } catch (Exception $e) {
-            Log::error("Renewal failed for member ID {$member->id}: " . $e->getMessage());
+       } catch (Throwable $e) {
+            Log::error("Renewal failed for member ID {$member->id}: " . $e->getMessage(), [
+                'exception' => $e
+            ]);
             return response()->json(['error' => 'An error occurred during renewal.'], 500);
         }
     }
