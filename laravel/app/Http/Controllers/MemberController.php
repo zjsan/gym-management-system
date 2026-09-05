@@ -3,9 +3,10 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\Member;   
+use App\Models\Member; 
+use App\Models\GymSetting;
+use App\Models\Payment;  
 use App\Http\Requests\StoreMemberRequest;
-use Illuminate\Support\Str;
 use App\Http\Resources\MemberResource;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -16,7 +17,9 @@ use Illuminate\Database\Eloquent\Builder;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use App\Mail\MemberQrCodeMail;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Auth;
 use Throwable;
+
 
 class MemberController extends Controller
 {
@@ -77,17 +80,38 @@ class MemberController extends Controller
             }
 
             // 2. Wrap only database operations in the transaction
-            $member = DB::transaction(function () use ($validated) {
+            $result = DB::transaction(function () use ($validated) {
                 $validated['membership_start'] = now();
                 $validated['membership_end'] = now()->addDays(30);
                 $validated['is_active'] = true;
 
-                return Member::create($validated);
-            });
+                $member = Member::create($validated);
 
-            return (new MemberResource($member))
-                ->response()
-                ->setStatusCode(201);
+                // Fetch registration fee rate
+                $membershipFee = GymSetting::where('key', 'monthly_membership_fee')->value('value') ?? 1200.00;
+
+                $payment = Payment::create([
+                    'receipt_no' => Payment::generateReceiptNumber(),
+                    'member_id' => $member->id,
+                    'walkin_id' => null,
+                    'processed_by' => Auth::id(),
+                    'category' => 'membership_registration',
+                    'amount' => $membershipFee,
+                    'payment_method' => 'cash',
+                    'paid_at' => now(),
+                    'notes' => 'New member registration fee',
+                ]);
+
+                return [
+                    'member' => $member,
+                    'payment' => $payment,
+                ];
+            });
+            return response()->json([
+                'message' => 'Member registered successfully.',
+                'data' => new MemberResource($result['member']),
+                'payment' => $result['payment'],
+            ], 201);
 
         } catch (Throwable $e) { // Catch Throwable to capture both Exceptions and Errors
             // Clean up uploaded file if it exists
