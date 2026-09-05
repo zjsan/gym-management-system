@@ -216,12 +216,37 @@ class MemberController extends Controller
                 ], 422);
             }
 
-            $member->renew();
+            $result = DB::transaction(function () use ($member){
+                $member->renew(); //Execute time extension on model
+
+                 //fetch renewal fee from gym setting table
+                $renewalFee = GymSetting::where('key', 'monthly_membership_fee')->value('value') ?? 1200.00;
+                
+                 //Record payment in ledger
+                $payment = Payment::create([
+                    'receipt_no' => Payment::generateReceiptNumber(),
+                    'member_id' => $member->id,
+                    'walkin_id' => null,
+                    'processed_by' => Auth::id(),
+                    'category' => 'membership_renewal',
+                    'amount' => $renewalFee,
+                    'payment_method' => 'cash',
+                    'paid_at' => now(),
+                    'notes' => 'Monthly membership renewal fee',
+                ]);
+
+                return [
+                    'member' => $member,
+                    'payment' => $payment,
+                ];
+            });
 
             return response()->json([
-                'message' => 'Membership successfully renewed for 30 days.',
-                'member' => new MemberResource($member)
-            ], 200);    
+                'message' => 'Membership renewed successfully.',
+                'data' => new MemberResource($result['member']),
+                'payment' => $result['payment'],
+            ], 200);
+
         } catch (Exception $e) {
             Log::error("Renewal failed for member ID {$member->id}: " . $e->getMessage());
             return response()->json(['error' => 'An error occurred during renewal.'], 500);
