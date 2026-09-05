@@ -48,7 +48,7 @@ class Payment extends Model
      * Generates a unique, human-readable reference number for every 
      * cash transaction formatted by date and sequential count
      */
-    public function generateReceiptNumber(): string
+    public static function generateReceiptNumber(): string
     {
         $dateStr = now()->format('Ymd');
         $count = Payment::whereDate('created_at', now()->today())->count() + 1;
