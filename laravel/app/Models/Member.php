@@ -76,13 +76,11 @@ class Member extends Model
      */
     public function renew(): void
     {
-        // If expired, start from today. If active, chain it onto their current expiration date.
+        // Copy Carbon instance to avoid direct mutation
         $base = $this->isExpired() ? now() : $this->membership_end;
         
         $this->membership_start = now()->startOfDay();
-        $this->membership_end = $base->addDays(30)->endOfDay();
-        
-        // CRITICAL: Update the lockout tracking timestamp to right now!
+        $this->membership_end = $base->copy()->addDays(30)->endOfDay();
         $this->last_renewal_at = now(); 
         
         $this->save();
