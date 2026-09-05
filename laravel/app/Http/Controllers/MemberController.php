@@ -119,13 +119,11 @@ class MemberController extends Controller
                 Storage::disk('public')->delete($uploadedPath);
             }
 
-            Log::error("Member creation failed: " . $e->getMessage(), [
-                'exception' => $e,
-                'payload' => $request->except(['photo'])
-            ]);
-
+           // TEMPORARY: Return the exact error to your Vue frontend response tab
             return response()->json([
-                'message' => 'Could not create member. Please try again later.'
+                'message' => $e->getMessage(),
+                'file' => $e->getFile(),
+                'line' => $e->getLine(),
             ], 500);
         }
     }
