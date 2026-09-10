@@ -26,7 +26,7 @@ class StoreMemberRequest extends FormRequest
             'contact_number' => $this->contact_number ? $this->normalizePhPhoneNumber($this->contact_number) : null,
             'email' => $this->email ? strtolower(trim($this->email)) : null,
             'emergency_contact_number' => $this->emergency_contact_number ? $this->normalizePhPhoneNumber($this->emergency_contact_number) : null,  
-            'address' => $this->address ? ucfirst(trim($this->address)) : null,
+            'address' => $this->address ? $this->normalizeAddress($this->address) : null,
         ]);
     }
 
