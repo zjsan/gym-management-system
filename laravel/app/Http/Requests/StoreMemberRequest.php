@@ -138,5 +138,136 @@ class StoreMemberRequest extends FormRequest
         return $cleaned;
     }
 
+
+    private function normalizeAddress(?string $address): ?string
+    {
+        if (!$address) {
+            return null;
+        }
+
+        // 1. Trim leading/trailing whitespace
+        $address = trim($address);
+
+        // 2. Collapse multiple spaces into one
+        $address = preg_replace('/\s+/', ' ', $address);
+
+        // 3. Normalize comma spacing
+        // "La Paz ,Laoag City" -> "La Paz, Laoag City"
+        $address = preg_replace('/\s*,\s*/', ', ', $address);
+
+        // 4. Remove spaces around hyphens
+        // "32 - B" -> "32-B"
+        $address = preg_replace('/\s*-\s*/', '-', $address);
+
+        /*
+        * 5. Normalize Barangay prefix.
+        *
+        * Examples:
+        * brgy       -> Brgy.
+        * brgy.      -> Brgy.
+        * BRGY       -> Brgy.
+        * barangay   -> Brgy.
+        * Barangay.  -> Brgy.
+        */
+        $address = preg_replace(
+            '/\b(?:barangay|brgy)\.?\s*/i',
+            'Brgy. ',
+            $address
+        );
+
+        /*
+        * 6. Normalize "#" when it represents a numbered barangay.
+        *
+        * Examples:
+        * #32       -> 32
+        * # 32     -> 32
+        * #32-B     -> 32-B
+        * # 32 - B  -> 32-B
+        */
+        $address = preg_replace(
+            '/#\s*(\d+)/',
+            '$1',
+            $address
+        );
+
+        /*
+        * 7. Normalize numbered barangay suffixes.
+        *
+        * Examples:
+        * 32 - b -> 32-B
+        * 32-b   -> 32-B
+        * 32 - B -> 32-B
+        */
+        $address = preg_replace_callback(
+            '/\b(\d+)\s*-\s*([a-z])\b/i',
+            function ($matches) {
+                return $matches[1] . '-' . strtoupper($matches[2]);
+            },
+            $address
+        );
+
+        /*
+        * 8. Handle a numbered barangay at the beginning
+        *    when "Brgy." wasn't explicitly supplied.
+        *
+        * Examples:
+        * 32-B, Laoag City
+        * 32-b, laoag city
+        *
+        * -> Brgy. 32-B, Laoag City
+        */
+        if (
+            !preg_match('/^Brgy\.\s/i', $address) &&
+            preg_match('/^(\d+(?:-[A-Za-z])?)(?:,|\s)/', $address)
+        ) {
+            $address = preg_replace(
+                '/^(\d+(?:-[A-Za-z])?)(?=,|\s)/',
+                'Brgy. $1',
+                $address,
+                1
+            );
+        }
+
+        /*
+        * 9. Normalize capitalization of each address component.
+        *
+        * Example:
+        * "brgy. 32-B, la paz, laoag city"
+        *
+        * -> "Brgy. 32-B, La Paz, Laoag City"
+        */
+        $parts = explode(',', $address);
+
+        $parts = array_map(function ($part) {
+            $part = trim($part);
+
+            if ($part === '') {
+                return null;
+            }
+
+            return ucwords(strtolower($part));
+        }, $parts);
+
+        // Remove empty components.
+        $parts = array_filter(
+            $parts,
+            fn ($part) => $part !== null && $part !== ''
+        );
+
+        $address = implode(', ', $parts);
+
+        /*
+        * 10. Ensure canonical "Brgy." formatting.
+        */
+        $address = preg_replace(
+            '/^Brgy\.\s*/i',
+            'Brgy. ',
+            $address
+        );
+
+        return trim($address);
+    }
+
+
   
 }
