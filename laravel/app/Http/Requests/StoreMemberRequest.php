@@ -191,15 +191,20 @@ class StoreMemberRequest extends FormRequest
         );
 
         /*
-        * 7. Normalize numbered barangay suffixes.
+        * 7. Normalize numbered barangay formats.
         *
-        * Examples:
-        * 32 - b -> 32-B
-        * 32-b   -> 32-B
-        * 32 - B -> 32-B
+        * Supported examples:
+        * 32 - B  -> 32-B
+        * 32-b    -> 32-B
+        * 32-B    -> 32-B
+        * 32 B    -> 32-B
+        * 32B     -> 32-B
+        *
+        * The negative lookbehind prevents us from modifying
+        * numbers that are part of ordinary words.
         */
         $address = preg_replace_callback(
-            '/\b(\d+)\s*-\s*([a-z])\b/i',
+            '/(?<![A-Za-z])(\d+)\s*(?:-\s*|\s+)?([A-Za-z])(?=\s*(?:,|$))/i',
             function ($matches) {
                 return $matches[1] . '-' . strtoupper($matches[2]);
             },
@@ -211,10 +216,16 @@ class StoreMemberRequest extends FormRequest
         *    when "Brgy." wasn't explicitly supplied.
         *
         * Examples:
-        * 32-B, Laoag City
-        * 32-b, laoag city
         *
-        * -> Brgy. 32-B, Laoag City
+        * 32-B, Laoag City
+        * 32 B, Laoag City
+        * 32B, Laoag City
+        * 32, Laoag City
+        *
+        * ->
+        *
+        * Brgy. 32-B, Laoag City
+        * Brgy. 32, Laoag City
         */
         if (
             !preg_match('/^Brgy\.\s/i', $address) &&
