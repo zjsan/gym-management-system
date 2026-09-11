@@ -15,8 +15,11 @@ class PaymentController extends Controller
     public function index(Request $request): JsonResponse
     {
         //
-        $query = Payment::with(['member:id,first_name,last_name,membership_number', 'walkin:id,name', 'processedBy:id,name'])
-            ->latest('paid_at');
+        $query = Payment::with([
+            'member:id,first_name,last_name,membership_no',
+            'walkin:id,name',
+            'processedBy:id,name'
+        ])->latest('paid_at');
 
         // Filter by Date
         if ($request->filled('start_date') && $request->filled('end_date')) {
@@ -81,7 +84,7 @@ class PaymentController extends Controller
             ]
         ]);
     }
-    
+
 
     /**
      * Store a newly created resource in storage.
