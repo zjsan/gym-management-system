@@ -64,9 +64,11 @@ class PaymentController extends Controller
     public function summary(): JsonResponse
     {
         $today = now()->startOfDay();
+        $startofWeek = now()->startOfWeek(); //begins monday
         $startOfMonth = now()->startOfMonth();
 
         $todayRevenue = Payment::where('paid_at', '>=', $today)->sum('amount');
+        $weekRevenue = Payment::where('paid_at', '>=', $startofWeek)->sum('amount');
         $monthRevenue = Payment::where('paid_at', '>=', $startOfMonth)->sum('amount');
 
         // Monthly revenue breakdown grouped by category
@@ -79,6 +81,7 @@ class PaymentController extends Controller
             'success' => true,
             'data'    => [
                 'today_revenue'   => (float) $todayRevenue,
+                'week_revenue'    => (float) $weekRevenue,
                 'month_revenue'   => (float) $monthRevenue,
                 'month_breakdown' => $categoryBreakdown,
             ]
