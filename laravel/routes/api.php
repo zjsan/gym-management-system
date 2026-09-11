@@ -28,6 +28,9 @@ Route::middleware(['auth:sanctum'])->group(function () {
          // Central Payment Ledger & Transaction History (Staff + Admin)
         Route::get('/payments', [PaymentController::class, 'index']);  
 
+        //Financial Reporting endpoint
+        Route::get('/payments/summary', [PaymentController::class, 'summary']);
+
     });
 
     // admin routes only
