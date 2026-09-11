@@ -25,7 +25,7 @@ class PaymentController extends Controller
                 Carbon::parse($request->end_date)->endOfDay()
             ]);
         }
-        
+
         // Filter by transaction category (membership_registration, membership_renewal, walkin_fee)
         if ($request->filled('category')) {
             $query->where('category', $request->category);
@@ -54,6 +54,34 @@ class PaymentController extends Controller
         ]);
         
     }
+
+    /**
+     * Aggregate financial summary metrics for dashboard cards and charts.
+     */
+    public function summary(): JsonResponse
+    {
+        $today = now()->startOfDay();
+        $startOfMonth = now()->startOfMonth();
+
+        $todayRevenue = Payment::where('paid_at', '>=', $today)->sum('amount');
+        $monthRevenue = Payment::where('paid_at', '>=', $startOfMonth)->sum('amount');
+
+        // Monthly revenue breakdown grouped by category
+        $categoryBreakdown = Payment::where('paid_at', '>=', $startOfMonth)
+            ->selectRaw('category, SUM(amount) as total_amount, COUNT(*) as transaction_count')
+            ->groupBy('category')
+            ->get();
+
+        return response()->json([
+            'success' => true,
+            'data'    => [
+                'today_revenue'   => (float) $todayRevenue,
+                'month_revenue'   => (float) $monthRevenue,
+                'month_breakdown' => $categoryBreakdown,
+            ]
+        ]);
+    }
+    
 
     /**
      * Store a newly created resource in storage.
