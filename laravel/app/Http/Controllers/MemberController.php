@@ -194,10 +194,9 @@ class MemberController extends Controller
             'qr_token' => Member::generateUniqueQrToken()
         ]);
 
-        return response()->json([
-            'message' => 'QR Code successfully regenerated.',
-            'qr_token' => $member->qr_token
-        ]);
+        return (new MemberResource($member->fresh()))
+        ->additional(['message' => 'QR Code successfully regenerated.'])
+        ->response();
     }
 
     /**
