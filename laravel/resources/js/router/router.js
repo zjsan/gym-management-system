@@ -5,6 +5,7 @@ import Dashboard from "../pages/protected/Main.vue";
 import Adminview from "../pages/protected/Admin/Adminview.vue";
 import MemberManagement from "../pages/protected/Staff/Staffview.vue";
 import AttendanceDashboard from "../pages/protected/Staff/AttendanceDashboard.vue";
+import PaymentHistory from "../pages/protected/Payment/PaymentHistory.vue";
 
 const routes = [
     { path: "/", component: Login, name: "Login", requiresAuth: false },
@@ -32,6 +33,14 @@ const routes = [
         component: AttendanceDashboard,
         meta: { requiresAdmin: true, role: "staff" },
     },
+
+     {
+        path: "/payment-history",
+        name: "payment",
+        component: PaymentHistory,
+        meta: { requiresAuth: true  },
+    },
+
 ];
 
 const router = createRouter({
