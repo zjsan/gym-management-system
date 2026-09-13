@@ -18,7 +18,7 @@ class PaymentController extends Controller
         $query = Payment::with([
             'member:id,first_name,last_name,membership_no',
             'walkin:id,name',
-            'processedBy:id,name'
+            'processedBy:id,first_name'
         ])->latest('paid_at');
 
         // Filter by Date
