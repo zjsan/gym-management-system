@@ -11,6 +11,13 @@
             >
                 Click here for Attendance
             </button>
+
+            <button
+                @click="goToPaymentHistory"
+                class="bg-blue-500 text-white font-semibold rounded-lg shadow hover:bg-red-600 transition"
+            >
+                Click here for Payment
+            </button>
         </div>
         <div class="w-50 mt-5">
             <Input
@@ -487,6 +494,10 @@ const router = useRouter();
 
 const goToAttendance = () => {
     router.push({ name: "attendance" });
+};
+
+const goToPaymentHistory = () => {
+    router.push({ name: "payment" });
 };
 
 // Local states
