@@ -215,7 +215,7 @@
                             {{ formatCurrency(p.amount) }}
                         </td>
                         <td class="p-4 text-gray-600">
-                            {{ p.processed_by?.name || "System" }}
+                            {{ p.processed_by?.first_name || "System" }}
                         </td>
                         <td class="p-4 text-xs text-gray-500">
                             {{ formatDate(p.paid_at) }}
