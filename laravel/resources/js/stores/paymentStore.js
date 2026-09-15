@@ -86,6 +86,7 @@ export const usePaymentStore = defineStore("payment", {
          *  and initiate download in browser
          */
         async exportPayments() {
+            this.loading = true;
             try {
                 const params = new URLSearchParams(this.filters).toString();
                 const response = await api.get(`/payments/export?${params}`, {
@@ -107,7 +108,12 @@ export const usePaymentStore = defineStore("payment", {
                 link.remove();
                 window.URL.revokeObjectURL(url);
             } catch (err) {
+                this.errors =
+                    err.response?.data?.message ||
+                    "Failed to export payment ledger.";
                 console.error("Failed to export payment ledger:", err);
+            } finally {
+                this.loading = false;
             }
         },
 
