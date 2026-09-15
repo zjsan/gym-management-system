@@ -31,6 +31,9 @@ Route::middleware(['auth:sanctum'])->group(function () {
         //Financial Reporting endpoint
         Route::get('/payments/summary', [PaymentController::class, 'summary']);
 
+        //Export Payments to CSV endpoint
+        Route::get('/payments/export', [PaymentController::class, 'export']);
+
     });
 
     // admin routes only
