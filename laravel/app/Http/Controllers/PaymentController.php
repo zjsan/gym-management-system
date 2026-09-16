@@ -169,6 +169,11 @@ class PaymentController extends Controller
                         $customerType = 'Walk-in';
                     }
 
+                    // Fixed null-coalescing for processedBy
+                    $processedByName = $p->processedBy 
+                            ? trim($p->processedBy->first_name . ' ' . $p->processedBy->last_name) 
+                            : 'System';
+
                     fputcsv($file, [
                         $p->receipt_no,
                         $customerName,
@@ -176,7 +181,7 @@ class PaymentController extends Controller
                         $membershipNo,
                         ucwords(str_replace('_', ' ', $p->category)),
                         number_format($p->amount, 2, '.', ''),
-                        $p->processedBy->first_name . ' ' . $p->processedBy->last_name ?? 'System',
+                        $processedByName,
                         Carbon::parse($p->paid_at)->format('Y-m-d H:i:s')
                     ]);
                 }
