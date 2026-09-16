@@ -98,7 +98,7 @@ class PaymentController extends Controller
         $query = Payment::with([
             'member:id,first_name,last_name,membership_no',
             'walkin:id,name',
-            'processedBy:id,name'
+            'processedBy:id,first_name,last_name,'
         ])->latest('paid_at');
 
         // Apply exact same filters as index()
@@ -176,7 +176,7 @@ class PaymentController extends Controller
                         $membershipNo,
                         ucwords(str_replace('_', ' ', $p->category)),
                         number_format($p->amount, 2, '.', ''),
-                        $p->processedBy->name ?? 'System',
+                        $p->processedBy->first_name . ' ' . $p->processedBy->last_name ?? 'System',
                         Carbon::parse($p->paid_at)->format('Y-m-d H:i:s')
                     ]);
                 }
