@@ -89,7 +89,6 @@ class PaymentController extends Controller
         ]);
     }
 
-
     /**
      * Export filtered payment history ledger as a downloadable CSV file.
      */
@@ -191,6 +190,92 @@ class PaymentController extends Controller
         };
 
         return response()->stream($callback, 200, $headers);
+    }
+
+
+    /**
+     * Fetch printable sales summary data for a specific period.
+     */
+    public function salesSummary(Request $request): JsonResponse
+    {
+        $period = $request->input('period', 'today'); // 'today', 'weekly', 'monthly'
+
+        $query = Payment::query();
+
+        if ($period === 'today') {
+            $startDate = now()->startOfDay();
+            $endDate = now()->endOfDay();
+            $periodLabel = 'Today (' . now()->format('M d, Y') . ')';
+        } elseif ($period === 'weekly') {
+            $startDate = now()->startOfWeek();
+            $endDate = now()->endOfWeek();
+            $periodLabel = 'This Week (' . $startDate->format('M d') . ' - ' . $endDate->format('M d, Y') . ')';
+        } else {
+            $startDate = now()->startOfMonth();
+            $endDate = now()->endOfMonth();
+            $periodLabel = 'This Month (' . now()->format('F Y') . ')';
+        }
+
+        $payments = $query->whereBetween('paid_at', [$startDate, $endDate])
+            ->with(['processedBy:id,first_name,last_name', 'member:id,first_name,last_name', 'walkin:id,name'])
+            ->get();
+
+        // Aggregations
+        $totalRevenue = $payments->sum('amount');
+        $totalTransactions = $payments->count();
+
+        // Breakdown by Category
+        $categoryBreakdown = [
+            'membership_registration' => [
+                'label' => 'Registrations',
+                'count' => $payments->where('category', 'membership_registration')->count(),
+                'total' => $payments->where('category', 'membership_registration')->sum('amount'),
+            ],
+            'membership_renewal' => [
+                'label' => 'Renewals',
+                'count' => $payments->where('category', 'membership_renewal')->count(),
+                'total' => $payments->where('category', 'membership_renewal')->sum('amount'),
+            ],
+            'walkin_fee' => [
+                'label' => 'Walk-In Fees',
+                'count' => $payments->where('category', 'walkin_fee')->count(),
+                'total' => $payments->where('category', 'walkin_fee')->sum('amount'),
+            ],
+        ];
+
+        // Breakdown by Cashier / Staff
+        $cashierBreakdown = $payments->groupBy('processed_by_id')->map(function ($group) {
+
+            $staff = $group->first()->processedBy;
+
+            // Combine first and last name, or fallback to 'System'
+            $staffName = $staff 
+                ? trim($staff->first_name . ' ' . $staff->last_name) 
+                : 'System';
+                
+            return [
+                'staff_name' => $staffName,
+                'count' => $group->count(),
+                'total' => $group->sum('amount'),
+            ];
+        })->values();
+
+        return response()->json([
+            'period_type' => $period,
+            'period_label' => $periodLabel,
+            'generated_at' => now()->format('M d, Y h:i A'),
+            'total_revenue' => $totalRevenue,
+            'total_transactions' => $totalTransactions,
+            'category_breakdown' => $categoryBreakdown,
+            'cashier_breakdown' => $cashierBreakdown,
+            'recent_transactions' => $payments->take(20)->map(fn($p) => [
+                'receipt_no' => $p->receipt_no,
+                'customer' => $p->member ? ($p->member->first_name . ' ' . $p->member->last_name) : ($p->walkin->name ?? 'N/A'),
+                'category' => ucwords(str_replace('_', ' ', $p->category)),
+                'amount' => $p->amount,
+                'time' => Carbon::parse($p->paid_at)->format('h:i A'),
+            ]),
+        ]);
     }
 
     /**
