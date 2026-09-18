@@ -96,7 +96,7 @@
                     Generating sales report...
                 </div>
 
-                <template v-else-if="summary">
+                <template v-else-if="paymentStore.salesReportData">
                     <!-- Printable Header -->
                     <div class="border-b pb-4 text-center">
                         <h1
@@ -110,7 +110,8 @@
                         <div
                             class="mt-3 inline-block px-3 py-1 bg-gray-100 rounded-full text-xs font-semibold text-gray-700 print:bg-transparent print:p-0"
                         >
-                            Coverage: {{ summary.period_label }}
+                            Coverage:
+                            {{ paymentStore.salesReportData.period_label }}
                         </div>
                     </div>
 
@@ -127,7 +128,12 @@
                             <p
                                 class="text-2xl font-extrabold text-emerald-600 print:text-gray-900"
                             >
-                                {{ formatCurrency(summary.total_revenue) }}
+                                {{
+                                    formatCurrency(
+                                        paymentStore.salesReportData
+                                            .total_revenue,
+                                    )
+                                }}
                             </p>
                         </div>
                         <div>
@@ -137,7 +143,11 @@
                                 Total Transactions
                             </p>
                             <p class="text-2xl font-bold text-gray-800">
-                                {{ summary.total_transactions }} receipts
+                                {{
+                                    paymentStore.salesReportData
+                                        .total_transactions
+                                }}
+                                receipts
                             </p>
                         </div>
                     </div>
@@ -165,9 +175,8 @@
                             </thead>
                             <tbody class="divide-y divide-gray-200">
                                 <tr
-                                    v-for="(
-                                        item, key
-                                    ) in summary.category_breakdown"
+                                    v-for="(item, key) in paymentStore
+                                        .salesReportData.category_breakdown"
                                     :key="key"
                                 >
                                     <td class="p-2 border-r font-medium">
@@ -185,7 +194,12 @@
                     </div>
 
                     <!-- Cashier / Staff Collection Breakdown -->
-                    <div v-if="summary.cashier_breakdown.length > 0">
+                    <div
+                        v-if="
+                            paymentStore.salesReportData.cashier_breakdown
+                                .length > 0
+                        "
+                    >
                         <h3
                             class="text-xs font-bold uppercase text-gray-500 tracking-wider mb-2"
                         >
@@ -211,9 +225,8 @@
                             </thead>
                             <tbody class="divide-y divide-gray-200">
                                 <tr
-                                    v-for="(
-                                        cashier, idx
-                                    ) in summary.cashier_breakdown"
+                                    v-for="(cashier, idx) in paymentStore
+                                        .salesReportData.cashier_breakdown"
                                     :key="idx"
                                 >
                                     <td class="p-2 border-r font-medium">
@@ -260,7 +273,8 @@
 
                     <!-- Report Metadata -->
                     <div class="text-[10px] text-gray-400 text-center pt-2">
-                        Report generated on {{ summary.generated_at }}
+                        Report generated on
+                        {{ paymentStore.salesReportData.generated_at }}
                     </div>
                 </template>
             </div>
