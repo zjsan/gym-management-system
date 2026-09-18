@@ -268,8 +268,8 @@
     </div>
 </template>
 <script setup>
-import { ref } from "vue";
-import api from "@/api";
+import { ref, watch } from "vue";
+import { usePaymentStore } from "@/stores/paymentStore";
 
 const props = defineProps({
     isOpen: Boolean,
@@ -277,49 +277,26 @@ const props = defineProps({
 
 const emit = defineEmits(["close"]);
 
+const paymentStore = usePaymentStore();
 const period = ref("today");
-const isLoading = ref(false);
-const summary = ref(null);
-
-const fetchSummaryData = async () => {
-    isLoading.value = true;
-    try {
-        const res = await api.get(
-            `/payments/sales-summary?period=${period.value}`,
-        );
-        summary.value = res.data;
-    } catch (err) {
-        console.error("Failed to load sales summary:", err);
-    } finally {
-        isLoading.value = false;
-    }
-};
 
 const changePeriod = (newPeriod) => {
     period.value = newPeriod;
-    fetchSummaryData();
+    paymentStore.fetchSalesSummary(period.value);
 };
 
 const handlePrint = () => {
     window.print();
 };
 
-// Expose open method or watch prop
 watch(
     () => props.isOpen,
     (newVal) => {
         if (newVal) {
-            fetchSummaryData();
+            paymentStore.fetchSalesSummary(period.value);
         }
     },
 );
-
-const formatCurrency = (val) => {
-    return new Intl.NumberFormat("en-PH", {
-        style: "currency",
-        currency: "PHP",
-    }).format(val || 0);
-};
 </script>
 
 <style scoped>
