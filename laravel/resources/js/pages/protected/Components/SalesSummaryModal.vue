@@ -64,7 +64,7 @@
 
                 <button
                     @click="handlePrint"
-                    :disabled="isLoading"
+                    :disabled="paymentStore.loading"
                     class="px-4 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold rounded-lg flex items-center gap-1.5 shadow-sm transition"
                 >
                     <svg
@@ -90,7 +90,7 @@
                 id="printable-sales-report"
             >
                 <div
-                    v-if="isLoading"
+                    v-if="paymentStore.loading"
                     class="py-12 text-center text-gray-400 text-sm"
                 >
                     Generating sales report...
