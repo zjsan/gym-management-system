@@ -1,5 +1,5 @@
 import { defineStore } from "pinia";
-import api from "../api/api"; // Import your Axios instance
+import api from "../api/api"; // Import Axios instance
 
 export const usePaymentStore = defineStore("payment", {
     state: () => ({
@@ -10,6 +10,11 @@ export const usePaymentStore = defineStore("payment", {
             month_revenue: 0,
             month_breakdown: [],
         },
+
+        // Sales Summary Printable Report State
+        salesReportData: null,
+        salesReportLoading: false,
+        
         loading: false,
         summaryLoading: false,
         errors: null,
