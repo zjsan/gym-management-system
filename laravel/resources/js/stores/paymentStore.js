@@ -13,10 +13,8 @@ export const usePaymentStore = defineStore("payment", {
 
         // Sales Summary Printable Report State
         salesReportData: null,
-        salesReportLoading: false,
-        
+
         loading: false,
-        summaryLoading: false,
         errors: null,
 
         // Pagination & Filtering State
@@ -71,7 +69,7 @@ export const usePaymentStore = defineStore("payment", {
          * Fetch financial metrics for dashboard summary cards
          */
         async fetchSummary() {
-            this.summaryLoading = true;
+            this.loading = true;
             try {
                 const res = await api.get("/payments/summary");
                 if (res.data.success) {
@@ -82,10 +80,27 @@ export const usePaymentStore = defineStore("payment", {
                 console.error("Failed to load payment summary metrics:", err);
                 return { success: false };
             } finally {
-                this.summaryLoading = false;
+                this.loading = false;
             }
         },
 
+        /**
+         * Fetch detailed printable sales summary report for today, weekly, or monthly
+         */
+        async fetchSalesSummary(period = "today") {
+            this.loading = true;
+            try {
+                const res = await api.get(`/payments/sales-summary?period=${period}`);
+                this.salesReportData = res.data;
+                return { success: true };
+            } catch (err) {
+                console.error("Failed to load printable sales summary report:", err);
+                return { success: false };
+            } finally {
+                this.loading = false;
+            }
+        },
+        
         /**
          * Trigger the export of payment ledger data to CSV based on current filters
          *  and initiate download in browser
