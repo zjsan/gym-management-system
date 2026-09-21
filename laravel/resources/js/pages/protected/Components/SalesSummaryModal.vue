@@ -247,44 +247,44 @@
                     <div
                         class="pt-8 grid grid-cols-2 gap-8 text-xs text-gray-600 border-t print:mt-12"
                     >
+                        <!-- Prepared By Block -->
                         <div>
                             <p class="font-semibold text-gray-700">
                                 Prepared By:
                             </p>
-                            <!-- Printed name positioned directly above the signature line -->
-                            <div class="mt-6">
-                                <p class="font-bold text-gray-900">
-                                    {{
-                                        authStore.user?.first_name +
-                                            " " +
-                                            authStore.user?.last_name ||
-                                        "Authorized Staff"
-                                    }}
+
+                            <!-- Container for name and line to keep them tightly bound -->
+                            <div class="mt-8 w-48 text-center">
+                                <p class="font-bold text-gray-900 pb-1">
+                                    {{ formattedStaffName }}
+                                </p>
+                                <div
+                                    class="border-b border-gray-400 w-full"
+                                ></div>
+                                <p class="text-[8px] text-gray-400 mt-1">
+                                    Cashier / Staff Signature Over Printed Name
                                 </p>
                             </div>
-                            <div
-                                class="mt-2 border-b border-gray-400 w-48"
-                            ></div>
-                            <p class="text-[10px] text-gray-400 mt-1">
-                                Cashier / Staff Signature Over Printed Name
-                            </p>
                         </div>
+
+                        <!-- Verified By Block -->
                         <div>
                             <p class="font-semibold text-gray-700">
                                 Verified By:
                             </p>
-                            <!-- Printed manager name -->
-                            <div class="mt-6">
-                                <p class="font-bold text-gray-900">
+
+                            <!-- Container for name and line to keep them tightly bound -->
+                            <div class="mt-8 w-48 text-center">
+                                <p class="font-bold text-gray-900 pb-1">
                                     {{ gymManagerName }}
                                 </p>
+                                <div
+                                    class="border-b border-gray-400 w-full"
+                                ></div>
+                                <p class="text-[8px] text-gray-400 mt-1">
+                                    Gym Manager Signature Over Printed Name
+                                </p>
                             </div>
-                            <div
-                                class="mt-2 border-b border-gray-400 w-48"
-                            ></div>
-                            <p class="text-[10px] text-gray-400 mt-1">
-                                Gym Manager Signature Over Printed Name
-                            </p>
                         </div>
                     </div>
 
@@ -299,7 +299,7 @@
     </div>
 </template>
 <script setup>
-import { ref, watch } from "vue";
+import { ref, watch, computed } from "vue";
 import { usePaymentStore } from "@/stores/paymentStore";
 import { useAuthStore } from "@/stores/auth";
 
@@ -322,6 +322,15 @@ const formatCurrency = (value) => {
         currency: "PHP",
     });
 };
+
+// Safely compute the logged-in staff name
+const formattedStaffName = computed(() => {
+    const user = authStore.user;
+    if (user?.first_name && user?.last_name) {
+        return `${user.first_name} ${user.last_name}`;
+    }
+    return user?.name || "Authorized Staff";
+});
 
 const changePeriod = (newPeriod) => {
     period.value = newPeriod;
