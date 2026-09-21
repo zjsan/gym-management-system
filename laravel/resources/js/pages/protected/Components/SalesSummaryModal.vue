@@ -309,6 +309,9 @@ const changePeriod = (newPeriod) => {
 };
 
 const handlePrint = () => {
+    // Set custom text for the browser's print header/title
+    document.title = "Imaq - Gym Management System";
+
     window.print();
 };
 
