@@ -333,9 +333,13 @@ watch(
         margin: 10mm;
     }
 
-    /* Hide everything on the page by default */
-    body * {
-        visibility: hidden !important;
+    /* Force the page wrapper to strictly lock to 100% height */
+    html,
+    body {
+        height: 100% !important;
+        overflow: hidden !important;
+        margin: 0 !important;
+        padding: 0 !important;
     }
 
     /* Make only the sales report and its children visible */
@@ -344,17 +348,17 @@ watch(
         visibility: visible !important;
     }
 
-    /* Reset the position of the report to take up the full print sheet */
     #printable-sales-report {
         position: absolute !important;
         left: 0 !important;
         top: 0 !important;
         width: 100% !important;
+        height: 100% !important; /*Force to container limits */
+        max-height: 100% !important;
+        overflow: hidden !important; /* Prevents layout leaking downward */
         margin: 0 !important;
         padding: 0 !important;
         background: white !important;
-
-        /* Ensures content scaling fits cleanly onto one page */
         box-sizing: border-box;
     }
 }
