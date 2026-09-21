@@ -294,6 +294,15 @@ const emit = defineEmits(["close"]);
 const paymentStore = usePaymentStore();
 const period = ref("today");
 
+// Helper function to format numbers as Philippine Peso
+const formatCurrency = (value) => {
+    if (value === undefined || value === null) return "₱0.00";
+    return Number(value).toLocaleString("en-PH", {
+        style: "currency",
+        currency: "PHP",
+    });
+};
+
 const changePeriod = (newPeriod) => {
     period.value = newPeriod;
     paymentStore.fetchSalesSummary(period.value);
