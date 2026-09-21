@@ -322,20 +322,28 @@ watch(
 );
 </script>
 
-<style scoped>
+<style>
 @media print {
+    /* Hide everything on the page by default */
     body * {
-        visibility: hidden;
+        visibility: hidden !important;
     }
+
+    /* Make only the sales report and its children visible */
     #printable-sales-report,
     #printable-sales-report * {
-        visibility: visible;
+        visibility: visible !important;
     }
+
+    /* Reset the position of the report to take up the full print sheet */
     #printable-sales-report {
-        position: absolute;
-        left: 0;
-        top: 0;
-        width: 100%;
+        position: absolute !important;
+        left: 0 !important;
+        top: 0 !important;
+        width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        background: white !important;
     }
 }
 </style>
