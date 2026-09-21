@@ -251,22 +251,39 @@
                             <p class="font-semibold text-gray-700">
                                 Prepared By:
                             </p>
+                            <!-- Printed name positioned directly above the signature line -->
+                            <div class="mt-6">
+                                <p class="font-bold text-gray-900">
+                                    {{
+                                        authStore.user?.first_name +
+                                            " " +
+                                            authStore.user?.last_name ||
+                                        "Authorized Staff"
+                                    }}
+                                </p>
+                            </div>
                             <div
-                                class="mt-8 border-b border-gray-400 w-48"
+                                class="mt-2 border-b border-gray-400 w-48"
                             ></div>
                             <p class="text-[10px] text-gray-400 mt-1">
-                                Cashier / Staff Signature
+                                Cashier / Staff Signature Over Printed Name
                             </p>
                         </div>
                         <div>
                             <p class="font-semibold text-gray-700">
                                 Verified By:
                             </p>
+                            <!-- Printed manager name -->
+                            <div class="mt-6">
+                                <p class="font-bold text-gray-900">
+                                    {{ gymManagerName }}
+                                </p>
+                            </div>
                             <div
-                                class="mt-8 border-b border-gray-400 w-48"
+                                class="mt-2 border-b border-gray-400 w-48"
                             ></div>
                             <p class="text-[10px] text-gray-400 mt-1">
-                                Gym Manager Signature
+                                Gym Manager Signature Over Printed Name
                             </p>
                         </div>
                     </div>
@@ -284,14 +301,17 @@
 <script setup>
 import { ref, watch } from "vue";
 import { usePaymentStore } from "@/stores/paymentStore";
+import { useAuthStore } from "@/stores/auth";
 
 const props = defineProps({
     isOpen: Boolean,
 });
 
+const gymManagerName = ref("John Doe"); // Replace with actual gym manager's name if available
 const emit = defineEmits(["close"]);
 
 const paymentStore = usePaymentStore();
+const authStore = useAuthStore();
 const period = ref("today");
 
 // Helper function to format numbers as Philippine Peso
