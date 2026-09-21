@@ -102,7 +102,7 @@
                         <h1
                             class="text-xl font-bold uppercase tracking-wide text-gray-900"
                         >
-                            Gym Management System
+                            Imaq - Gym Management System
                         </h1>
                         <p class="text-xs text-gray-500 mt-0.5">
                             Financial Collection & Sales Summary Report
@@ -324,6 +324,12 @@ watch(
 
 <style>
 @media print {
+    /* Define page size and strict margins to prevent overflow */
+    @page {
+        size: portrait;
+        margin: 10mm;
+    }
+
     /* Hide everything on the page by default */
     body * {
         visibility: hidden !important;
@@ -344,6 +350,9 @@ watch(
         margin: 0 !important;
         padding: 0 !important;
         background: white !important;
+
+        /* Ensures content scaling fits cleanly onto one page */
+        box-sizing: border-box;
     }
 }
 </style>
