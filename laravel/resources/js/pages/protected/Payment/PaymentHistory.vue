@@ -331,6 +331,7 @@ import { onMounted, watch, ref } from "vue";
 import { usePaymentStore } from "@/stores/paymentStore";
 import { usePagination } from "@/composables/usePagination"; // Adjust import path if needed
 import SalesSummaryModal from "../Components/SalesSummaryModal.vue";
+import ReceiptModal from "../Components/ReceiptModal.vue";
 
 const paymentStore = usePaymentStore();
 
@@ -354,7 +355,15 @@ onMounted(() => {
     paymentStore.fetchPayments(1);
 });
 
+//local states
 const isSummaryModalOpen = ref(false); //flag for the summary modal
+const selectedPayment = ref(null);
+const isReceiptModalOpen = ref(false);
+
+const openReceiptModal = (payment) => {
+    selectedPayment.value = payment;
+    isReceiptModalOpen.value = true;
+};
 
 // Helper formatters
 const formatCurrency = (val) => {
