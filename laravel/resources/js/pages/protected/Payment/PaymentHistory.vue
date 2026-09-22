@@ -350,6 +350,12 @@
         :is-open="isSummaryModalOpen"
         @close="isSummaryModalOpen = false"
     />
+
+    <ReceiptModal
+        :is-open="isReceiptModalOpen"
+        :payment="selectedPayment"
+        @close="isReceiptModalOpen = false"
+    />
 </template>
 
 <script setup>
