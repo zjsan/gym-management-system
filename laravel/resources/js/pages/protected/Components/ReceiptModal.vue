@@ -62,11 +62,7 @@
                     </div>
                     <div class="flex justify-between">
                         <span class="text-gray-500">Cashier:</span>
-                        <span>{{
-                            payment.processed_by?.name ||
-                            payment.processedBy?.name ||
-                            "System"
-                        }}</span>
+                        <span>{{ staffNamed || "System" }}</span>
                     </div>
                 </div>
 
@@ -182,6 +178,13 @@ const customerName = computed(() => {
     return "Walk-in Guest";
 });
 
+const staffNamed = computed(() => {
+    if (!props.payment) return "N/A";
+    if (props.payment.member) {
+        return `${props.payment.processed_by.first_name} ${props.payment.processed_by.last_name}`;
+    }
+});
+
 const customerType = computed(() => {
     if (!props.payment) return "";
     return props.payment.member ? "Member" : "Walk-In Guest";
@@ -218,7 +221,6 @@ const handlePrint = () => {
     window.print();
 };
 </script>
-
 <style>
 @media print {
     body * {
