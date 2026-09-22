@@ -200,6 +200,11 @@
                         <th class="p-4">Amount</th>
                         <th class="p-4">Processed By</th>
                         <th class="p-4">Date & Time</th>
+                        <th
+                            class="px-4 py-3 text-right font-semibold text-gray-600"
+                        >
+                            Actions
+                        </th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-gray-100 text-sm">
@@ -260,6 +265,27 @@
                         </td>
                         <td class="p-4 text-xs text-gray-500">
                             {{ formatDate(p.paid_at) }}
+                        </td>
+                        <td class="px-4 py-3 text-right">
+                            <button
+                                @click="openReceiptModal(payment)"
+                                class="p-1.5 text-gray-500 hover:text-emerald-600 hover:bg-emerald-50 rounded-lg transition"
+                                title="Print Thermal Receipt"
+                            >
+                                <svg
+                                    class="w-4 h-4"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    viewBox="0 0 24 24"
+                                >
+                                    <path
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                        stroke-width="2"
+                                        d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"
+                                    />
+                                </svg>
+                            </button>
                         </td>
                     </tr>
                 </tbody>
