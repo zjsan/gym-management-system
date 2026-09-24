@@ -180,9 +180,17 @@ const customerName = computed(() => {
 
 const staffNamed = computed(() => {
     if (!props.payment) return "N/A";
-    if (props.payment.member) {
-        return `${props.payment.processed_by.first_name} ${props.payment.processed_by.last_name}`;
+
+    // Safely check if processed_by exists and has name fields
+    const staff = props.payment.processed_by || props.payment.processedBy;
+    if (staff && (staff.first_name || staff.name)) {
+        if (staff.first_name && staff.last_name) {
+            return `${staff.first_name} ${staff.last_name}`;
+        }
+        return staff.name; // Fallback if it's a single 'name' field
     }
+
+    return null; // This will correctly trigger the "System" fallback in the template
 });
 
 const customerType = computed(() => {
