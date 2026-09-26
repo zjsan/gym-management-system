@@ -237,11 +237,24 @@ const handlePrint = () => {
     }
     #printable-receipt {
         position: absolute;
-        left: 0;
         top: 0;
-        width: 80mm; /* Standard POS thermal paper width */
-        margin: 0 auto;
-        font-size: 11px;
+        left: 0;
+        width: 80mm; /* Standard width */
+        max-width: 80mm;
+        margin: 0;
+        padding: 4mm; /* Small safety padding inside edges */
+        font-family:
+            "Courier New", Courier, monospace; /* Monospace is clearest on thermal */
+        font-size: 12px;
+        line-height: 1.2;
+        color: #000000;
+        background: #ffffff;
+    }
+
+    /* Remove default browser headers/footers (date, URL) */
+    @page {
+        size: 80mm auto; /* auto height for variable receipt lengths */
+        margin: 0;
     }
 }
 </style>
