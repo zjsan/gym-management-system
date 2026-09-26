@@ -101,12 +101,15 @@
                                     class="block w-full rounded-md border-gray-300 shadow-sm border p-2 text-sm"
                                     :required="!isEditing"
                                 />
-                                 <p v-if="showWarning" style="color: red;">
+                                <p v-if="showWarning" style="color: red">
                                     password do not match!
                                 </p>
 
                                 <!-- Server-side Laravel Error -->
-                                <p v-if="userStore.errors?.password" class="text-red-500 text-xs mt-1">
+                                <p
+                                    v-if="userStore.errors?.password"
+                                    class="text-red-500 text-xs mt-1"
+                                >
                                     {{ userStore.errors.password[0] }}
                                 </p>
                             </div>
@@ -145,7 +148,6 @@
                     </form>
                 </div>
             </div>
-
 
             <!--table for users viewing-->
             <div class="lg:col-span-2">
@@ -244,6 +246,13 @@
                 </div>
             </div>
         </div>
+
+        <button
+            @click="logout"
+            class="bg-red-500 text-white font-semibold rounded-lg shadow hover:bg-red-600 transition"
+        >
+            Logout
+        </button>
     </div>
 </template>
 
@@ -283,10 +292,9 @@ const editUser = (user) => {
 const form = ref({ ...initialState });
 
 const handleSubmit = async () => {
-
     if (!passwordMatch.value) {
         alert("Passwords do not match!");
-        return; 
+        return;
     }
 
     try {
@@ -324,15 +332,25 @@ const resetForm = () => {
 };
 
 //check matching password
-const passwordMatch = computed(() =>{
-    return form.value.password === form.value.password_confirmation
+const passwordMatch = computed(() => {
+    return form.value.password === form.value.password_confirmation;
 });
 
 const showWarning = computed(() => {
-  return form.value.password_confirmation.length > 0 && !passwordMatch.value;
+    return form.value.password_confirmation.length > 0 && !passwordMatch.value;
 });
 
 onMounted(() => {
     userStore.fetchUsers();
 });
+
+const logout = async () => {
+    try {
+        console.log("Attempting to logout...");
+        await auth.logout();
+        console.log("Success! Redirecting...");
+    } catch (error) {
+        console.error("Logout failed:", error);
+    }
+};
 </script>
