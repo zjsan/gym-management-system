@@ -200,11 +200,11 @@
                         <th class="p-4">Amount</th>
                         <th class="p-4">Processed By</th>
                         <th class="p-4">Date & Time</th>
-                        <th
+                        <!-- <th
                             class="px-4 py-3 text-right font-semibold text-gray-600"
                         >
                             Actions
-                        </th>
+                        </th> -->
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-gray-100 text-sm">
@@ -266,7 +266,7 @@
                         <td class="p-4 text-xs text-gray-500">
                             {{ formatDate(p.paid_at) }}
                         </td>
-                        <td class="px-4 py-3 text-right">
+                        <!-- <td class="px-4 py-3 text-right">
                             <button
                                 @click="openReceiptModal(p)"
                                 class="p-1.5 text-gray-500 hover:text-emerald-600 hover:bg-emerald-50 rounded-lg transition"
@@ -286,7 +286,7 @@
                                     />
                                 </svg>
                             </button>
-                        </td>
+                        </td> -->
                     </tr>
                 </tbody>
             </table>
