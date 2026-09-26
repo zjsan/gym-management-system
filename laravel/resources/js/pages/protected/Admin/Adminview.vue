@@ -5,6 +5,13 @@
             <p class="text-gray-600">Manage system users and access levels.</p>
         </header>
 
+        <button
+            @click="goToSettingsPage"
+            class="bg-blue-500 text-white font-semibold rounded-lg shadow hover:bg-red-600 transition"
+        >
+            Gym Settings
+        </button>
+
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
             <div class="lg:col-span-1">
                 <div
@@ -260,6 +267,9 @@
 import { computed, ref } from "vue";
 import { useUserStore } from "@/stores/userStore";
 import { onMounted } from "vue";
+import { useRouter } from "vue-router";
+
+const router = useRouter();
 
 const userStore = useUserStore();
 const initialState = {
@@ -352,5 +362,9 @@ const logout = async () => {
     } catch (error) {
         console.error("Logout failed:", error);
     }
+};
+
+const goToSettingsPage = () => {
+    router.push({ name: "SettingsView" });
 };
 </script>
