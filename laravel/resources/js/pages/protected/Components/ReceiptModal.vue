@@ -5,7 +5,7 @@
     >
         <!-- Modal Dialog -->
         <div
-            class="bg-white rounded-xl shadow-xl w-full max-w-sm flex flex-col print:shadow-none print:max-w-full print:w-full print:h-auto"
+            class="bg-white rounded-xl shadow-xl w-full max-w-sm flex flex-col print:shadow-none print:max-w-none print:w-full print:h-auto print:m-0 print:p-0"
         >
             <!-- Top Action Bar (Hidden when printing) -->
             <div
@@ -24,7 +24,7 @@
 
             <!-- Thermal Slip Paper View (80mm footprint) -->
             <div
-                class="p-6 font-mono text-xs text-gray-800 space-y-4 print:p-0 print:text-black"
+                class="p-6 font-mono text-xs text-gray-800 space-y-4 print:p-2 print:text-black print:w-[80mm]"
                 id="printable-receipt"
             >
                 <!-- Header -->
@@ -62,7 +62,7 @@
                     </div>
                     <div class="flex justify-between">
                         <span class="text-gray-500">Cashier:</span>
-                        <span>{{ staffNamed || "System" }}</span>
+                        <span>{{ staffNamed }}</span>
                     </div>
                 </div>
 
@@ -162,7 +162,7 @@ import { computed } from "vue";
 
 const props = defineProps({
     isOpen: Boolean,
-    payment: Object, // The selected transaction object from the payment list
+    payment: Object,
 });
 
 const emit = defineEmits(["close"]);
@@ -179,18 +179,14 @@ const customerName = computed(() => {
 });
 
 const staffNamed = computed(() => {
-    if (!props.payment) return "N/A";
+    if (!props.payment) return "System";
 
-    // Safely check if processed_by exists and has name fields
     const staff = props.payment.processed_by || props.payment.processedBy;
-    if (staff && (staff.first_name || staff.name)) {
-        if (staff.first_name && staff.last_name) {
-            return `${staff.first_name} ${staff.last_name}`;
-        }
-        return staff.name; // Fallback if it's a single 'name' field
-    }
+    if (!staff) return "System";
 
-    return null; // This will correctly trigger the "System" fallback in the template
+    // Robust name resolution avoiding undefined fallbacks
+    const fullName = `${staff.first_name} ${staff.last_name}`;
+    return fullName || staff.name || "System";
 });
 
 const customerType = computed(() => {
@@ -201,7 +197,7 @@ const customerType = computed(() => {
 const formattedCategory = computed(() => {
     if (!props.payment?.category) return "";
     return props.payment.category
-        .replace("_", " ")
+        .replace(/_/g, " ")
         .replace(/\b\w/g, (l) => l.toUpperCase());
 });
 
@@ -229,6 +225,7 @@ const handlePrint = () => {
     window.print();
 };
 </script>
+
 <style>
 @media print {
     body * {
