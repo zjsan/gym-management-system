@@ -261,7 +261,7 @@
                             {{ formatCurrency(p.amount) }}
                         </td>
                         <td class="p-4 text-gray-600">
-                            {{ p.processed_by?.first_name || "System" }}
+                            {{ formatStaffName(p) }}
                         </td>
                         <td class="p-4 text-xs text-gray-500">
                             {{ formatDate(p.paid_at) }}
@@ -359,7 +359,7 @@
 </template>
 
 <script setup>
-import { onMounted, watch, ref } from "vue";
+import { onMounted, watch, ref, computed } from "vue";
 import { usePaymentStore } from "@/stores/paymentStore";
 import { usePagination } from "@/composables/usePagination"; // Adjust import path if needed
 import SalesSummaryModal from "../Components/SalesSummaryModal.vue";
@@ -404,6 +404,17 @@ const formatCurrency = (val) => {
         style: "currency",
         currency: "PHP",
     }).format(num);
+};
+
+const formatStaffName = (payment) => {
+    if (!payment) return "System";
+
+    const staff = payment.processed_by || payment.processedBy;
+    if (!staff) return "System";
+
+    // Robust name resolution avoiding undefined fallbacks
+    const fullName = `${staff.first_name} ${staff.last_name}`;
+    return fullName || staff.name || "System";
 };
 
 const formatDate = (dateStr) => {
