@@ -6,6 +6,7 @@ import Adminview from "../pages/protected/Admin/Adminview.vue";
 import MemberManagement from "../pages/protected/Staff/Staffview.vue";
 import AttendanceDashboard from "../pages/protected/Staff/AttendanceDashboard.vue";
 import PaymentHistory from "../pages/protected/Payment/PaymentHistory.vue";
+import SettingsView from "../pages/protected/Admin/SettingsView.vue";
 
 const routes = [
     { path: "/", component: Login, name: "Login", requiresAuth: false },
@@ -21,6 +22,13 @@ const routes = [
         name: "Adminview",
         meta: { requiresAdmin: true, role: "admin" },
     },
+    {
+        path: "/gym-setting",
+        component: SettingsView,
+        name: "SettingsView",
+        meta: { requiresAdmin: true, role: "admin" },
+    },
+
     {
         path: "/member-management",
         component: MemberManagement,
