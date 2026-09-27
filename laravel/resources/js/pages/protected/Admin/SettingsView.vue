@@ -118,37 +118,31 @@
 
                 <!-- Form Actions -->
                 <div class="pt-4 border-t border-gray-100 flex justify-end">
-                    <button
-                        type="submit"
-                        :disabled="settingStore.saving"
-                        class="px-5 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-xs rounded-lg shadow-sm flex items-center gap-2 transition disabled:opacity-50"
-                    >
-                        <svg
-                            v-if="settingStore.saving"
-                            class="animate-spin h-4 w-4 text-white"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                        >
-                            <circle
-                                class="opacity-25"
-                                cx="12"
-                                cy="12"
-                                r="10"
-                                stroke="currentColor"
-                                stroke-width="4"
-                            ></circle>
-                            <path
-                                class="opacity-75"
-                                fill="currentColor"
-                                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                            ></path>
-                        </svg>
-                        <span>{{
-                            settingStore.saving
-                                ? "Saving Changes..."
-                                : "Save Settings"
-                        }}</span>
-                    </button>
+                    <AlertDialog>
+                        <AlertDialogTrigger as-child>
+                            <Button variant="outline">
+                                <span>{{
+                                    settingStore.saving
+                                        ? "Saving Changes..."
+                                        : "Save Settings"
+                                }}</span></Button
+                            >
+                        </AlertDialogTrigger>
+                        <AlertDialogContent>
+                            <AlertDialogHeader>
+                                <AlertDialogTitle
+                                    >Are you absolutely sure?</AlertDialogTitle
+                                >
+                                <AlertDialogDescription>
+                                    This will action will update the gym rates.
+                                </AlertDialogDescription>
+                            </AlertDialogHeader>
+                            <AlertDialogFooter>
+                                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                <AlertDialogAction>Continue</AlertDialogAction>
+                            </AlertDialogFooter>
+                        </AlertDialogContent>
+                    </AlertDialog>
                 </div>
             </form>
         </div>
@@ -157,8 +151,22 @@
 <script setup>
 import { ref, onMounted } from "vue";
 import { useSettingStore } from "@/stores/settingStore";
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+    AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import { Button } from "@/components/ui/button";
 
 const settingStore = useSettingStore();
+
+const isDialogOpen = ref(false);
 
 const formData = ref({
     walkin_daily_fee: 0,
@@ -171,9 +179,9 @@ onMounted(async () => {
 });
 
 const handleSubmit = async () => {
+    isDialogOpen.value = false; // Close the dialog
     const result = await settingStore.updateSettings(formData.value);
     if (result.success) {
-        // Clear message after 4 seconds
         setTimeout(() => {
             settingStore.successMessage = "";
         }, 4000);
