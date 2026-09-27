@@ -20,6 +20,21 @@ class GymSettingsController extends Controller
     }
 
     /**
+     * Retrieve audit history of setting changes
+     */
+    public function auditHistory()
+    {
+        Gate::authorize('admin-only');
+
+        $logs = GymSetting::with('updater:id,first_name,last_name,email')
+            ->select('id', 'key', 'value', 'updated_by', 'updated_at')
+            ->orderBy('updated_at', 'desc')
+            ->get();
+
+        return response()->json($logs);
+    }
+
+    /**
      * 
      */
     public function store(Request $request)
