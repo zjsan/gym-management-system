@@ -222,4 +222,25 @@ const handleSubmit = async () => {
         }, 4000);
     }
 };
+
+// Helper function to format key names cleanly
+const formatKeyName = (key) => {
+  const labels = {
+    walkin_daily_fee: 'Walk-in Daily Fee',
+    monthly_membership_fee: 'Monthly Membership Fee',
+  };
+  return labels[key] || key;
+};
+
+// Helper function for dates
+const formatDate = (dateString) => {
+  if (!dateString) return 'N/A';
+  return new Date(dateString).toLocaleString('en-US', {
+    month: 'short',
+    day: 'numeric',
+    year: 'numeric',
+    hour: 'numeric',
+    minute: '2-digit',
+    hour12: true,
+  });
 </script>
