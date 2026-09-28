@@ -26,7 +26,7 @@ class GymSettingsController extends Controller
     {
         Gate::authorize('admin-only');
 
-        $logs = GymSetting::with('updater:id,first_name,last_name,email')
+        $logs = GymSetting::with('updatedBy:id,first_name,last_name,email')
             ->select('id', 'key', 'value', 'updated_by', 'updated_at')
             ->orderBy('updated_at', 'desc')
             ->get();
