@@ -11,9 +11,11 @@ export const useSettingStore = defineStore("setting", {
     saving: false,
     errors: null,
     successMessage: "",
+    history: [], //placeholder for the settings history 
   }),
 
   actions: {
+
     /**
      * Fetch all gym configuration settings
      */
@@ -32,6 +34,22 @@ export const useSettingStore = defineStore("setting", {
         console.error("Failed to load gym settings:", err);
         this.errors = err.response?.data?.message || "Failed to load gym settings.";
         return { success: false };
+      } finally {
+        this.loading = false;
+      }
+    },
+
+    
+     /**
+     * Fetch all gym configuration settings change history
+     */
+    async fetchAuditHistory() {
+      this.loading = true;
+      try {
+        const res = await api.get('/gym-settings/history');
+        this.history = res.data;
+      } catch (err) {
+        console.error('Failed to load settings history:', err);
       } finally {
         this.loading = false;
       }
@@ -63,6 +81,6 @@ export const useSettingStore = defineStore("setting", {
       } finally {
         this.saving = false;
       }
-    },
+    }
   },
 });
