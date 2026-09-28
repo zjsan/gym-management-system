@@ -123,7 +123,7 @@
                             <button
                                 type="button"
                                 :disabled="settingStore.saving"
-                                class="px-5 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-xs rounded-lg shadow-sm flex items-center gap-2 transition disabled:opacity-50"
+                                class="px-5 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-xs rounded-lg shadow-sm flex items-center gap-2 transition disabled:opacity-50 cursor-pointer"
                             >
                                 <svg
                                     v-if="settingStore.saving"
@@ -197,7 +197,7 @@
                 </div>
                 <button
                     @click="settingStore.fetchAuditHistory()"
-                    class="text-xs text-emerald-600 hover:text-emerald-700 font-medium flex items-center gap-1 transition"
+                    class="text-xs text-emerald-600 hover:text-emerald-700 font-medium flex items-center gap-1 transition cursor-pointer"
                 >
                     <svg
                         class="w-3.5 h-3.5"
