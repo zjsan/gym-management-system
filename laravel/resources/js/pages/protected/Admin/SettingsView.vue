@@ -178,8 +178,115 @@
                 </div>
             </form>
         </div>
+
+        <!-- Audit Logs / Rate Change History Section -->
+        <div
+            class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 space-y-4 mt-6"
+        >
+            <div
+                class="flex items-center justify-between border-b border-gray-100 pb-4"
+            >
+                <div>
+                    <h2 class="text-base font-semibold text-gray-800">
+                        Rate Change Audit History
+                    </h2>
+                    <p class="text-xs text-gray-500 mt-0.5">
+                        Track recent pricing updates and responsible admin
+                        users.
+                    </p>
+                </div>
+                <button
+                    @click="settingStore.fetchAuditHistory()"
+                    class="text-xs text-emerald-600 hover:text-emerald-700 font-medium flex items-center gap-1 transition"
+                >
+                    <svg
+                        class="w-3.5 h-3.5"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                    >
+                        <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
+                        />
+                    </svg>
+                    Refresh Log
+                </button>
+            </div>
+
+            <!-- Loading Skeleton -->
+            <div v-if="settingStore.loadingHistory" class="space-y-3">
+                <div
+                    v-for="i in 2"
+                    :key="i"
+                    class="h-12 bg-gray-50 animate-pulse rounded-lg"
+                ></div>
+            </div>
+
+            <!-- Empty State -->
+            <div
+                v-else-if="!settingStore.history.length"
+                class="text-center py-6 text-xs text-gray-400"
+            >
+                No recent setting changes recorded.
+            </div>
+
+            <!-- History List -->
+            <div v-else class="divide-y divide-gray-100">
+                <div
+                    v-for="item in settingStore.history"
+                    :key="item.id"
+                    class="py-3.5 flex items-center justify-between text-xs hover:bg-gray-50/50 px-2 rounded-lg transition"
+                >
+                    <div class="flex items-center gap-3">
+                        <div
+                            class="p-2 bg-emerald-50 text-emerald-700 rounded-lg flex-shrink-0"
+                        >
+                            <svg
+                                class="w-4 h-4"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                            >
+                                <path
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    stroke-width="2"
+                                    d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                                />
+                            </svg>
+                        </div>
+                        <div>
+                            <p class="font-bold text-gray-800">
+                                {{ formatKeyName(item.key) }}
+                            </p>
+                            <p class="text-[11px] text-gray-400 mt-0.5">
+                                Updated by
+                                <span class="font-medium text-gray-600">{{
+                                    item.updater?.name || "Admin System"
+                                }}</span>
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="text-right space-y-0.5">
+                        <span
+                            class="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-mono font-bold bg-gray-100 text-gray-800"
+                        >
+                            ₱{{ Number(item.value).toFixed(2) }}
+                        </span>
+                        <p class="text-[10px] text-gray-400">
+                            {{ formatDate(item.updated_at) }}
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </template>
+
 <script setup>
 import { ref, onMounted } from "vue";
 import { useSettingStore } from "@/stores/settingStore";
@@ -225,22 +332,23 @@ const handleSubmit = async () => {
 
 // Helper function to format key names cleanly
 const formatKeyName = (key) => {
-  const labels = {
-    walkin_daily_fee: 'Walk-in Daily Fee',
-    monthly_membership_fee: 'Monthly Membership Fee',
-  };
-  return labels[key] || key;
+    const labels = {
+        walkin_daily_fee: "Walk-in Daily Fee",
+        monthly_membership_fee: "Monthly Membership Fee",
+    };
+    return labels[key] || key;
 };
 
 // Helper function for dates
 const formatDate = (dateString) => {
-  if (!dateString) return 'N/A';
-  return new Date(dateString).toLocaleString('en-US', {
-    month: 'short',
-    day: 'numeric',
-    year: 'numeric',
-    hour: 'numeric',
-    minute: '2-digit',
-    hour12: true,
-  });
+    if (!dateString) return "N/A";
+    return new Date(dateString).toLocaleString("en-US", {
+        month: "short",
+        day: "numeric",
+        year: "numeric",
+        hour: "numeric",
+        minute: "2-digit",
+        hour12: true,
+    });
+};
 </script>
