@@ -265,7 +265,7 @@
                             <p class="text-[11px] text-gray-400 mt-0.5">
                                 Updated by
                                 <span class="font-medium text-gray-600">{{
-                                    item.updater?.name || "Admin System"
+                                    formatAdminName(item)
                                 }}</span>
                             </p>
                         </div>
@@ -337,6 +337,17 @@ const formatKeyName = (key) => {
         monthly_membership_fee: "Monthly Membership Fee",
     };
     return labels[key] || key;
+};
+
+const formatAdminName = (item) => {
+    if (!item) return "Admin System";
+    const staff = item.updated_by;
+
+    if (!staff) return "Admin System";
+
+    // Robust name resolution avoiding undefined fallbacks
+    const fullName = `${staff.first_name} ${staff.last_name}`;
+    return fullName || staff.name || "Admin System";
 };
 
 // Helper function for dates
