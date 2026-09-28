@@ -49,6 +49,9 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
         // Fee Management (Admin Only)
         Route::put('/gym-settings', [GymSettingsController::class, 'update']);
+
+        // fetch audit history for gym rate settings
+        Route::get('/gym-settings/history', [GymSettingsController::class, 'auditHistory']);
         
     });
 
