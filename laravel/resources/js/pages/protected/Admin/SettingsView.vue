@@ -206,7 +206,10 @@ const formData = ref({
 });
 
 onMounted(async () => {
-    await settingStore.fetchSettings();
+    await Promise.all([
+        settingStore.fetchSettings(),
+        settingStore.fetchAuditHistory(),
+    ]);
     formData.value = { ...settingStore.settings };
 });
 
