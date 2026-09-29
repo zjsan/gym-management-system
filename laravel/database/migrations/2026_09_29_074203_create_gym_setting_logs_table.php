@@ -13,7 +13,12 @@ return new class extends Migration
     {
         Schema::create('gym_setting_logs', function (Blueprint $table) {
             $table->id();
-            $table->timestamps();
+            $table->foreignId('gym_setting_id')->nullable()->constrained('gym_settings')->nullOnDelete();
+            $table->string('key');
+            $table->decimal('old_value', 10, 2)->nullable();
+            $table->decimal('new_value', 10, 2);
+            $table->foreignId('updated_by')->nullable()->constrained('users')->nullOnDelete();
+            $table->timestamp('created_at')->useCurrent();
         });
     }
 
