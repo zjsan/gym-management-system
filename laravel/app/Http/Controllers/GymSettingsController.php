@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 
 use App\Models\GymSetting;
+use App\Models\GymSettingLog;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 
@@ -20,16 +21,15 @@ class GymSettingsController extends Controller
     }
 
     /**
-     * Retrieve audit history of setting changes
+     * Retrieve paginated audit history of setting changes.
      */
     public function auditHistory()
     {
         Gate::authorize('admin-only');
 
-        $logs = GymSetting::with('updatedBy:id,first_name,last_name,email')
-            ->select('id', 'key', 'value', 'updated_by', 'updated_at')
-            ->orderBy('updated_at', 'desc')
-            ->get();
+        $logs = GymSettingLog::with('updatedBy:id,first_name,last_name,email')
+            ->orderBy('created_at', 'desc')
+            ->paginate(10); // 10 records per page
 
         return response()->json($logs);
     }
