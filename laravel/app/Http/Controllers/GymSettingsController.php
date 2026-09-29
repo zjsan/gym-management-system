@@ -52,25 +52,44 @@ class GymSettingsController extends Controller
     }
 
     /**
-     * Admin-only access to update gym fees
+     * Admin-only access to update gym fees and create audit log entries.
      */
     public function update(Request $request)
     {
-        //check role privellege 
-        Gate::authorize("admin-only");
+        Gate::authorize('admin-only');
 
         $validated = $request->validate([
-            'walkin_daily_fee'       => 'required|numeric|min:0',
+            'walkin_daily_fee'      => 'required|numeric|min:0',
             'monthly_membership_fee' => 'required|numeric|min:0',
         ]);
 
-        foreach ($validated as $key => $value) {
-            GymSetting::where('key', $key)->update([
-                'value'      => $value,
-                'updated_by' => $request->user()->id,
-            ]);
-        } 
-        
+        foreach ($validated as $key => $newValue) {
+            $setting = GymSetting::where('key', $key)->first();
+
+            if ($setting) {
+                $oldValue = $setting->value;
+
+                // Log entry is created ONLY if the rate actually changed
+                if ((float) $oldValue !== (float) $newValue) {
+                    // 1. Update current live active setting
+                    $setting->update([
+                        'value'      => $newValue,
+                        'updated_by' => $request->user()->id,
+                    ]);
+
+                    // 2. Record immutable historical audit log
+                    GymSettingLog::create([
+                        'gym_setting_id' => $setting->id,
+                        'key'            => $key,
+                        'old_value'      => $oldValue,
+                        'new_value'      => $newValue,
+                        'updated_by'     => $request->user()->id,
+                        'created_at'     => now(),
+                    ]);
+                }
+            }
+        }
+
         return response()->json(['message' => 'Gym fees updated successfully.']);
     }
 
