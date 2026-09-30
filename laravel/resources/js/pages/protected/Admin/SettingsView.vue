@@ -288,8 +288,9 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from "vue";
+import { ref, onMounted, watch, reactive } from "vue";
 import { useSettingStore } from "@/stores/settingStore";
+import { usePagination } from "@/composables/usePagination";
 import {
     AlertDialog,
     AlertDialogAction,
@@ -312,12 +313,36 @@ const formData = ref({
     monthly_membership_fee: 0,
 });
 
+//sync the usePagination composable with the store's history data
+const fetchHistoryPage = async (page) => {
+    await settingStore.fetchAuditHistory(page);
+};
+
+const { pagination, updatePagination, changePage } =
+    usePagination(fetchHistoryPage);
+
+// Sync composable state whenever Pinia updates pagination
+watch(
+    () => settingStore.pagination,
+    (newMeta) => {
+        if (newMeta) updatePagination(newMeta);
+    },
+    { deep: true },
+);
+
 onMounted(async () => {
-    await Promise.all([
-        settingStore.fetchSettings(),
-        settingStore.fetchAuditHistory(),
-    ]);
-    formData.value = { ...settingStore.settings };
+    await settingStore.fetchSettings();
+
+    if (settingStore.settings) {
+        formData.walkin_daily_fee = Number(
+            settingStore.settings.walkin_daily_fee ?? 100,
+        );
+        formData.monthly_membership_fee = Number(
+            settingStore.settings.monthly_membership_fee ?? 1200,
+        );
+    }
+
+    await fetchHistoryPage(1);
 });
 
 const handleSubmit = async () => {
