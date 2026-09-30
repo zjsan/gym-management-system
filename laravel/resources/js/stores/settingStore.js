@@ -8,10 +8,18 @@ export const useSettingStore = defineStore("setting", {
             monthly_membership_fee: 1200,
         },
         loading: false,
+        // --- ADDED / UPDATED STATE ---
+        loadingHistory: false,
         saving: false,
         errors: null,
         successMessage: "",
-        history: [], //placeholder for the settings history
+        history: [],
+        pagination: {
+            current_page: 1,
+            last_page: 1,
+            total: 0,
+        },
+        // ------------------------------
     }),
 
     actions: {
@@ -49,12 +57,21 @@ export const useSettingStore = defineStore("setting", {
             this.loadingHistory = true;
             try {
                 const res = await api.get(`/gym-settings/history?page=${page}`);
-                this.history = res.data.data;
+
+                // --- UPDATED RESPONSE MAPPING ---
+                // Support both direct Paginator JSON and API Resource collection structures
+                const responseData = res.data;
+                const records =
+                    responseData.data?.data || responseData.data || [];
+                const meta = responseData.meta || responseData;
+
+                this.history = records;
                 this.pagination = {
-                    current_page: res.data.current_page,
-                    last_page: res.data.last_page,
-                    total: res.data.total,
+                    current_page: meta.current_page ?? page,
+                    last_page: meta.last_page ?? 1,
+                    total: meta.total ?? records.length,
                 };
+                // ----------------------------------
             } catch (err) {
                 console.error("Failed to load settings history:", err);
             } finally {
@@ -76,6 +93,11 @@ export const useSettingStore = defineStore("setting", {
 
                 // Optimistically update local store state
                 this.settings = { ...this.settings, ...payload };
+
+                // --- ADDED: Auto refresh audit logs after successful rate update ---
+                await this.fetchAuditHistory(1);
+                // ------------------------------------------------------------------
+
                 return { success: true };
             } catch (err) {
                 if (err.response?.status === 422) {
