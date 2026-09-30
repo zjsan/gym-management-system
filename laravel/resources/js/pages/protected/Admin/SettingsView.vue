@@ -196,7 +196,7 @@
                     </p>
                 </div>
                 <button
-                    @click="settingStore.fetchAuditHistory()"
+                    @click="fetchHistoryPage(pagination.current_page)"
                     class="text-xs text-emerald-600 hover:text-emerald-700 font-medium flex items-center gap-1 transition cursor-pointer"
                 >
                     <svg
@@ -219,7 +219,7 @@
             <!-- Loading Skeleton -->
             <div v-if="settingStore.loadingHistory" class="space-y-3">
                 <div
-                    v-for="i in 2"
+                    v-for="i in 3"
                     :key="i"
                     class="h-12 bg-gray-50 animate-pulse rounded-lg"
                 ></div>
@@ -234,52 +234,104 @@
             </div>
 
             <!-- History List -->
-            <div v-else class="divide-y divide-gray-100">
-                <div
-                    v-for="item in settingStore.history"
-                    :key="item.id"
-                    class="py-3.5 flex items-center justify-between text-xs hover:bg-gray-50/50 px-2 rounded-lg transition"
-                >
-                    <div class="flex items-center gap-3">
-                        <div
-                            class="p-2 bg-emerald-50 text-emerald-700 rounded-lg flex-shrink-0"
-                        >
-                            <svg
-                                class="w-4 h-4"
-                                fill="none"
-                                stroke="currentColor"
-                                viewBox="0 0 24 24"
+            <div v-else class="space-y-4">
+                <div class="divide-y divide-gray-100">
+                    <div
+                        v-for="item in settingStore.history"
+                        :key="item.id"
+                        class="py-3.5 flex items-center justify-between text-xs hover:bg-gray-50/50 px-2 rounded-lg transition"
+                    >
+                        <div class="flex items-center gap-3">
+                            <div
+                                class="p-2 bg-emerald-50 text-emerald-700 rounded-lg flex-shrink-0"
                             >
-                                <path
-                                    stroke-linecap="round"
-                                    stroke-linejoin="round"
-                                    stroke-width="2"
-                                    d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                                />
-                            </svg>
+                                <svg
+                                    class="w-4 h-4"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    viewBox="0 0 24 24"
+                                >
+                                    <path
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                        stroke-width="2"
+                                        d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                                    />
+                                </svg>
+                            </div>
+                            <div>
+                                <p class="font-bold text-gray-800">
+                                    {{ formatKeyName(item.key) }}
+                                </p>
+                                <p class="text-[11px] text-gray-400 mt-0.5">
+                                    Updated by
+                                    <span class="font-medium text-gray-600">{{
+                                        formatAdminName(item)
+                                    }}</span>
+                                </p>
+                            </div>
                         </div>
-                        <div>
-                            <p class="font-bold text-gray-800">
-                                {{ formatKeyName(item.key) }}
-                            </p>
-                            <p class="text-[11px] text-gray-400 mt-0.5">
-                                Updated by
-                                <span class="font-medium text-gray-600">{{
-                                    formatAdminName(item)
-                                }}</span>
+
+                        <div class="text-right space-y-0.5">
+                            <div
+                                class="flex items-center justify-end gap-1.5 font-mono text-[11px]"
+                            >
+                                <span
+                                    v-if="item.old_value !== null"
+                                    class="text-gray-400 line-through"
+                                >
+                                    ₱{{ Number(item.old_value).toFixed(2) }}
+                                </span>
+                                <span
+                                    v-if="item.old_value !== null"
+                                    class="text-gray-400"
+                                    >→</span
+                                >
+                                <span
+                                    class="px-2 py-0.5 rounded font-bold bg-emerald-50 text-emerald-700"
+                                >
+                                    ₱{{ Number(item.new_value).toFixed(2) }}
+                                </span>
+                            </div>
+                            <p class="text-[10px] text-gray-400">
+                                {{ formatDate(item.created_at) }}
                             </p>
                         </div>
                     </div>
+                </div>
 
-                    <div class="text-right space-y-0.5">
-                        <span
-                            class="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-mono font-bold bg-gray-100 text-gray-800"
+                <!-- Pagination Footer -->
+                <div
+                    v-if="pagination.last_page > 1"
+                    class="pt-3 border-t border-gray-100 flex items-center justify-between text-xs text-gray-500"
+                >
+                    <p>
+                        Showing page
+                        <span class="font-bold text-gray-800">{{
+                            pagination.current_page
+                        }}</span>
+                        of
+                        <span class="font-bold text-gray-800">{{
+                            pagination.last_page
+                        }}</span>
+                    </p>
+                    <div class="flex items-center gap-2">
+                        <button
+                            @click="changePage(pagination.current_page - 1)"
+                            :disabled="pagination.current_page === 1"
+                            class="px-3 py-1.5 border border-gray-200 rounded-lg text-gray-600 hover:bg-gray-50 disabled:opacity-40 disabled:hover:bg-transparent transition font-medium cursor-pointer"
                         >
-                            ₱{{ Number(item.value).toFixed(2) }}
-                        </span>
-                        <p class="text-[10px] text-gray-400">
-                            {{ formatDate(item.updated_at) }}
-                        </p>
+                            Previous
+                        </button>
+                        <button
+                            @click="changePage(pagination.current_page + 1)"
+                            :disabled="
+                                pagination.current_page === pagination.last_page
+                            "
+                            class="px-3 py-1.5 border border-gray-200 rounded-lg text-gray-600 hover:bg-gray-50 disabled:opacity-40 disabled:hover:bg-transparent transition font-medium cursor-pointer"
+                        >
+                            Next
+                        </button>
                     </div>
                 </div>
             </div>
