@@ -365,9 +365,16 @@ const formData = ref({
     monthly_membership_fee: 0,
 });
 
-//sync the usePagination composable with the store's history data
-const fetchHistoryPage = async (page) => {
-    await settingStore.fetchAuditHistory(page);
+const loadPage = async (pageNumber) => {
+    try {
+        errorMessage.value = "";
+        await settingStore.fetchAuditHistory(pageNumber);
+    } catch (err) {
+        errorMessage.value =
+            err?.response?.data?.message ||
+            err?.message ||
+            "Failed to load registry.";
+    }
 };
 
 const { pagination, updatePagination, changePage } =
