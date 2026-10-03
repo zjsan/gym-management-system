@@ -14,11 +14,12 @@ export const useSettingStore = defineStore("setting", {
         errors: null,
         successMessage: "",
         history: [],
-        pagination: {
-            current_page: 1,
-            last_page: 1,
-            total: 0,
-        },
+
+        // --- ROOT-LEVEL PAGINATION FOR usePagination ---
+        currentPage: 1,
+        lastPage: 1,
+        itemsPerPage: 10, // Gives usePagination a valid non-zero divisor on initial load
+        totalItems: 0,
         // ------------------------------
     }),
 
