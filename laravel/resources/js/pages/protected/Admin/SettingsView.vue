@@ -464,6 +464,8 @@ const formData = ref({
     monthly_membership_fee: 0,
 });
 
+const errorMessage = ref("");
+
 const loadPage = async (pageNumber) => {
     try {
         errorMessage.value = "";
@@ -489,15 +491,6 @@ const {
     nextPage,
     goToPage,
 } = usePagination(settingStore, loadPage);
-
-// Sync composable state whenever Pinia updates pagination
-watch(
-    () => settingStore.pagination,
-    (newMeta) => {
-        if (newMeta) updatePagination(newMeta);
-    },
-    { deep: true },
-);
 
 onMounted(async () => {
     await settingStore.fetchSettings();
