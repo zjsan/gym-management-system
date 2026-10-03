@@ -196,7 +196,7 @@
                     </p>
                 </div>
                 <button
-                    @click="fetchHistoryPage(pagination.current_page)"
+                    @click="loadPage"
                     class="text-xs text-emerald-600 hover:text-emerald-700 font-medium flex items-center gap-1 transition cursor-pointer"
                 >
                     <svg
