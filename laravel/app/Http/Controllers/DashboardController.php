@@ -3,47 +3,128 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
 
 class DashboardController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Retrieve aggregated financial and operational metrics for the dashboard.
      */
-    public function index()
+    public function overview(): JsonResponse
     {
-        //
-    }
+        $today = Carbon::today();
+        $startOfMonth = Carbon::now()->startOfMonth();
+        $endOfMonth = Carbon::now()->endOfMonth();
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
-    }
+        //  Key Performance Indicators (KPIs)
+        $todayRevenue = DB::table('payments')
+            ->whereDate('created_at', $today)
+            ->sum('amount');
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
-    }
+        $monthlyRevenue = DB::table('payments')
+            ->whereBetween('created_at', [$startOfMonth, $endOfMonth])
+            ->sum('amount');
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
+        $activeMembers = DB::table('members')
+            ->where('status', 'active')
+            ->whereDate('membership_expires_at', '>=', $today)
+            ->count();
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
+        $expiredMembers = DB::table('members')
+            ->where(function ($query) use ($today) {
+                $query->where('status', 'expired')
+                    ->orWhereDate('membership_expires_at', '<', $today);
+            })
+            ->count();
+
+        $todayAttendance = DB::table('attendances')
+            ->whereDate('created_at', $today)
+            ->count();
+
+        // 7-Day Revenue Trend (Walk-ins vs Membership Renewals)
+        $sevenDaysAgo = Carbon::today()->subDays(6);
+        $rawRevenueTrend = DB::table('payments')
+            ->select(
+                DB::raw('DATE(created_at) as date'),
+                DB::raw("SUM(CASE WHEN type = 'walk_in' THEN amount ELSE 0 END) as walkin"),
+                DB::raw("SUM(CASE WHEN type = 'renewal' THEN amount ELSE 0 END) as renewals")
+            )
+            ->whereDate('created_at', '>=', $sevenDaysAgo)
+            ->groupBy(DB::raw('DATE(created_at)'))
+            ->orderBy('date', 'ASC')
+            ->get()
+            ->keyBy('date');
+
+        // Fill missing dates with zero values for smooth chart plotting
+        $revenueChart = [];
+        for ($i = 6; $i >= 0; $i--) {
+            $dateStr = Carbon::today()->subDays($i)->format('Y-m-d');
+            $revenueChart[] = [
+                'date' => $dateStr,
+                'day' => Carbon::parse($dateStr)->format('M d'),
+                'walkin' => (float) ($rawRevenueTrend[$dateStr]->walkin ?? 0),
+                'renewals' => (float) ($rawRevenueTrend[$dateStr]->renewals ?? 0),
+            ];
+        }
+
+        // 7-Day Attendance Trend
+        $rawAttendanceTrend = DB::table('attendances')
+            ->select(
+                DB::raw('DATE(created_at) as date'),
+                DB::raw('COUNT(*) as count')
+            )
+            ->whereDate('created_at', '>=', $sevenDaysAgo)
+            ->groupBy(DB::raw('DATE(created_at)'))
+            ->orderBy('date', 'ASC')
+            ->get()
+            ->keyBy('date');
+
+        $attendanceTrends = [];
+        for ($i = 6; $i >= 0; $i--) {
+            $dateStr = Carbon::today()->subDays($i)->format('Y-m-d');
+            $attendanceTrends[] = [
+                'date' => $dateStr,
+                'day' => Carbon::parse($dateStr)->format('D'),
+                'count' => (int) ($rawAttendanceTrend[$dateStr]->count ?? 0),
+            ];
+        }
+
+        //  Recent Transactions Feed
+        $recentTransactions = DB::table('payments')
+            ->leftJoin('members', 'payments.member_id', '=', 'members.id')
+            ->select(
+                'payments.id',
+                'payments.amount',
+                'payments.type',
+                'payments.created_at',
+                'members.name as member_name'
+            )
+            ->orderBy('payments.created_at', 'DESC')
+            ->limit(5)
+            ->get()
+            ->map(function ($tx) {
+                return [
+                    'id' => $tx->id,
+                    'amount' => (float) $tx->amount,
+                    'type' => $tx->type,
+                    'payer' => $tx->member_name ?? 'Walk-in Guest',
+                    'timestamp' => Carbon::parse($tx->created_at)->diffForHumans(),
+                ];
+            });
+
+        return response()->json([
+            'metrics' => [
+                'today_revenue' => (float) $todayRevenue,
+                'monthly_revenue' => (float) $monthlyRevenue,
+                'active_members' => (int) $activeMembers,
+                'expired_members' => (int) $expiredMembers,
+                'today_attendance' => (int) $todayAttendance,
+            ],
+            'revenue_chart' => $revenueChart,
+            'attendance_trends' => $attendanceTrends,
+            'recent_transactions' => $recentTransactions,
+        ]);
     }
 }
