@@ -300,37 +300,136 @@
                     </div>
                 </div>
 
-                <!-- Pagination Footer -->
+                <!--pagination control-->
                 <div
-                    v-if="pagination.last_page > 1"
-                    class="pt-3 border-t border-gray-100 flex items-center justify-between text-xs text-gray-500"
+                    class="flex flex-col sm:flex-row items-center justify-between px-6 py-4 bg-slate-50/40 border-t border-slate-200/80 gap-4"
                 >
-                    <p>
-                        Showing page
-                        <span class="font-bold text-gray-800">{{
-                            pagination.current_page
+                    <div
+                        class="text-xs text-slate-500 font-medium order-2 sm:order-1"
+                    >
+                        Showing
+                        <span class="text-slate-800 font-semibold">{{
+                            rangeStart
+                        }}</span>
+                        to
+                        <span class="text-slate-800 font-semibold">{{
+                            rangeEnd
                         }}</span>
                         of
-                        <span class="font-bold text-gray-800">{{
-                            pagination.last_page
+                        <span class="text-slate-800 font-semibold">{{
+                            totalItems
                         }}</span>
-                    </p>
-                    <div class="flex items-center gap-2">
+                        entries
+                    </div>
+
+                    <div
+                        class="flex items-center gap-1.5 order-1 sm:order-2 w-full sm:w-auto justify-end"
+                    >
                         <button
-                            @click="changePage(pagination.current_page - 1)"
-                            :disabled="pagination.current_page === 1"
-                            class="px-3 py-1.5 border border-gray-200 rounded-lg text-gray-600 hover:bg-gray-50 disabled:opacity-40 disabled:hover:bg-transparent transition font-medium cursor-pointer"
-                        >
-                            Previous
-                        </button>
-                        <button
-                            @click="changePage(pagination.current_page + 1)"
+                            @click="prevPage"
                             :disabled="
-                                pagination.current_page === pagination.last_page
+                                currentPage === 1 || settingStore.loading
                             "
-                            class="px-3 py-1.5 border border-gray-200 rounded-lg text-gray-600 hover:bg-gray-50 disabled:opacity-40 disabled:hover:bg-transparent transition font-medium cursor-pointer"
+                            class="inline-flex items-center justify-center min-w-8 h-8 px-2 rounded-lg border border-slate-200 bg-white text-slate-600 text-xs font-medium shadow-sm transition-all hover:bg-slate-50 disabled:opacity-40 disabled:hover:bg-white disabled:cursor-not-allowed cursor-pointer select-none"
+                        >
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                class="w-3.5 h-3.5 mr-1"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                stroke="currentColor"
+                                stroke-width="2"
+                            >
+                                <path
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    d="M15 19l-7-7 7-7"
+                                />
+                            </svg>
+                            Prev
+                        </button>
+
+                        <div class="hidden md:flex items-center gap-1">
+                            <button
+                                v-if="visiblePages[0] > 1"
+                                @click="goToPage(1)"
+                                :disabled="settingStore.loading"
+                                class="w-8 h-8 rounded-lg text-xs font-semibold border bg-white text-slate-600 border-slate-200 hover:bg-slate-50 disabled:opacity-50"
+                            >
+                                1
+                            </button>
+
+                            <span
+                                v-if="visiblePages[0] > 2"
+                                class="text-slate-400 text-xs px-1"
+                                >...</span
+                            >
+
+                            <button
+                                v-for="page in visiblePages"
+                                :key="page"
+                                @click="goToPage(page)"
+                                :disabled="settingStore.loading"
+                                :class="[
+                                    'w-8 h-8 rounded-lg text-xs font-semibold border transition-all cursor-pointer select-none',
+                                    currentPage === page
+                                        ? 'bg-indigo-600 text-white border-indigo-600 shadow-sm shadow-indigo-500/10'
+                                        : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-50 disabled:opacity-50',
+                                ]"
+                            >
+                                {{ page }}
+                            </button>
+
+                            <span
+                                v-if="
+                                    visiblePages[visiblePages.length - 1] <
+                                    lastPage - 1
+                                "
+                                class="text-slate-400 text-xs px-1"
+                                >...</span
+                            >
+
+                            <button
+                                v-if="
+                                    visiblePages[visiblePages.length - 1] <
+                                    lastPage
+                                "
+                                @click="goToPage(lastPage)"
+                                :disabled="settingStore.loading"
+                                class="w-8 h-8 rounded-lg text-xs font-semibold border bg-white text-slate-600 border-slate-200 hover:bg-slate-50 disabled:opacity-50"
+                            >
+                                {{ lastPage }}
+                            </button>
+                        </div>
+
+                        <span
+                            class="text-xs font-medium text-slate-500 md:hidden px-2"
+                        >
+                            Page {{ currentPage }} of {{ lastPage }}
+                        </span>
+
+                        <button
+                            @click="nextPage"
+                            :disabled="
+                                currentPage === lastPage || settingStore.loading
+                            "
+                            class="inline-flex items-center justify-center min-w-8 h-8 px-2 rounded-lg border border-slate-200 bg-white text-slate-600 text-xs font-medium shadow-sm transition-all hover:bg-slate-50 disabled:opacity-40 disabled:hover:bg-white disabled:cursor-not-allowed cursor-pointer select-none"
                         >
                             Next
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                class="w-3.5 h-3.5 ml-1"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                stroke="currentColor"
+                                stroke-width="2"
+                            >
+                                <path
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    d="M9 5l7 7-7 7"
+                                />
+                            </svg>
                         </button>
                     </div>
                 </div>
@@ -377,8 +476,19 @@ const loadPage = async (pageNumber) => {
     }
 };
 
-const { pagination, updatePagination, changePage } =
-    usePagination(fetchHistoryPage);
+// Custom pagination composable setup
+const {
+    currentPage,
+    lastPage,
+    totalItems,
+    isLoading,
+    visiblePages,
+    rangeStart,
+    rangeEnd,
+    prevPage,
+    nextPage,
+    goToPage,
+} = usePagination(settingStore, loadPage);
 
 // Sync composable state whenever Pinia updates pagination
 watch(
@@ -401,12 +511,13 @@ onMounted(async () => {
         );
     }
 
-    await fetchHistoryPage(1);
+    loadPage(currentPage.value); //fetch the current page
 });
 
 const handleSubmit = async () => {
     isDialogOpen.value = false; // Close the dialog
     const result = await settingStore.updateSettings(formData.value);
+    loadPage(currentPage.value); // Hot-reload current dataset view
     if (result.success) {
         setTimeout(() => {
             settingStore.successMessage = "";
