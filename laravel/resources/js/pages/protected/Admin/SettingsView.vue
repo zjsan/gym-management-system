@@ -493,20 +493,42 @@ const {
 } = usePagination(settingStore, loadPage);
 
 onMounted(async () => {
-    const settingsData = await settingStore.fetchSettings();
-    console.log(settingsData.walkin_daily_fee);
-    console.log(settingsData.monthly_membership_fee);
-    if (settingStore.settings) {
+    //  Fetch settings from backend
+    const result = await settingStore.fetchSettings();
+
+    //  debugging
+    console.log("Fetched Settings from Store:", settingStore.settings);
+
+    // Sync fetched values to the reactive form state
+    if (result.success && settingStore.settings) {
+        console.log("results");
         formData.walkin_daily_fee = Number(
-            settingStore.settings.walkin_daily_fee ?? 100,
+            settingStore.settings.walkin_daily_fee,
         );
         formData.monthly_membership_fee = Number(
-            settingStore.settings.monthly_membership_fee ?? 1200,
+            settingStore.settings.monthly_membership_fee,
         );
     }
 
-    loadPage(currentPage.value); //fetch the current page
+    // Fetch audit history logs
+    await loadPage(currentPage.value);
 });
+
+//automatically update the form values when it gets change
+watch(
+    () => settingStore.settings,
+    (newSettings) => {
+        if (newSettings) {
+            formData.value.walkin_daily_fee = Number(
+                newSettings.walkin_daily_fee ?? 0,
+            );
+            formData.value.monthly_membership_fee = Number(
+                newSettings.monthly_membership_fee ?? 0,
+            );
+        }
+    },
+    { immediate: true, deep: true },
+);
 
 const handleSubmit = async () => {
     isDialogOpen.value = false; // Close the dialog
