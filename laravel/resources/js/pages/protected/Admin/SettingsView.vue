@@ -493,8 +493,9 @@ const {
 } = usePagination(settingStore, loadPage);
 
 onMounted(async () => {
-    await settingStore.fetchSettings();
-
+    const settingsData = await settingStore.fetchSettings();
+    console.log(settingsData.walkin_daily_fee);
+    console.log(settingsData.monthly_membership_fee);
     if (settingStore.settings) {
         formData.walkin_daily_fee = Number(
             settingStore.settings.walkin_daily_fee ?? 100,

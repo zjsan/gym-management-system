@@ -31,14 +31,16 @@ export const useSettingStore = defineStore("setting", {
             this.errors = null;
             try {
                 const res = await api.get("/gym-settings");
-                // Cast returned values to numbers for form inputs
+                
+                // Handle both direct JSON and wrapped res.data / res.data.data responses
+                const data = res.data.data || res.data;
+
                 this.settings = {
-                    walkin_daily_fee: Number(res.data.walkin_daily_fee ?? 100),
-                    monthly_membership_fee: Number(
-                        res.data.monthly_membership_fee ?? 1200,
-                    ),
+                    walkin_daily_fee: Number(data.walkin_daily_fee ?? 100),
+                    monthly_membership_fee: Number(data.monthly_membership_fee ?? 1200),
                 };
-                return { success: true };
+
+                return { success: true, data: this.settings };
             } catch (err) {
                 console.error("Failed to load gym settings:", err);
                 this.errors =
