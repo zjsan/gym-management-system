@@ -60,20 +60,19 @@ export const useSettingStore = defineStore("setting", {
             try {
                 const res = await api.get(`/gym-settings/history?page=${page}`);
 
-                // --- UPDATED RESPONSE MAPPING ---
-                // Support both direct Paginator JSON and API Resource collection structures
                 const responseData = res.data;
-                const records =
-                    responseData.data?.data || responseData.data || [];
+                const records = responseData.data?.data || responseData.data || [];
                 const meta = responseData.meta || responseData;
 
+                // Assign record list
                 this.history = records;
-                this.pagination = {
-                    current_page: meta.current_page ?? page,
-                    last_page: meta.last_page ?? 1,
-                    total: meta.total ?? records.length,
-                };
-                // ----------------------------------
+
+                // Populate root-level properties required by usePagination
+                this.currentPage = Number(meta.current_page ?? page);
+                this.lastPage = Number(meta.last_page ?? 1);
+                this.itemsPerPage = Number(meta.per_page ?? 10); // Fixes the NaN issue
+                this.totalItems = Number(meta.total ?? records.length);
+
             } catch (err) {
                 console.error("Failed to load settings history:", err);
             } finally {
