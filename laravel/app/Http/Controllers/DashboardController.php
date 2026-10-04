@@ -29,13 +29,13 @@ class DashboardController extends Controller
 
         $activeMembers = DB::table('members')
             ->where('status', 'active')
-            ->whereDate('membership_expires_at', '>=', $today)
+            ->whereDate('membership_end', '>=', $today)
             ->count();
 
         $expiredMembers = DB::table('members')
             ->where(function ($query) use ($today) {
                 $query->where('status', 'expired')
-                    ->orWhereDate('membership_expires_at', '<', $today);
+                    ->orWhereDate('membership_end', '<', $today);
             })
             ->count();
 
