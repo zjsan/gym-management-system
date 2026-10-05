@@ -8,7 +8,7 @@ use App\Http\Controllers\MemberController;
 use App\Http\Controllers\AttendanceController;
 use App\Http\Controllers\GymSettingsController;
 use App\Http\Controllers\PaymentController;
-use App\Http\Controllers\Api\DashboardController;
+use App\Http\Controllers\DashboardController;
 
 Route::get('/user', function (Request $request) {
     return $request->user();
