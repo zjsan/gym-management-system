@@ -99,7 +99,8 @@ class DashboardController extends Controller
                 'payments.amount',
                 'payments.type',
                 'payments.created_at',
-                'members.name as member_name'
+                'members.first_name as member_first_name',
+                'members.last_name as member_last_name'
             )
             ->orderBy('payments.created_at', 'DESC')
             ->limit(5)
@@ -109,7 +110,7 @@ class DashboardController extends Controller
                     'id' => $tx->id,
                     'amount' => (float) $tx->amount,
                     'type' => $tx->type,
-                    'payer' => $tx->member_name ?? 'Walk-in Guest',
+                    'payer' => trim($tx->member_first_name . ' ' . $tx->member_last_name) ?: 'Walk-in Guest',
                     'timestamp' => Carbon::parse($tx->created_at)->diffForHumans(),
                 ];
             });
