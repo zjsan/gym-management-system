@@ -21,10 +21,8 @@ Route::middleware(['web'])->group(function () {
 
 Route::middleware(['auth:sanctum'])->group(function () {
 
-    Route::middleware(['auth:sanctum'])->prefix('v1')->group(function () {
-        // Dashboard Financial Overview & Analytics
-        Route::get('/dashboard/overview', [DashboardController::class, 'overview']);
-    });
+    // Dashboard Financial Overview & Analytics
+    Route::get('/dashboard/overview', [DashboardController::class, 'overview']);
     
     Route::middleware(['can:get-active-fee-rates'])->group(function (){
 
