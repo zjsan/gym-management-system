@@ -70,7 +70,7 @@ class DashboardController extends Controller
         }
 
         // 7-Day Attendance Trend
-        $rawAttendanceTrend = DB::table('attendances')
+        $rawAttendanceTrend = DB::table('attendance_loggings')
             ->select(
                 DB::raw('DATE(created_at) as date'),
                 DB::raw('COUNT(*) as count')
