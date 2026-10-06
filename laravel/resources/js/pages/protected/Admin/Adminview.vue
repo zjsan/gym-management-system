@@ -12,6 +12,13 @@
             Gym Settings
         </button>
 
+        <button
+            @click="goToDashboard"
+            class="bg-blue-500 text-white font-semibold rounded-lg shadow hover:bg-red-600 transition"
+        >
+            Dashboard
+        </button>
+
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
             <div class="lg:col-span-1">
                 <div
@@ -366,5 +373,9 @@ const logout = async () => {
 
 const goToSettingsPage = () => {
     router.push({ name: "SettingsView" });
+};
+
+const goToDashboard = () => {
+    router.push({ name: "DashboardView" });
 };
 </script>
