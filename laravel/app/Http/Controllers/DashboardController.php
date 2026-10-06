@@ -48,8 +48,8 @@ class DashboardController extends Controller
         $rawRevenueTrend = DB::table('payments')
             ->select(
                 DB::raw('DATE(created_at) as date'),
-                DB::raw("SUM(CASE WHEN type = 'walk_in' THEN amount ELSE 0 END) as walkin"),
-                DB::raw("SUM(CASE WHEN type = 'renewal' THEN amount ELSE 0 END) as renewals")
+                DB::raw("SUM(CASE WHEN category = 'walk_in' THEN amount ELSE 0 END) as walkin"),
+                DB::raw("SUM(CASE WHEN category = 'renewal' THEN amount ELSE 0 END) as renewals")
             )
             ->whereDate('created_at', '>=', $sevenDaysAgo)
             ->groupBy(DB::raw('DATE(created_at)'))
@@ -97,7 +97,7 @@ class DashboardController extends Controller
             ->select(
                 'payments.id',
                 'payments.amount',
-                'payments.type',
+                'payments.category',
                 'payments.created_at',
                 'members.first_name as member_first_name',
                 'members.last_name as member_last_name'
@@ -109,7 +109,7 @@ class DashboardController extends Controller
                 return [
                     'id' => $tx->id,
                     'amount' => (float) $tx->amount,
-                    'type' => $tx->type,
+                    'category' => $tx->category,
                     'payer' => trim($tx->member_first_name . ' ' . $tx->member_last_name) ?: 'Walk-in Guest',
                     'timestamp' => Carbon::parse($tx->created_at)->diffForHumans(),
                 ];
