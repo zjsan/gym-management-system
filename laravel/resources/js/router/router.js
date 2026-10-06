@@ -7,6 +7,7 @@ import MemberManagement from "../pages/protected/Staff/Staffview.vue";
 import AttendanceDashboard from "../pages/protected/Staff/AttendanceDashboard.vue";
 import PaymentHistory from "../pages/protected/Payment/PaymentHistory.vue";
 import SettingsView from "../pages/protected/Admin/SettingsView.vue";
+import DashboardView from "../pages/protected/Dashboard/DashboardView.vue";
 
 const routes = [
     { path: "/", component: Login, name: "Login", requiresAuth: false },
@@ -14,6 +15,12 @@ const routes = [
         path: "/dashboard",
         component: Dashboard,
         name: "Dashboard",
+        meta: { requiresAuth: true },
+    },
+    {
+        path: "/dashboard-view",
+        component: DashboardView,
+        name: "DashboardView",
         meta: { requiresAuth: true },
     },
     {
@@ -42,13 +49,12 @@ const routes = [
         meta: { requiresAdmin: true, role: "staff" },
     },
 
-     {
+    {
         path: "/payment-history",
         name: "payment",
         component: PaymentHistory,
-        meta: { requiresAuth: true  },
+        meta: { requiresAuth: true },
     },
-
 ];
 
 const router = createRouter({
