@@ -39,7 +39,7 @@ class DashboardController extends Controller
             })
             ->count();
 
-        $todayAttendance = DB::table('attendances')
+        $todayAttendance = DB::table('attendance_loggings')
             ->whereDate('created_at', $today)
             ->count();
 
