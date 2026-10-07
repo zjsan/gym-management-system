@@ -43,16 +43,18 @@ class DashboardController extends Controller
             ->whereDate('created_at', $today)
             ->count();
 
-        // 7-Day Revenue Trend (Walk-ins vs Membership Renewals)
+        // 7-Day Revenue Trend (Walk-ins, Registrations, & Renewals)
         $sevenDaysAgo = Carbon::today()->subDays(6);
+
         $rawRevenueTrend = DB::table('payments')
             ->select(
-                DB::raw('DATE(created_at) as date'),
-                DB::raw("SUM(CASE WHEN category = 'walk_in' THEN amount ELSE 0 END) as walkin"),
-                DB::raw("SUM(CASE WHEN category = 'renewal' THEN amount ELSE 0 END) as renewals")
+                DB::raw('DATE(paid_at) as date'),
+                DB::raw("SUM(CASE WHEN category = 'walkin_fee' THEN amount ELSE 0 END) as walkin_fee"),
+                DB::raw("SUM(CASE WHEN category = 'membership_registration' THEN amount ELSE 0 END) as membership_registration"),
+                DB::raw("SUM(CASE WHEN category = 'membership_renewal' THEN amount ELSE 0 END) as membership_renewal")
             )
-            ->whereDate('created_at', '>=', $sevenDaysAgo)
-            ->groupBy(DB::raw('DATE(created_at)'))
+            ->whereDate('paid_at', '>=', $sevenDaysAgo)
+            ->groupBy(DB::raw('DATE(paid_at)'))
             ->orderBy('date', 'ASC')
             ->get()
             ->keyBy('date');
@@ -64,8 +66,9 @@ class DashboardController extends Controller
             $revenueChart[] = [
                 'date' => $dateStr,
                 'day' => Carbon::parse($dateStr)->format('M d'),
-                'walkin' => (float) ($rawRevenueTrend[$dateStr]->walkin ?? 0),
-                'renewals' => (float) ($rawRevenueTrend[$dateStr]->renewals ?? 0),
+                'walkin_fee' => (float) ($rawRevenueTrend[$dateStr]->walkin_fee ?? 0),
+                'membership_registration' => (float) ($rawRevenueTrend[$dateStr]->membership_registration ?? 0),
+                'membership_renewal' => (float) ($rawRevenueTrend[$dateStr]->membership_renewal ?? 0),
             ];
         }
 
