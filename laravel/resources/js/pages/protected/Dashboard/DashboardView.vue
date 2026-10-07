@@ -170,21 +170,6 @@ const formatCurrency = (val) => {
     });
 };
 
-// Calculate maximum revenue day for bar scaling
-const maxRevenue = computed(() => {
-    if (!dashboardStore.revenueChartData.length) return 1;
-    const totals = dashboardStore.revenueChartData.map(
-        (d) => (d.walkin || 0) + (d.renewals || 0),
-    );
-    return Math.max(...totals, 1);
-});
-
-// Relative height calculation for CSS bars
-const getBarHeight = (value, max) => {
-    if (!max || max === 0) return 0;
-    return Math.min(Math.round((value / max) * 100), 100);
-};
-
 onMounted(() => {
     dashboardStore.fetchOverview();
 });
