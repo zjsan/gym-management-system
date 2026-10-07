@@ -104,72 +104,16 @@
 
         <!-- Charts & Activity Grid -->
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            <!-- 7-Day Revenue Trend (2 Columns) -->
             <div
-                class="lg:col-span-2 bg-white p-6 rounded-xl border border-gray-100 shadow-sm flex flex-col justify-between"
+                class="bg-white p-6 rounded-xl border border-gray-100 shadow-sm"
             >
-                <div>
-                    <h2 class="text-lg font-bold text-gray-900">
-                        7-Day Revenue Trend
-                    </h2>
-                    <div
-                        class="flex items-center space-x-4 mt-2 text-xs text-gray-500"
-                    >
-                        <span class="flex items-center space-x-1">
-                            <span
-                                class="w-3 h-3 bg-indigo-500 rounded-full inline-block"
-                            ></span>
-                            <span>Renewals</span>
-                        </span>
-                        <span class="flex items-center space-x-1">
-                            <span
-                                class="w-3 h-3 bg-emerald-400 rounded-full inline-block"
-                            ></span>
-                            <span>Walk-ins</span>
-                        </span>
-                    </div>
-                </div>
+                <h2 class="text-lg font-bold text-gray-900 mb-4">
+                    7-Day Revenue & Registration Trend
+                </h2>
 
-                <!-- Simple SVG Bar Visualizer -->
-                <div
-                    class="mt-6 h-48 flex items-end justify-between space-x-2 pt-4 border-b border-gray-100"
-                >
-                    <div
-                        v-for="item in dashboardStore.revenueChartData"
-                        :key="item.date"
-                        class="flex-1 flex flex-col items-center h-full justify-end"
-                    >
-                        <div
-                            class="w-full max-w-[32px] flex flex-col justify-end h-full"
-                        >
-                            <!-- Renewal Bar segment -->
-                            <div
-                                class="bg-indigo-500 rounded-t-sm transition-all duration-300"
-                                :style="{
-                                    height:
-                                        getBarHeight(
-                                            item.renewals,
-                                            maxRevenue,
-                                        ) + '%',
-                                }"
-                                :title="`Renewals: ₱${item.renewals}`"
-                            ></div>
-                            <!-- Walk-in Bar segment -->
-                            <div
-                                class="bg-emerald-400 rounded-b-sm transition-all duration-300"
-                                :style="{
-                                    height:
-                                        getBarHeight(item.walkin, maxRevenue) +
-                                        '%',
-                                }"
-                                :title="`Walk-ins: ₱${item.walkin}`"
-                            ></div>
-                        </div>
-                        <span class="text-xs text-gray-400 mt-2">{{
-                            item.day
-                        }}</span>
-                    </div>
-                </div>
+                <RevenueBarChart
+                    :trend-data="dashboardStore.revenueChartData"
+                />
             </div>
 
             <!-- Recent Activity List (1 Column) -->
@@ -214,6 +158,7 @@
 <script setup>
 import { computed, onMounted } from "vue";
 import { useDashboardStore } from "@/stores/dashboardStore";
+import RevenueBarChart from "@/pages/protected/Components/RevenueBarChart.vue";
 
 const dashboardStore = useDashboardStore();
 
