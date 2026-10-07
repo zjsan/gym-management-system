@@ -104,16 +104,31 @@
 
         <!-- Charts & Activity Grid -->
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            <div
-                class="bg-white p-6 rounded-xl border border-gray-100 shadow-sm"
-            >
-                <h2 class="text-lg font-bold text-gray-900 mb-4">
-                    7-Day Revenue & Registration Trend
-                </h2>
+            <!-- Charts Grid (2 Columns) -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <!-- 7-Day Attendance Line Chart -->
+                <div
+                    class="bg-white p-6 rounded-xl border border-gray-100 shadow-sm"
+                >
+                    <h2 class="text-lg font-bold text-gray-900 mb-4">
+                        7-Day Attendance Volume
+                    </h2>
+                    <AttendanceLineChart
+                        :trend-data="dashboardStore.attendanceTrendData"
+                    />
+                </div>
 
-                <RevenueBarChart
-                    :trend-data="dashboardStore.revenueChartData"
-                />
+                <!-- 7-Day Revenue Bar Chart -->
+                <div
+                    class="bg-white p-6 rounded-xl border border-gray-100 shadow-sm"
+                >
+                    <h2 class="text-lg font-bold text-gray-900 mb-4">
+                        7-Day Revenue & Registrations
+                    </h2>
+                    <RevenueBarChart
+                        :trend-data="dashboardStore.revenueChartData"
+                    />
+                </div>
             </div>
 
             <!-- Recent Activity List (1 Column) -->
@@ -159,6 +174,7 @@
 import { computed, onMounted } from "vue";
 import { useDashboardStore } from "@/stores/dashboardStore";
 import RevenueBarChart from "@/pages/protected/Components/RevenueBarChart.vue";
+import AttendanceLineChart from "@/pages/protected/Components/AttendanceLineChart.vue";
 
 const dashboardStore = useDashboardStore();
 
