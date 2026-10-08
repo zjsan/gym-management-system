@@ -200,6 +200,7 @@ import VisitorRatioChart from "@/pages/protected/Components/VisitorRatioChart.vu
 import ExpirationWatchlistCard from "@/pages/protected/Components/ExpirationWatchlistCard.vue";
 
 const dashboardStore = useDashboardStore();
+let intervalId = null; //for the auto-refresh interval
 
 // Format numbers into Philippine Peso layout
 const formatCurrency = (val) => {
@@ -211,5 +212,9 @@ const formatCurrency = (val) => {
 
 onMounted(() => {
     dashboardStore.fetchOverview();
+
+    intervalId = setInterval(() => {
+        dashboardStore.fetchOverview();
+    }, 10000); // Refresh every 10 seconds
 });
 </script>
