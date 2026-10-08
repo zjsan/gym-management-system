@@ -46,6 +46,17 @@ export const useDashboardStore = defineStore("dashboard", {
 
                 this.revenueChartData = data.revenue_chart || [];
                 this.attendanceTrendData = data.attendance_trends || [];
+
+                this.hourlyAttendanceData = data.hourly_attendance || [];
+                this.visitorRatioData = data.visitor_ratio || {
+                    members: 0,
+                    walkins: 0,
+                };
+                this.expirationWatchlist = data.expiration_watchlist || {
+                    expiring_soon: 0,
+                    recently_expired: 0,
+                };
+
                 this.recentTransactions = data.recent_transactions || [];
             } catch (err) {
                 this.error =
