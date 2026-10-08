@@ -159,12 +159,12 @@ class DashboardController extends Controller
 
         // Expiration Watchlist (Next 7 Days vs Recently Expired)
         $expiringIn7Days = DB::table('members')
-            ->where('status', 'active')
-            ->whereBetween('expiration_date', [Carbon::today(), Carbon::today()->addDays(7)])
+            ->where('is_active', 'true')
+            ->whereBetween('membership_end', [Carbon::today(), Carbon::today()->addDays(7)])
             ->count();
 
         $expiredPast7Days = DB::table('members')
-            ->whereBetween('expiration_date', [Carbon::today()->subDays(7), Carbon::today()->subDay()])
+            ->whereBetween('membership_end', [Carbon::today()->subDays(7), Carbon::today()->subDay()])
             ->count();
 
         $expirationWatchlist = [
