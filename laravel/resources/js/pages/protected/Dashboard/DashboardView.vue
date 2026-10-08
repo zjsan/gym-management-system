@@ -191,7 +191,7 @@
 </template>
 
 <script setup>
-import { computed, onMounted } from "vue";
+import { computed, onMounted, onUnmounted } from "vue";
 import { useDashboardStore } from "@/stores/dashboardStore";
 import RevenueBarChart from "@/pages/protected/Components/RevenueBarChart.vue";
 import AttendanceLineChart from "@/pages/protected/Components/AttendanceLineChart.vue";
@@ -216,5 +216,11 @@ onMounted(() => {
     intervalId = setInterval(() => {
         dashboardStore.fetchOverview();
     }, 10000); // Refresh every 10 seconds
+});
+
+onUnmounted(() => {
+    if (intervalId) {
+        clearInterval(intervalId);
+    }
 });
 </script>
