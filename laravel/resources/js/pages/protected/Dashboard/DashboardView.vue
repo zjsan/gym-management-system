@@ -10,15 +10,6 @@
                     Real-time revenue, attendance, and member metrics.
                 </p>
             </div>
-            <button
-                @click="dashboardStore.fetchOverview()"
-                :disabled="dashboardStore.loading"
-                class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-medium rounded-lg text-sm transition-colors flex items-center space-x-2 disabled:opacity-50"
-            >
-                <span>{{
-                    dashboardStore.loading ? "Refreshing..." : "Refresh Data"
-                }}</span>
-            </button>
         </div>
 
         <!-- Error Banner -->
@@ -129,6 +120,30 @@
                         :trend-data="dashboardStore.revenueChartData"
                     />
                 </div>
+
+                <!-- Peak Hours Check-in Distribution -->
+                <div
+                    class="bg-white p-6 rounded-xl border border-gray-100 shadow-sm"
+                >
+                    <h2 class="text-lg font-bold text-gray-900 mb-4">
+                        Peak Hours (Last 30 Days)
+                    </h2>
+                    <PeakHoursChart
+                        :hourly-data="dashboardStore.hourlyAttendanceData"
+                    />
+                </div>
+
+                <!-- Member vs Walk-in Traffic Ratio -->
+                <div
+                    class="bg-white p-6 rounded-xl border border-gray-100 shadow-sm"
+                >
+                    <h2 class="text-lg font-bold text-gray-900 mb-4">
+                        Member vs Walk-in Ratio
+                    </h2>
+                    <VisitorRatioChart
+                        :ratio-data="dashboardStore.visitorRatioData"
+                    />
+                </div>
             </div>
 
             <!-- Recent Activity List (1 Column) -->
@@ -175,6 +190,9 @@ import { computed, onMounted } from "vue";
 import { useDashboardStore } from "@/stores/dashboardStore";
 import RevenueBarChart from "@/pages/protected/Components/RevenueBarChart.vue";
 import AttendanceLineChart from "@/pages/protected/Components/AttendanceLineChart.vue";
+import PeakHoursChart from "@/pages/protected/Components/PeakHoursChart.vue";
+import VisitorRatioChart from "@/pages/protected/Components/VisitorRatioChart.vue";
+import ExpirationWatchlistCard from "@/pages/protected/Components/ExpirationWatchlistCard.vue";
 
 const dashboardStore = useDashboardStore();
 
