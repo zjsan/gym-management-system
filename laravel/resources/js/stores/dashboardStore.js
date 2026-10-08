@@ -13,6 +13,15 @@ export const useDashboardStore = defineStore("dashboard", {
         },
         revenueChartData: [],
         attendanceTrendData: [],
+        hourlyAttendanceData: [],
+        visitorRatioData: {
+            members: 0,
+            walkins: 0,
+        },
+        expirationWatchlist: {
+            expiring_soon: 0,
+            recently_expired: 0,
+        },
         recentTransactions: [],
         error: null,
     }),
