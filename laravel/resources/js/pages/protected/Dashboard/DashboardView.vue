@@ -144,6 +144,11 @@
                         :ratio-data="dashboardStore.visitorRatioData"
                     />
                 </div>
+
+                <!-- Expiration Watchlist -->
+                <ExpirationWatchlistCard
+                    :watchlist="dashboardStore.expirationWatchlist"
+                ></ExpirationWatchlistCard>
             </div>
 
             <!-- Recent Activity List (1 Column) -->
