@@ -118,6 +118,60 @@ class DashboardController extends Controller
                 ];
             });
 
+
+        //  Peak Hours Check-in Distribution (Last 30 Days)
+        $peakHoursData = DB::table('attendance_loggings')
+            ->select(
+                DB::raw('HOUR(created_at) as hour'),
+                DB::raw('COUNT(*) as total_checkins')
+            )
+            ->where('created_at', '>=', Carbon::now()->subDays(30))
+            ->groupBy('hour')
+            ->orderBy('hour', 'ASC')
+            ->get()
+            ->keyBy('hour');
+
+        // Format hours 06:00 to 22:00 for smooth plotting
+        $hourlyAttendance = [];
+        for ($h = 6; $h <= 21; $h++) {
+            $timeLabel = Carbon::createFromTime($h, 0)->format('g A'); // e.g. "6 AM", "5 PM"
+            $hourlyAttendance[] = [
+                'hour' => $timeLabel,
+                'checkins' => (int) ($peakHoursData[$h]->total_checkins ?? 0),
+            ];
+        }
+
+        //  Member vs Walk-in Traffic Ratio (Last 30 Days)
+        $memberCheckins = DB::table('attendance_loggings')
+            ->whereNotNull('member_id')
+            ->where('created_at', '>=', Carbon::now()->subDays(30))
+            ->count();
+
+        $walkinCheckins = DB::table('payments')
+            ->where('category', 'walkin_fee')
+            ->where('paid_at', '>=', Carbon::now()->subDays(30))
+            ->count();
+
+        $visitorRatio = [
+            'members' => $memberCheckins,
+            'walkins' => $walkinCheckins,
+        ];
+
+        // Expiration Watchlist (Next 7 Days vs Recently Expired)
+        $expiringIn7Days = DB::table('members')
+            ->where('status', 'active')
+            ->whereBetween('expiration_date', [Carbon::today(), Carbon::today()->addDays(7)])
+            ->count();
+
+        $expiredPast7Days = DB::table('members')
+            ->whereBetween('expiration_date', [Carbon::today()->subDays(7), Carbon::today()->subDay()])
+            ->count();
+
+        $expirationWatchlist = [
+            'expiring_soon' => $expiringIn7Days,
+            'recently_expired' => $expiredPast7Days,
+        ];
+
         return response()->json([
             'metrics' => [
                 'today_revenue' => (float) $todayRevenue,
@@ -129,6 +183,9 @@ class DashboardController extends Controller
             'revenue_chart' => $revenueChart,
             'attendance_trends' => $attendanceTrends,
             'recent_transactions' => $recentTransactions,
+            'hourly_attendance' => $hourlyAttendance,
+            'visitor_ratio' => $visitorRatio,
+            'expiration_watchlist' => $expirationWatchlist,
         ]);
     }
 }
