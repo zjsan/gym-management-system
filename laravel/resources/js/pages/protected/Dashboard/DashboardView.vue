@@ -215,12 +215,14 @@ onMounted(() => {
 
     intervalId = setInterval(() => {
         dashboardStore.fetchOverview();
+        console.log("refresh feed");
     }, 10000); // Refresh every 10 seconds
 });
 
 onUnmounted(() => {
     if (intervalId) {
         clearInterval(intervalId);
+        console.log("cleared live fetch");
     }
 });
 </script>
