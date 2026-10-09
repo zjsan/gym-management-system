@@ -97,23 +97,34 @@ class DashboardController extends Controller
         //  Recent Transactions Feed
         $recentTransactions = DB::table('payments')
             ->leftJoin('members', 'payments.member_id', '=', 'members.id')
+            ->leftJoin('walkins', 'payments.walkin_id', '=', 'walkins.id')
             ->select(
                 'payments.id',
                 'payments.amount',
                 'payments.category',
                 'payments.created_at',
                 'members.first_name as member_first_name',
-                'members.last_name as member_last_name'
+                'members.last_name as member_last_name',
+                'walkins.name as walkin_name'
             )
             ->orderBy('payments.created_at', 'DESC')
             ->limit(5)
             ->get()
             ->map(function ($tx) {
+                // Resolve the payer name hierarchy
+                $payer = 'Walk-in Guest';
+                
+                if (!empty($tx->member_first_name) || !empty($tx->member_last_name)) {
+                    $payer = trim($tx->member_first_name . ' ' . $tx->member_last_name);
+                } elseif (!empty($tx->walkin_name)) {
+                    $payer = $tx->walkin_name;
+                }
+
                 return [
                     'id' => $tx->id,
                     'amount' => (float) $tx->amount,
                     'category' => $tx->category,
-                    'payer' => trim($tx->member_first_name . ' ' . $tx->member_last_name) ?: 'Walk-in Guest',
+                    'payer' => $payer,
                     'timestamp' => Carbon::parse($tx->created_at)->diffForHumans(),
                 ];
             });
