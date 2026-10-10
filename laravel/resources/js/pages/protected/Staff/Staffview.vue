@@ -498,7 +498,7 @@ import { useMemberStore } from "@/stores/memberStore";
 import debounce from "lodash.debounce";
 import { usePagination } from "@/composables/usePagination";
 import { storeToRefs } from "pinia";
-import { useRouter } from "vue-router";
+import { useRouter, useRoute } from "vue-router";
 import { Input } from "@/components/ui/input";
 import QrBadge from "../Components/QrBadge.vue";
 
@@ -509,6 +509,7 @@ const onFilterChange = () => {
 
 //navigation
 const router = useRouter();
+const route = useRoute();
 
 const goToAttendance = () => {
     router.push({ name: "attendance" });
@@ -839,8 +840,8 @@ onMounted(() => {
     loadPage(currentPage.value, searchQuery.value.trim() || "");
 
     // Catch URL query from Dashboard button
-    if (router.query.filter) {
-        memberStore.statusFilter = router.query.filter;
+    if (route.query.filter) {
+        memberStore.statusFilter = route.query.filter;
     }
 });
 
