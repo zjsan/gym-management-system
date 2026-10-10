@@ -19,6 +19,7 @@ use App\Mail\MemberQrCodeMail;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Auth;
 use Throwable;
+use Illuminate\Support\Carbon;
 
 
 class MemberController extends Controller
@@ -38,6 +39,8 @@ class MemberController extends Controller
         }
 
         $search = $request->query('search');//fetch the search query parameter in the url for server-side searching
+        $status = $request->query('status');
+
         $query = Member::query(); //defining a query
         try {
 
@@ -49,6 +52,36 @@ class MemberController extends Controller
                         ->orWhere('last_name', 'LIKE', "%{$search}%");
                 });
             }  
+
+            // Server-side filtering by membership status
+            if (!empty($status)) {
+                $today = Carbon::today();
+
+                if ($status === 'expiring_soon') {
+                    // Members who are flagged active AND whose membership ends in the next 7 days
+                    $query->where('is_active', true)
+                        ->whereNotNull('membership_end')
+                        ->whereBetween('membership_end', [$today, Carbon::today()->addDays(7)->endOfDay()]);
+                        
+                } elseif ($status === 'expired') {
+                    // Members who are explicitly marked inactive OR whose end date has passed
+                    $query->where(function (Builder $subQuery) use ($today) {
+                        $subQuery->where('is_active', false)
+                                ->orWhere(function (Builder $nested) use ($today) {
+                                    $nested->whereNotNull('membership_end')
+                                            ->where('membership_end', '<', $today);
+                                });
+                    });
+                    
+                } elseif ($status === 'active') {
+                    // Active members with an ongoing membership period
+                    $query->where('is_active', true)
+                        ->where(function (Builder $subQuery) use ($today) {
+                            $subQuery->whereNull('membership_end')
+                                    ->orWhere('membership_end', '>=', $today);
+                        });
+                }
+            }
 
             //apply default ordering by creation date, showing oldest entries first
             $query->orderBy('members.created_at', 'asc');
