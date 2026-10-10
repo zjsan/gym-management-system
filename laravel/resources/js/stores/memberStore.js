@@ -105,6 +105,12 @@ export const useMemberStore = defineStore("memberStore", {
                     this.loading = false;
                 }
             }
+
+        },
+
+        setStatusFilter(status) {
+            this.statusFilter = status;
+            this.fetchMembers(1); // Reset to page 1 when changing filter
         },
 
         async addMember(memberData) {
