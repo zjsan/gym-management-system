@@ -509,15 +509,6 @@ import { useRouter, useRoute } from "vue-router";
 import { Input } from "@/components/ui/input";
 import QrBadge from "../Components/QrBadge.vue";
 
-//status filtering function
-const onFilterChange = () => {
-    memberStore.setStatusFilter(memberStore.statusFilter);
-};
-
-const handleResetFilters = () => {
-    memberStore.resetFilters();
-};
-
 //navigation
 const router = useRouter();
 const route = useRoute();
@@ -546,6 +537,16 @@ const errorMessage = ref("");
 const modalErrorMessage = ref("");
 
 const isEmailingQr = ref(false);
+
+//status filtering function
+const onFilterChange = () => {
+    memberStore.setStatusFilter(memberStore.statusFilter);
+};
+
+const handleResetFilters = () => {
+    memberStore.resetFilters();
+    searchQuery.value = "";
+};
 
 // ---------------------------------------------------
 // Search and Pagination Logic
