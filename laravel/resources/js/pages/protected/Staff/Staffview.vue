@@ -18,6 +18,14 @@
             >
                 Click here for Payment
             </button>
+
+            <button
+                @click="goToDashboard"
+                class="bg-blue-500 text-white font-semibold rounded-lg shadow hover:bg-red-600 transition"
+            >
+                Click here for Dashboard
+            </button>
+
             <!-- Reset Button -->
             <button
                 @click="handleResetFilters"
@@ -519,6 +527,10 @@ const goToAttendance = () => {
 
 const goToPaymentHistory = () => {
     router.push({ name: "payment" });
+};
+
+const goToDashboard = () => {
+    router.push({ name: "DashboardView" });
 };
 
 // Local states
