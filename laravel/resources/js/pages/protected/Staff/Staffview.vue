@@ -26,6 +26,19 @@
                 placeholder="Search member..."
                 class="w-full pl-9 pr-4 py-2 text-sm border border-slate-200 rounded-lg focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none bg-white transition-all text-slate-700 placeholder:text-slate-400/90 shadow-inner"
             />
+            <!-- Status Filter Dropdown -->
+            <select
+                v-model="memberStore.statusFilter"
+                @change="onFilterChange"
+                class="px-3 py-2 bg-white border border-gray-300 rounded-lg text-sm font-medium text-gray-700 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            >
+                <option value="">All Statuses</option>
+                <option value="active">Active Members</option>
+                <option value="expiring_soon">
+                    Expiring Soon (Next 7 Days)
+                </option>
+                <option value="expired">Expired Members</option>
+            </select>
         </div>
         <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
             <div
@@ -489,6 +502,11 @@ import { useRouter } from "vue-router";
 import { Input } from "@/components/ui/input";
 import QrBadge from "../Components/QrBadge.vue";
 
+//status filtering function
+const onFilterChange = () => {
+    memberStore.setStatusFilter(memberStore.statusFilter);
+};
+
 //navigation
 const router = useRouter();
 
@@ -819,6 +837,11 @@ const handleSendQrEmail = async () => {
 onMounted(() => {
     console.log("Component mounted, loading initial data.");
     loadPage(currentPage.value, searchQuery.value.trim() || "");
+
+    // Catch URL query from Dashboard button
+    if (router.query.filter) {
+        memberStore.statusFilter = router.query.filter;
+    }
 });
 
 onUnmounted(() => {
