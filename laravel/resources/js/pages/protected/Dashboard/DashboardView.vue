@@ -147,6 +147,7 @@
 
                 <!-- Expiration Watchlist -->
                 <ExpirationWatchlistCard
+                    v-if="authStore.isStaff"
                     :watchlist="dashboardStore.expirationWatchlist"
                 ></ExpirationWatchlistCard>
             </div>
@@ -198,9 +199,12 @@ import AttendanceLineChart from "@/pages/protected/Components/AttendanceLineChar
 import PeakHoursChart from "@/pages/protected/Components/PeakHoursChart.vue";
 import VisitorRatioChart from "@/pages/protected/Components/VisitorRatioChart.vue";
 import ExpirationWatchlistCard from "@/pages/protected/Components/ExpirationWatchlistCard.vue";
+import { useAuthStore } from "@/stores/auth";
 
 const dashboardStore = useDashboardStore();
 let intervalId = null; //for the auto-refresh interval
+
+const authStore = useAuthStore();
 
 // Format numbers into Philippine Peso layout
 const formatCurrency = (val) => {
