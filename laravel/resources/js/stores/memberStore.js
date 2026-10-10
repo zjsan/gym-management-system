@@ -10,6 +10,7 @@ export const useMemberStore = defineStore("memberStore", {
         itemsPerPage: 10,
         lastPage: 1, // For disabling next button when on the last page
         totalItems: 0,
+        statusFilter: '', // 'active', 'expiring_soon', 'expired'
         currentAbortController: null, // To manage request cancellation
         qrLoading: false,
         qrData: null,
@@ -51,7 +52,8 @@ export const useMemberStore = defineStore("memberStore", {
 
             try {
                 const res = await api.get("/members", {
-                    params: { page, per_page: perPage, search },
+                    params: { page, per_page: perPage, search, status: this.statusFilter // Send status filter to Laravel backen 
+                    },
                     signal: controller.signal,
                 });
 
