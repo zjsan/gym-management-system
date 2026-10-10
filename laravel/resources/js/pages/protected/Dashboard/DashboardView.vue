@@ -149,6 +149,7 @@
                 <ExpirationWatchlistCard
                     v-if="authStore.isStaff"
                     :watchlist="dashboardStore.expirationWatchlist"
+                    @view-members="handleViewExpiringMembers"
                 ></ExpirationWatchlistCard>
             </div>
 
@@ -200,17 +201,31 @@ import PeakHoursChart from "@/pages/protected/Components/PeakHoursChart.vue";
 import VisitorRatioChart from "@/pages/protected/Components/VisitorRatioChart.vue";
 import ExpirationWatchlistCard from "@/pages/protected/Components/ExpirationWatchlistCard.vue";
 import { useAuthStore } from "@/stores/auth";
+import { useMemberStore } from "@/stores/memberStore";
+import { useRouter } from "vue-router";
+
+const router = useRouter();
 
 const dashboardStore = useDashboardStore();
 let intervalId = null; //for the auto-refresh interval
 
 const authStore = useAuthStore();
+const memberStore = useMemberStore();
 
 // Format numbers into Philippine Peso layout
 const formatCurrency = (val) => {
     return Number(val || 0).toLocaleString("en-PH", {
         minimumFractionDigits: 2,
         maximumFractionDigits: 2,
+    });
+};
+
+const handleViewExpiringMembers = () => {
+    memberStore.statusFilter = "expiring_soon";
+
+    router.push({
+        name: "MemberManagement", // Name of your Member Management route
+        query: { filter: "expiring_soon" },
     });
 };
 
