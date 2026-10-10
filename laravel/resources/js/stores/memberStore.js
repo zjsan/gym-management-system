@@ -273,5 +273,10 @@ export const useMemberStore = defineStore("memberStore", {
             this.qrData = null;
             this.qrLoading = false;
         },
+
+        resetFilters() {
+            this.statusFilter = '';
+            this.fetchMembers(1);
+        },
     },
 });

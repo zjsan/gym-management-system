@@ -18,6 +18,13 @@
             >
                 Click here for Payment
             </button>
+            <!-- Reset Button -->
+            <button
+                @click="handleResetFilters"
+                class="px-3 py-2 text-xs font-semibold text-gray-600 hover:text-gray-900 border rounded-lg hover:bg-gray-50 transition"
+            >
+                Reset Filters
+            </button>
         </div>
         <div class="w-50 mt-5">
             <Input
@@ -505,6 +512,10 @@ import QrBadge from "../Components/QrBadge.vue";
 //status filtering function
 const onFilterChange = () => {
     memberStore.setStatusFilter(memberStore.statusFilter);
+};
+
+const handleResetFilters = () => {
+    memberStore.resetFilters();
 };
 
 //navigation
