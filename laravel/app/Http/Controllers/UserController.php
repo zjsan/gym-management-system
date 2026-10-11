@@ -59,6 +59,11 @@ class UserController extends Controller
         $validated = $request->validated();
         $role = Role::where('slug', $validated['role'])->firstOrFail();//fetch the role id based on the slug
 
+        // check for self-demotion if necessary
+        if (auth()->id() === $user->id && $validated['role'] !== 'admin') {
+            return response()->json(['error' => 'You cannot strip administrator privileges from your own account.'], 422);
+        }
+
         //update the user table
         $updateData =[
             'first_name' => $validated['first_name'],
