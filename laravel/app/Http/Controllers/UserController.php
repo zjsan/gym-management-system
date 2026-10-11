@@ -82,6 +82,11 @@ class UserController extends Controller
      */
     public function destroy(User $user)
     {
+        // Prevent admin from deleting their own account
+        if (auth()->id() === $user->id) {
+            return response()->json(['error' => 'You cannot delete your own active administrator account.'], 422);
+        }
+        
         $user->delete();
             return response()->json(['message' => 'User deleted'], 200);
         }
