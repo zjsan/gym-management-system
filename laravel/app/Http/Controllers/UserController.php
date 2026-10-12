@@ -82,17 +82,35 @@ class UserController extends Controller
         return response()->json($user->load('role'));
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(User $user)
-    {
-        // Prevent admin from deleting their own account
-        if (auth()->id() === $user->id) {
-            return response()->json(['error' => 'You cannot delete your own active administrator account.'], 422);
-        }
+    // /**
+    //  * Remove the specified resource from storage.
+    //  */
+    // public function destroy(User $user)
+    // {
+    //     // Prevent admin from deleting their own account
+    //     if (auth()->id() === $user->id) {
+    //         return response()->json(['error' => 'You cannot delete your own active administrator account.'], 422);
+    //     }
         
-        $user->delete();
-            return response()->json(['message' => 'User deleted'], 200);
+    //     $user->delete();
+    //         return response()->json(['message' => 'User deleted'], 200);
+    // }
+
+
+    public function toggleStatus(User $user)
+    {
+        // Prevent admin from deactivating their own account
+        if (auth()->id() === $user->id) {
+            return response()->json(['error' => 'You cannot deactivate your own administrator account.'], 422);
         }
+
+        // Toggle status
+        $user->status = $user->status === 'active' ? 'deactivated' : 'active';
+        $user->save();
+
+        return response()->json([
+            'message' => 'User status updated successfully.',
+            'user' => $user->load('role')
+        ]);
+    }
 }
