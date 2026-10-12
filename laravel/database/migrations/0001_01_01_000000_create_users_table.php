@@ -19,7 +19,9 @@ return new class extends Migration
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->rememberToken();
-            $table->softDeletes(); // For deactivating staff
+            
+            // Replaced softDeletes() with an explicit status toggle column
+            $table->enum('status', ['active', 'deactivated'])->default('active');
             $table->timestamps();
         });
 
