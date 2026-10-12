@@ -8,7 +8,6 @@ export const useUserStore = defineStore("userStore", {
         errors: null,
     }),
     actions: {
-
         async fetchUsers() {
             this.loading = true;
             try {
@@ -23,7 +22,7 @@ export const useUserStore = defineStore("userStore", {
 
         async addUser(userData) {
             this.loading = true;
-            this.error = null//clear previous error
+            this.error = null; //clear previous error
 
             try {
                 const res = await api.post("/users", userData);
@@ -34,51 +33,72 @@ export const useUserStore = defineStore("userStore", {
                 this.errors = err.response.data.errors;
                 console.error("Failed to add user:", err);
                 return { success: false };
-            }
-            finally{
+            } finally {
                 this.loading = false;
             }
         },
 
-        async updateUser(id, userData){
-
+        async updateUser(id, userData) {
             this.loading = true;
             try {
-                const res = await api.put(`/users/${id}`, userData)
+                const res = await api.put(`/users/${id}`, userData);
 
                 //find the index of the user
-                const index = this.users.findIndex(user => user.id === id);
+                const index = this.users.findIndex((user) => user.id === id);
 
                 //check if it successully found the user
-                if(index !== -1){
-                    this.users[index] = res.data;//swap the old data from the new data 
+                if (index !== -1) {
+                    this.users[index] = res.data; //swap the old data from the new data
                 }
-                
+
                 return { success: true };
             } catch (error) {
                 this.errors = error.response?.data?.errors;
                 return { success: false };
-            }
-            finally{
-                this.loading = false
+            } finally {
+                this.loading = false;
             }
         },
 
-        async deleteUser(id){
-            
-            if(!confirm("Are you sure?")){
-                return 
+        async deleteUser(id) {
+            if (!confirm("Are you sure?")) {
+                return;
             }
 
             try {
                 await api.delete(`/users/${id}`);
 
                 //remove user from local state
-                this.users = this.users.filter(user => user.id !== id);
+                this.users = this.users.filter((user) => user.id !== id);
             } catch (error) {
-                console.log(error)
+                console.log(error);
                 alert("Failed to delete user");
             }
-        }
+        },
+
+        async toggleUserStatus(id) {
+            if (!confirm("Are you sure?")) {
+                return;
+            }
+
+            this.loading = true;
+            try {
+                await api.put(`/users/${id}/toggle-status`);
+
+                //update the user status in local state
+                const index = this.users.findIndex((user) => user.id === id);
+                if (index !== -1) {
+                    this.users[index].status =
+                        this.users[index].status === "active"
+                            ? "deactivated"
+                            : "active";
+                }
+
+                return { success: true };
+            } catch (error) {
+                console.error("Failed to toggle user status:", error);
+                return { success: false };
+            }
+        },
     },
 });
