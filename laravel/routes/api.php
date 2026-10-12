@@ -48,8 +48,11 @@ Route::middleware(['auth:sanctum'])->group(function () {
     // admin routes only
     Route::middleware(['can:admin-only'])->group(function () {
 
-        // routes for GET, POST, PUT, DELETE /api/users
+        // routes for GET, POST, PUT /api/users
         Route::apiResource('users', UserController::class);
+
+        //custom route for toggling user status (active/deactivated)
+        Route::put('users/{user}/toggle-status', [UserController::class, 'toggleStatus']);
 
         // Fee Management (Admin Only)
         Route::put('/gym-settings', [GymSettingsController::class, 'update']);
