@@ -60,21 +60,21 @@ export const useUserStore = defineStore("userStore", {
             }
         },
 
-        async deleteUser(id) {
-            if (!confirm("Are you sure?")) {
-                return;
-            }
+        // async deleteUser(id) {
+        //     if (!confirm("Are you sure?")) {
+        //         return;
+        //     }
 
-            try {
-                await api.delete(`/users/${id}`);
+        //     try {
+        //         await api.delete(`/users/${id}`);
 
-                //remove user from local state
-                this.users = this.users.filter((user) => user.id !== id);
-            } catch (error) {
-                console.log(error);
-                alert("Failed to delete user");
-            }
-        },
+        //         //remove user from local state
+        //         this.users = this.users.filter((user) => user.id !== id);
+        //     } catch (error) {
+        //         console.log(error);
+        //         alert("Failed to delete user");
+        //     }
+        // },
 
         async toggleUserStatus(id) {
             if (!confirm("Are you sure?")) {
