@@ -16,28 +16,41 @@ class AuthController extends Controller
             'password' => 'required|string|min:8',
         ]);
 
-        //if the user exists and the password is correct, generate the session
-        if (Auth::attempt($credentials)) {
-
-            //generate the session for the user
-            $request->session()->regenerate();
-            
-            //Get the authenticated user
-            $user = Auth::user();
-
-            // Eager load the 'role' relationship 
-            // so Vue can see the 'slug'
-            $user->load('role');
+        //Attempt authentication with email and password
+        if (! Auth::attempt($credentials)) {
 
             return response()->json([
-                'message' => 'Login successful.',
-                'user' => $user,
-            ], 200);
+                'message' => 'Invalid credentials.'
+            ], 401);
+           
+        }
+        
+        // Get the authenticated user
+        $user = Auth::user();
+
+        //  Check if the user's status is deactivated
+        if ($user->status !== 'active') {
+
+            // Immediately log them out and invalidate the session
+            Auth::logout();
+            $request->session()->invalidate();
+            $request->session()->regenerateToken();
+
+            return response()->json([
+                'message' => 'Your account has been deactivated. Please contact the gym administrator.'
+            ], 403); // 403 Forbidden is ideal for deactivated accounts
         }
 
+        $request->session()->regenerate();
+
+        // Eager load the 'role' relationship so Vue can see the 'slug'
+        $user->load('role');
+
         return response()->json([
-            'message' => 'Invalid credentials.'
-        ], 401);
+            'message' => 'Login successful.',
+            'user' => $user,
+        ], 200);
+      
     }
 
 
