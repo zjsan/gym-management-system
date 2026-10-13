@@ -364,10 +364,8 @@ const handleSubmit = async () => {
     }
 };
 
-const confirmDelete = async (id) => {
-    if (confirm("Are you sure you want to delete this user?")) {
-        await userStore.deleteUser(id);
-    }
+const handleToggleStatus = async (id) => {
+    await userStore.toggleUserStatus(id);
 };
 
 const resetForm = () => {
