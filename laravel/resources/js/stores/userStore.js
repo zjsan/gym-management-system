@@ -98,6 +98,8 @@ export const useUserStore = defineStore("userStore", {
             } catch (error) {
                 console.error("Failed to toggle user status:", error);
                 return { success: false };
+            } finally {
+                this.loading = false;
             }
         },
     },
