@@ -182,6 +182,11 @@
                                     Role
                                 </th>
                                 <th
+                                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                                >
+                                    Status
+                                </th>
+                                <th
                                     class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider"
                                 >
                                     Actions
@@ -219,6 +224,19 @@
                                         {{ user.role?.slug }}
                                     </span>
                                 </td>
+                                <td>
+                                    <!-- Status Badge -->
+                                    <span
+                                        :class="
+                                            user.status === 'active'
+                                                ? 'bg-green-100 text-green-800'
+                                                : 'bg-gray-100 text-gray-800'
+                                        "
+                                        class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full capitalize"
+                                    >
+                                        {{ user.status }}
+                                    </span>
+                                </td>
                                 <td
                                     class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium"
                                 >
@@ -228,11 +246,21 @@
                                     >
                                         Edit
                                     </button>
+                                    <!-- Dynamic Status Toggle Button -->
                                     <button
-                                        @click="confirmDelete(user.id)"
-                                        class="text-red-600 hover:text-red-900 transition"
+                                        @click="handleToggleStatus(user.id)"
+                                        :class="
+                                            user.status === 'active'
+                                                ? 'text-red-600 hover:text-red-900'
+                                                : 'text-green-600 hover:text-green-900'
+                                        "
+                                        class="transition font-semibold"
                                     >
-                                        Delete
+                                        {{
+                                            user.status === "active"
+                                                ? "Deactivate"
+                                                : "Activate"
+                                        }}
                                     </button>
                                 </td>
                             </tr>
