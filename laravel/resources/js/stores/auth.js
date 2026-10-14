@@ -3,67 +3,64 @@ import api from "../api/api";
 import router from "../router/router.js";
 
 export const useAuthStore = defineStore("auth", {
-    // other options...
     state: () => ({
-        user: JSON.parse(localStorage.getItem("user")) || null, // stores logged-in user object
-        loading: false, // tracks async requests
-        error: null, // for error handling
+        user: JSON.parse(localStorage.getItem("user")) || null,
+        loading: false,
+        error: null,
     }),
 
-    /**
-     * 
-     * If auth.user is null → not authenticated.
-       If auth.user has data → authenticated.
-     */
     getters: {
         isAuthenticated: (state) => !!state.user,
-        isAdmin: (state) => {
-            console.log("Checking role:", state.user?.role?.slug);
-            return state.user?.role?.slug === "admin";
-        },
-        isStaff: (state) => {
-            console.log("Checking role:", state.user?.role?.slug);
-            return state.user?.role?.slug === "staff";
-        },
+        isAdmin: (state) => state.user?.role?.slug === "admin",
+        isStaff: (state) => state.user?.role?.slug === "staff",
     },
 
     actions: {
-        // Save user in localStorage
-        saveUserToStorage() {
-            localStorage.setItem("user", JSON.stringify(this.user));
+        saveUserToStorage(user) {
+            this.user = user;
+            if (user) {
+                localStorage.setItem("user", JSON.stringify(user));
+            } else {
+                localStorage.removeItem("user");
+            }
         },
 
-        //login
+        // Initialize cross-tab synchronization listener
+        initTabSync() {
+            window.addEventListener("storage", (event) => {
+                if (event.key === "user") {
+                    this.user = event.newValue
+                        ? JSON.parse(event.newValue)
+                        : null;
+                    if (
+                        !this.user &&
+                        router.currentRoute.value.meta.requiresAuth
+                    ) {
+                        router.push({ name: "Login" });
+                    }
+                }
+            });
+        },
+
         async login(credentials) {
             this.loading = true;
             this.error = null;
 
-            /* API call & set user */
             try {
-                //get csrf cookie
-                await api.get("/sanctum/csrf-cookie"); //intialize csrf protection
-
-                //make the login call to the backend
+                await api.get("/sanctum/csrf-cookie");
                 const response = await api.post("/login", credentials);
-                const {data} = response;
+                const { data } = response;
 
-                console.log(data.message);
-                
-                this.user = data.user;//assigned data to the user
-                this.saveUserToStorage();
+                // Save user and trigger storage event for Tab B
+                this.saveUserToStorage(data.user);
 
-                //if successfully logged in, redirect to dashboard
                 if (this.user) {
                     router.replace({ name: "Dashboard" });
-                }else {
-                    // Fallback: If for some reason controller didn't send user, fetch it
+                } else {
                     await this.fetchUser();
                 }
-                
-
             } catch (error) {
                 this.error = error.response?.data?.message || "Login failed";
-                console.log(this.error);
                 throw error;
             } finally {
                 this.loading = false;
@@ -73,30 +70,27 @@ export const useAuthStore = defineStore("auth", {
         async fetchUser() {
             try {
                 const response = await api.get("/user");
-                this.user = response.data;
+                this.saveUserToStorage(response.data);
                 this.error = null;
-                console.log(this.user);
             } catch (error) {
-                this.user = null;
-                this.isAuthenticated = false;
-                console.error("Failed to fetch user:", error);
-                this.logout(); // clear invalid session
+                console.error("Failed to fetch user session:", error);
+                this.saveUserToStorage(null);
+                if (router.currentRoute.value.name !== "Login") {
+                    router.push({ name: "Login" });
+                }
             }
         },
 
         async logout() {
             try {
                 await api.post("/logout");
-                this.user = null;
             } catch (error) {
                 console.error("Logout failed:", error);
             } finally {
-                localStorage.removeItem("user");
-                this.user = null;
+                this.saveUserToStorage(null);
                 this.error = null;
                 this.loading = false;
-                console.log(this.user);
-                //redirect to login after hitting logout
+
                 if (router.currentRoute.value.name !== "Login") {
                     router.push({ name: "Login" });
                 }
