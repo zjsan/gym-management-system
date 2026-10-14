@@ -82,6 +82,8 @@ export const useUserStore = defineStore("userStore", {
             }
 
             this.loading = true;
+            this.errors = null; //clear previous error
+
             try {
                 await api.put(`/users/${id}/toggle-status`);
 
@@ -96,6 +98,7 @@ export const useUserStore = defineStore("userStore", {
 
                 return { success: true };
             } catch (error) {
+                this.errors = error.response?.data?.errors;
                 console.error("Failed to toggle user status:", error);
                 return { success: false };
             } finally {
