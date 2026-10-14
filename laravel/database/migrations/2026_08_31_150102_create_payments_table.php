@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('receipt_no')->unique(); // e.g., PAY-20260831-0001
             $table->foreignId('member_id')->nullable()->constrained('members')->onDelete('set null');
             $table->foreignId('walkin_id')->nullable()->constrained('walkins')->onDelete('set null');
-            $table->foreignId('processed_by')->constrained('users')->onDelete('cascade');
+            $table->foreignId('processed_by')->constrained('users')->restrictOnDelete();
             $table->enum('category', ['walkin_fee', 'membership_registration', 'membership_renewal']);
             $table->decimal('amount', 10, 2);
             $table->string('payment_method')->default('cash');
