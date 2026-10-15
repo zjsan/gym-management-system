@@ -1,13 +1,23 @@
 import "./bootstrap";
-import "./bootstrap";
 import { createApp } from "vue";
-import { createPinia } from "pinia"; // Import createPinia
+import { createPinia } from "pinia";
 import router from "./router/router.js";
 import App from "./pages/App.vue";
+import { useAuthStore } from "@/stores/auth";
 
-const pinia = createPinia(); // Create the Pinia instance
-const app = createApp(App); // Create the Vue app instance
+const pinia = createPinia();
+const app = createApp(App);
 
-app.use(pinia); // Tell the app to use Pinia
+app.use(pinia);
 app.use(router);
-app.mount("#app"); // Mount the app to the #app element in your Blade template
+
+// Initialize cross-tab synchronization and session verification
+const authStore = useAuthStore();
+authStore.initTabSync();
+
+// Verify the session with the backend on initial load if user exists locally
+if (authStore.user) {
+    authStore.fetchUser();
+}
+
+app.mount("#app");
