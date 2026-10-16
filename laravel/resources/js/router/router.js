@@ -70,6 +70,7 @@ router.beforeEach((to, from, next) => {
     const requiresAuth = to.meta.requiresAuth || to.meta.requiresAdmin;
     const requiredRole = to.meta.role;
 
+
     // 1. Not logged in, trying to access protected page
     if (requiresAuth && !authStore.isAuthenticated) {
         return next({ name: "Login" });
@@ -89,7 +90,6 @@ router.beforeEach((to, from, next) => {
         }
     }
 
-    next();
 });
 
 export default router;
