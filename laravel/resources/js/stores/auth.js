@@ -31,13 +31,19 @@ export const useAuthStore = defineStore("auth", {
                     const newUser = event.newValue ? JSON.parse(event.newValue) : null;
                     this.user = newUser;
 
-                    const currentRouteName = router.currentRoute.value.name;
+                    const currentRoute = router.currentRoute.value;
+                    const currentRouteName = currentRoute.name;
 
-                    if (!newUser && router.currentRoute.value.meta.requiresAuth) {
+                    // Determine if the current route needs any type of authentication/authorization
+                    const routeRequiresAuth = currentRoute.meta.requiresAuth || currentRoute.meta.requiresAdmin;
+
+                    if (!newUser && routeRequiresAuth) {
+                        // User logged out in another tab, and this tab is on a protected route
                         if (currentRouteName !== "Login") {
                             router.push({ name: "Login" });
                         }
                     } else if (newUser && currentRouteName === "Login") {
+                        // User logged in on another tab, kick this tab to dashboard
                         router.replace({ name: "Dashboard" });
                     }
                 }
