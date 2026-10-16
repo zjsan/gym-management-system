@@ -1,6 +1,7 @@
+// src/api/api.js
 import axios from "axios";
-import { useAuthStore } from "@/stores/auth";
 import router from "../router/router";
+// REMOVE the top-level import of useAuthStore to break the circular dependency loop
 
 const api = axios.create({
     baseURL: "http://localhost:8000" + "/api",
@@ -15,12 +16,15 @@ api.interceptors.response.use(
     (response) => response,
     (error) => {
         if (error.response && error.response.status === 401) {
-            const authStore = useAuthStore();
-            authStore.saveUserToStorage(null);
+            // Import dynamically or resolve inside the function block safely
+            import("@/stores/auth").then(({ useAuthStore }) => {
+                const authStore = useAuthStore();
+                authStore.saveUserToStorage(null);
 
-            if (router.currentRoute.value.name !== "Login") {
-                router.push({ name: "Login" });
-            }
+                if (router.currentRoute.value.name !== "Login") {
+                    router.push({ name: "Login" });
+                }
+            });
         }
         return Promise.reject(error);
     },
