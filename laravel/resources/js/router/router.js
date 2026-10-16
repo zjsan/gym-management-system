@@ -1,4 +1,5 @@
 import { createWebHistory, createRouter } from "vue-router";
+import { useAuthStore } from "@/stores/auth";
 
 import Login from "../pages/public/Login.vue";
 import Dashboard from "../pages/protected/Main.vue";
@@ -62,4 +63,34 @@ const router = createRouter({
     routes,
 });
 
+// Add this guard block to secure manual navigation
+router.beforeEach((to, from, next) => {
+    const authStore = useAuthStore();
+    
+    const requiresAuth = to.meta.requiresAuth || to.meta.requiresAdmin;
+    const requiredRole = to.meta.role;
+
+    // 1. Not logged in, trying to access protected page
+    if (requiresAuth && !authStore.isAuthenticated) {
+        return next({ name: "Login" });
+    }
+
+    // 2. Logged in, trying to access Login page
+    if (to.name === "Login" && authStore.isAuthenticated) {
+        return next({ name: "Dashboard" });
+    }
+
+    // 3. Role verification (Admin / Staff checks)
+    if (to.meta.requiresAdmin && requiredRole) {
+        const userRole = authStore.user?.role?.slug;
+        if (userRole !== requiredRole) {
+            // Fallback user back to main dashboard if they don't have the proper role clearance
+            return next({ name: "Dashboard" });
+        }
+    }
+
+    next();
+});
+
 export default router;
+
