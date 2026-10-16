@@ -25,18 +25,20 @@ export const useAuthStore = defineStore("auth", {
             }
         },
 
-        // Initialize cross-tab synchronization listener
         initTabSync() {
             window.addEventListener("storage", (event) => {
                 if (event.key === "user") {
-                    this.user = event.newValue
-                        ? JSON.parse(event.newValue)
-                        : null;
-                    if (
-                        !this.user &&
-                        router.currentRoute.value.meta.requiresAuth
-                    ) {
-                        router.push({ name: "Login" });
+                    const newUser = event.newValue ? JSON.parse(event.newValue) : null;
+                    this.user = newUser;
+
+                    const currentRouteName = router.currentRoute.value.name;
+
+                    if (!newUser && router.currentRoute.value.meta.requiresAuth) {
+                        if (currentRouteName !== "Login") {
+                            router.push({ name: "Login" });
+                        }
+                    } else if (newUser && currentRouteName === "Login") {
+                        router.replace({ name: "Dashboard" });
                     }
                 }
             });
@@ -51,14 +53,8 @@ export const useAuthStore = defineStore("auth", {
                 const response = await api.post("/login", credentials);
                 const { data } = response;
 
-                // Save user and trigger storage event for Tab B
                 this.saveUserToStorage(data.user);
-
-                if (this.user) {
-                    router.replace({ name: "Dashboard" });
-                } else {
-                    await this.fetchUser();
-                }
+                router.replace({ name: "Dashboard" });
             } catch (error) {
                 this.error = error.response?.data?.message || "Login failed";
                 throw error;
@@ -68,15 +64,21 @@ export const useAuthStore = defineStore("auth", {
         },
 
         async fetchUser() {
+            if (!this.user) return;
+
             try {
                 const response = await api.get("/user");
                 this.saveUserToStorage(response.data);
                 this.error = null;
             } catch (error) {
-                console.error("Failed to fetch user session:", error);
-                this.saveUserToStorage(null);
-                if (router.currentRoute.value.name !== "Login") {
-                    router.push({ name: "Login" });
+                // Only logout if it's explicitly 401 AND we are certain the session is dead
+                if (error.response && error.response.status === 401) {
+                    // Prevent false positives on cold tab load race conditions
+                    console.warn("Session expired or invalid. Clearing local state.");
+                    this.saveUserToStorage(null);
+                    if (router.currentRoute.value.name !== "Login") {
+                        router.push({ name: "Login" });
+                    }
                 }
             }
         },
