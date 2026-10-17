@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
 {
@@ -72,4 +73,24 @@ class AuthController extends Controller
         return response()->json(['message' => 'Logged out and session invalidated.']);
     }
  
+
+    public function updatePassword(Request $request)
+    {
+        $request->validate([
+            'current_password' => ['required', 'current_password'], // Validates against user's current hashed password
+            'password' => ['required', 'string', 'min:8', 'confirmed'],
+        ]);
+
+        $user = $request->user();
+
+        $user->update([
+            'password' => Hash::make($request->password),
+            'must_change_password' => false, // Clear the force-reset flag
+        ]);
+
+        return response()->json([
+            'message' => 'Password updated successfully.',
+            'user' => $user->load('role'),
+        ], 200);
+    }
 }
