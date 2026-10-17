@@ -83,11 +83,19 @@ router.beforeEach((to, from) => {
     // 3. Role verification (Admin / Staff checks)
     if (to.meta.requiresAdmin && requiredRole) {
         const userRole = authStore.user?.role?.slug;
+        
+        // If user object exists but permissions aren't loaded yet, don't boot them out immediately.
+        // Let the route load so components can show a loading state while fetchUser resolves.
+        if (authStore.user && !userRole) {
+            return true; // Allow navigation to continue, component will wait for state
+        }
+
         if (userRole !== requiredRole) {
-            // Fallback user back to main dashboard if they don't have the proper role clearance
             return { name: "Dashboard", replace: true };
         }
     }
+
+    return true; 
 
 });
 
