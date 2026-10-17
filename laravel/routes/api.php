@@ -11,7 +11,7 @@ use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\DashboardController;
 
 Route::get('/user', function (Request $request) {
-    return $request->user();
+    return $request->user()->load('role');
 })->middleware('auth:sanctum');
 
 Route::middleware(['web'])->group(function () {
