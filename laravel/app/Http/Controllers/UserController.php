@@ -36,6 +36,7 @@ class UserController extends Controller
             'email' => $validated['email'],
             'password' => Hash::make($validated['password']),
             'role_id' => $role->id, // Store the role ID in the users table
+            'must_change_password' => true, // Flag newly created users to change password on first login
         ]);
 
         //load the role relationship to return the user with its role data
