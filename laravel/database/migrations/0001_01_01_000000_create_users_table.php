@@ -22,6 +22,10 @@ return new class extends Migration
             
             // Replaced softDeletes() with an explicit status toggle column
             $table->enum('status', ['active', 'deactivated'])->default('active');
+
+            //force-reset flag (defaults to false for existing/admin accounts)
+            $table->boolean('must_change_password')->default(false);
+
             $table->timestamps();
         });
 
