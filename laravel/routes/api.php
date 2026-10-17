@@ -21,6 +21,8 @@ Route::middleware(['web'])->group(function () {
 
 Route::middleware(['auth:sanctum'])->group(function () {
 
+    Route::put('/user/update-password', [AuthController::class, 'updatePassword']); //mandatory password change for new users endpoint
+
     // Dashboard Financial Overview & Analytics
     Route::get('/dashboard/overview', [DashboardController::class, 'overview']);
     
