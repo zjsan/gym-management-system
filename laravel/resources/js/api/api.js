@@ -1,7 +1,5 @@
-// src/api/api.js
 import axios from "axios";
 import router from "../router/router";
-// REMOVE the top-level import of useAuthStore to break the circular dependency loop
 
 const api = axios.create({
     baseURL: "http://localhost:8000" + "/api",
