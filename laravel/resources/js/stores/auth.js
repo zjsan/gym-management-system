@@ -17,13 +17,22 @@ export const useAuthStore = defineStore("auth", {
 
     actions: {
         saveUserToStorage(user) {
-            this.user = user;
-            if (user) {
-                localStorage.setItem("user", JSON.stringify(user));
+        this.user = user;
+        
+        // Convert to string safely to compare with what is already on disk
+        const currentStored = localStorage.getItem("user");
+        const stringifiedUser = user ? JSON.stringify(user) : null;
+
+        // ONLY write to localStorage if the values are actually different.
+        // This stops tabs from triggering destructive 'storage' events on each other during race conditions.
+        if (currentStored !== stringifiedUser) {
+            if (stringifiedUser) {
+                localStorage.setItem("user", stringifiedUser);
             } else {
                 localStorage.removeItem("user");
             }
-        },
+        }
+    },
 
         initTabSync() {
             window.addEventListener("storage", (event) => {
