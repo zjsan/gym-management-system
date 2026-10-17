@@ -46,6 +46,15 @@ class AuthController extends Controller
         // Eager load the 'role' relationship so Vue can see the 'slug'
         $user->load('role');
 
+        // Check if user must change their temporary password
+        if ($user->must_change_password) {
+            return response()->json([
+                'message' => 'Please update your temporary password to continue.',
+                'user' => $user,
+                'requires_password_change' => true, // Frontend uses this to redirect to change-password view
+            ], 200);
+        }
+
         return response()->json([
             'message' => 'Login successful.',
             'user' => $user,
