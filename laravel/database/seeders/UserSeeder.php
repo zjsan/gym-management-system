@@ -28,7 +28,8 @@ class UserSeeder extends Seeder
                 'last_name'=> 'Owner',
                 'email' => 'admin@example.com',
                 'password' => Hash::make('password'),
-                'role_id'=> $adminRole
+                'role_id'=> $adminRole,
+                'must_change_password' => false,
             ],
 
             //staff
@@ -37,7 +38,8 @@ class UserSeeder extends Seeder
                 'last_name'=> 'Staff',
                 'email' => 'staff@example.com',
                 'password' => Hash::make('password123'),
-                'role_id'=> $staffRole
+                'role_id'=> $staffRole,
+                'must_change_password' => false,
             ],
         ];
 
