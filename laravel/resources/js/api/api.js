@@ -14,15 +14,18 @@ api.interceptors.response.use(
     (response) => response,
     (error) => {
         if (error.response && error.response.status === 401) {
-            // Import dynamically or resolve inside the function block safely
-            import("@/stores/auth").then(({ useAuthStore }) => {
-                const authStore = useAuthStore();
-                authStore.saveUserToStorage(null);
-
-                if (router.currentRoute.value.name !== "Login") {
-                    router.push({ name: "Login" });
-                }
-            });
+            // Avoid logging out if we are explicitly on the login page already
+            if (router.currentRoute.value.name !== "Login") {
+                import("@/stores/auth").then(({ useAuthStore }) => {
+                    const authStore = useAuthStore();
+                    
+                    // Only clear if authenticated to prevent cross-tab cascading loops
+                    if (authStore.isAuthenticated) {
+                        authStore.saveUserToStorage(null);
+                        router.push({ name: "Login" });
+                    }
+                });
+            }
         }
         return Promise.reject(error);
     },
