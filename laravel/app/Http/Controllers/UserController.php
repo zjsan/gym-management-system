@@ -7,6 +7,7 @@ use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use App\Models\Role;   
 use App\Http\Requests\StoreUserRequest;
+use Illuminate\Support\Str;
 
 class UserController extends Controller
 {
@@ -30,17 +31,23 @@ class UserController extends Controller
         // 1. Find the Role ID based on the slug sent from Vue
         $role = Role::where('slug', $validated['role'])->firstOrFail();
 
+        $tempPassword = Str::password(10); //secure plaintext password
+
         $user = User::create([
             'first_name' => $validated['first_name'],
             'last_name' => $validated['last_name'],
             'email' => $validated['email'],
-            'password' => Hash::make($validated['password']),
+            'password' => Hash::make($tempPassword),
             'role_id' => $role->id, // Store the role ID in the users table
             'must_change_password' => true, // Flag newly created users to change password on first login
         ]);
 
         //load the role relationship to return the user with its role data
-        return response()->json($user->load('role'), 201);
+        return response()->json([
+            'message' => 'User created successfully.',
+            'user' => $user->load('role'),
+            'temp_password' => $tempPassword, // Admin can view/copy this to give to the staff member
+        ], 201);
     }
 
     /**
