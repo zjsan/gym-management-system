@@ -100,7 +100,7 @@
                             >
                                 Leave passwords blank to keep current password.
                             </p>
-                            <div class="space-y-4">
+                            <div v-if="isEditing" class="space-y-4">
                                 <input
                                     v-model="form.password"
                                     type="password"
