@@ -39,7 +39,7 @@ class StoreUserRequest extends FormRequest
             'first_name' => 'required|string|max:255',
             'last_name'  => 'required|string|max:255',
             'email'      => 'required|email|unique:users,email,' . $userId,
-            'password'   => $userId ? 'nullable|min:8|confirmed' : 'required|min:8|confirmed',
+            'password'   => $userId ? 'nullable|min:8|confirmed' : 'nullable', //password is optional during user creation
             'role'       => 'required|exists:roles,slug',
         ];
     }
