@@ -69,6 +69,13 @@ export const useAuthStore = defineStore("auth", {
                 const { data } = response;
 
                 this.saveUserToStorage(data.user);
+
+                // Intercept if the user is required to change their temporary password
+                if (data.requires_password_change) {
+                    router.replace({ name: "ForcePasswordChange" });
+                    return { success: true, requiresPasswordChange: true };
+                }
+
                 router.replace({ name: "Dashboard" });
             } catch (error) {
                 this.error = error.response?.data?.message || "Login failed";
