@@ -26,17 +26,20 @@ export const useUserStore = defineStore("userStore", {
 
             try {
                 const res = await api.post("/users", userData);
-                this.users.push(res.data); // Update UI instantly
-                console.log("User added successfully:", res.data);  
+                this.users.push(res.data.user); // Update UI instantly
+                
+                console.log("User added successfully:", res.data.user);
+
                 return { 
                     success: true,
-                    tempPassword: response.data.temp_password,
-                    message: response.data.message
+                    tempPassword: res.data.temp_password,
+                    message: res.data.message
                  };
             } catch (err) {
-                this.errors = err.response?.data?.errors || null;
+                this.error = err.response?.data?.errors || null;
                 console.error("Failed to add user:", err);
-                return { success: false,
+                return { 
+                        success: false,
                         message: err.response?.data?.message
                  };
             } finally {
