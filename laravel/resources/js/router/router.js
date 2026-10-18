@@ -9,27 +9,40 @@ import AttendanceDashboard from "../pages/protected/Staff/AttendanceDashboard.vu
 import PaymentHistory from "../pages/protected/Payment/PaymentHistory.vue";
 import SettingsView from "../pages/protected/Admin/SettingsView.vue";
 import DashboardView from "../pages/protected/Dashboard/DashboardView.vue";
+import ForcePasswordChange from "../pages/protected/Force Password Change/ForcePasswordChange.vue";
 
 const routes = [
+
     { path: "/", component: Login, name: "Login", requiresAuth: false },
+
+    {
+        path: '/force-password-change',
+        name: 'ForcePasswordChange',
+        component: ForcePasswordChange,
+        meta: { requiresAuth: true }
+    },
+
     {
         path: "/dashboard",
         component: Dashboard,
         name: "Dashboard",
         meta: { requiresAuth: true },
     },
+
     {
         path: "/dashboard-view",
         component: DashboardView,
         name: "DashboardView",
         meta: { requiresAuth: true },
     },
+
     {
         path: "/admin-page",
         component: Adminview,
         name: "Adminview",
         meta: { requiresAdmin: true, role: "admin" },
     },
+
     {
         path: "/gym-setting",
         component: SettingsView,
@@ -43,6 +56,7 @@ const routes = [
         name: "MemberManagement",
         meta: { requiresAdmin: true, role: "staff" },
     },
+    
     {
         path: "/attendance",
         name: "attendance",
