@@ -85,6 +85,28 @@ export const useAuthStore = defineStore("auth", {
             }
         },
 
+        async updatePassword(passwordData) {
+            this.loading = true;
+            this.error = null;
+
+            try {
+                const response = await api.put("/user/update-password", passwordData);
+                
+                // Update local user data if needed
+                if (this.user) {
+                    this.user.must_change_password = false;
+                    this.saveUserToStorage(this.user);
+                }
+
+                return { success: true, message: response.data.message };
+            } catch (error) {
+                this.error = error.response?.data?.errors || error.response?.data?.message || "Failed to update password.";
+                return { success: false, message: this.error };
+            } finally {
+                this.loading = false;
+            }
+        },
+
         async fetchUser() {
             if (!this.user) return;
 
