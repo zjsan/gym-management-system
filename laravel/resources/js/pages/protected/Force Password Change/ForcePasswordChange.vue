@@ -94,6 +94,9 @@ import { useRouter } from "vue-router";
 const authStore = useAuthStore();
 const router = useRouter();
 
+// Check if this is a forced reset or a voluntary profile update
+const isForced = computed(() => route.name === "ForcePasswordChange");
+
 const form = reactive({
     current_password: "",
     password: "",
@@ -110,8 +113,17 @@ const handleSubmit = async () => {
     const result = await authStore.updatePassword(form);
 
     if (result.success) {
-        alert("Password updated successfully! Welcome to your dashboard.");
-        router.replace({ name: "Dashboard" });
+        if (isForced.value) {
+            alert("Password updated successfully! Welcome to your dashboard.");
+            router.replace({ name: "Dashboard" });
+        } else {
+            successMessage.value = "Password updated successfully!";
+
+            // Clear form fields
+            form.current_password = "";
+            form.password = "";
+            form.password_confirmation = "";
+        }
     } else {
         if (typeof result.message === "object") {
             errors.value = result.message;
