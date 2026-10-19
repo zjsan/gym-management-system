@@ -19,6 +19,13 @@
             Dashboard
         </button>
 
+        <button
+            @click="goToUserProfile"
+            class="bg-blue-500 text-white font-semibold rounded-lg shadow hover:bg-red-600 transition"
+        >
+            User Profile
+        </button>
+
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mt-6">
             <div class="lg:col-span-1">
                 <div
@@ -444,5 +451,9 @@ const goToSettingsPage = () => {
 
 const goToDashboard = () => {
     router.push({ name: "DashboardView" });
+};
+
+const goToUserProfile = () => {
+    router.push({ name: "UserProfile" });
 };
 </script>
