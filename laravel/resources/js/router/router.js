@@ -10,6 +10,7 @@ import PaymentHistory from "../pages/protected/Payment/PaymentHistory.vue";
 import SettingsView from "../pages/protected/Admin/SettingsView.vue";
 import DashboardView from "../pages/protected/Dashboard/DashboardView.vue";
 import ForcePasswordChange from "../pages/protected/Force Password Change/ForcePasswordChange.vue";
+import UserProfileView from "../pages/protected/User Profile/UserProfileView.vue";
 
 const routes = [
 
@@ -27,6 +28,13 @@ const routes = [
         component: Dashboard,
         name: "Dashboard",
         meta: { requiresAuth: true },
+    },
+
+    {
+        path:"/user-profile",
+        component: UserProfileView,
+        name: "UserProfile",
+        meta: { requiresAuth: true}
     },
 
     {
