@@ -19,16 +19,16 @@
             Dashboard
         </button>
 
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mt-6">
             <div class="lg:col-span-1">
                 <div
                     class="bg-white p-6 rounded-lg shadow-md border border-gray-200 sticky top-6"
                 >
                     <h2 class="text-xl font-semibold mb-4 text-gray-700">
-                        {{ isEditing ? "Edit User" : " Create New User" }}
+                        {{ isEditing ? "Edit User" : "Create New User" }}
                     </h2>
 
-                    <!--form for adding and updating-->
+                    <!-- Form for adding and updating -->
                     <form @submit.prevent="handleSubmit" class="space-y-4">
                         <div class="grid grid-cols-2 gap-4">
                             <div>
@@ -93,44 +93,19 @@
                             </select>
                         </div>
 
-                        <div class="pt-2 border-t border-gray-100">
-                            <p
-                                v-if="isEditing"
-                                class="text-xs text-gray-500 mb-2 italic"
-                            >
-                                Leave passwords blank to keep current password.
-                            </p>
-                            <div v-if="isEditing" class="space-y-4">
-                                <input
-                                    v-model="form.password"
-                                    type="password"
-                                    placeholder="Password"
-                                    class="block w-full rounded-md border-gray-300 shadow-sm border p-2 text-sm"
-                                    :required="!isEditing"
-                                />
-                                <input
-                                    v-model="form.password_confirmation"
-                                    type="password"
-                                    placeholder="Confirm Password"
-                                    class="block w-full rounded-md border-gray-300 shadow-sm border p-2 text-sm"
-                                    :required="!isEditing"
-                                />
-                                <p v-if="showWarning" style="color: red">
-                                    password do not match!
-                                </p>
-
-                                <!-- Server-side Laravel Error -->
-                                <p
-                                    v-if="userStore.errors?.password"
-                                    class="text-red-500 text-xs mt-1"
-                                >
-                                    {{ userStore.errors.password[0] }}
-                                </p>
-                            </div>
+                        <!-- Server-side global form error message -->
+                        <div
+                            v-if="
+                                userStore.errors &&
+                                typeof userStore.errors === 'string'
+                            "
+                            class="text-red-500 text-xs"
+                        >
+                            {{ userStore.errors }}
                         </div>
 
                         <div
-                            class="flex items-center justify-end space-x-3 pt-4"
+                            class="flex items-center justify-end space-x-3 pt-4 border-t border-gray-100"
                         >
                             <button
                                 v-if="isEditing"
@@ -163,7 +138,7 @@
                 </div>
             </div>
 
-            <!--table for users viewing-->
+            <!-- Table for users viewing -->
             <div class="lg:col-span-2">
                 <div
                     class="bg-white rounded-lg shadow-md border border-gray-200 overflow-hidden"
@@ -224,8 +199,7 @@
                                         {{ user.role?.slug }}
                                     </span>
                                 </td>
-                                <td>
-                                    <!-- Status Badge -->
+                                <td class="px-6 py-4 whitespace-nowrap">
                                     <span
                                         :class="
                                             user.status === 'active'
@@ -246,7 +220,6 @@
                                     >
                                         Edit
                                     </button>
-                                    <!-- Dynamic Status Toggle Button -->
                                     <button
                                         @click="handleToggleStatus(user.id)"
                                         :class="
@@ -271,7 +244,7 @@
                                 "
                             >
                                 <td
-                                    colspan="3"
+                                    colspan="4"
                                     class="px-6 py-10 text-center text-gray-500"
                                 >
                                     No users found.
@@ -355,7 +328,7 @@
 
         <button
             @click="logout"
-            class="bg-red-500 text-white font-semibold rounded-lg shadow hover:bg-red-600 transition"
+            class="mt-8 bg-red-500 text-white font-semibold py-2 px-4 rounded-lg shadow hover:bg-red-600 transition"
         >
             Logout
         </button>
@@ -363,21 +336,21 @@
 </template>
 
 <script setup>
-import { computed, ref } from "vue";
+import { ref } from "vue";
 import { useUserStore } from "@/stores/userStore";
+import { useAuthStore } from "@/stores/auth";
 import { onMounted } from "vue";
 import { useRouter } from "vue-router";
 
 const router = useRouter();
-
 const userStore = useUserStore();
+const authStore = useAuthStore();
+
 const initialState = {
     first_name: "",
     last_name: "",
     email: "",
     role: "staff",
-    password: "",
-    password_confirmation: "",
 };
 
 const isEditing = ref(false);
@@ -388,29 +361,22 @@ const showTempPasswordModal = ref(false);
 const generatedTempPassword = ref("");
 const createdUserName = ref("");
 
+const form = ref({ ...initialState });
+
 const editUser = (user) => {
     isEditing.value = true;
     currentUserId.value = user.id;
 
-    // Fill the form with existing data
+    // Fill the form with existing data (no password fields needed)
     form.value = {
         first_name: user.first_name,
         last_name: user.last_name,
         email: user.email,
         role: user.role?.slug,
-        password: "", // Leave blank for security
-        password_confirmation: "",
     };
 };
 
-const form = ref({ ...initialState });
-
 const handleSubmit = async () => {
-    if (!passwordMatch.value) {
-        alert("Passwords do not match!");
-        return;
-    }
-
     try {
         let result;
         const wasEditing = isEditing.value;
@@ -424,25 +390,25 @@ const handleSubmit = async () => {
             result = await userStore.addUser(form.value);
 
             if (result.success) {
-                // Capture the generated temp password returned by the backend
                 generatedTempPassword.value = result.tempPassword;
                 createdUserName.value = `${form.value.first_name} ${form.value.last_name}`;
-
-                // Show the temporary password pop-up modal
                 showTempPasswordModal.value = true;
             }
         }
+
         if (result && result.success) {
-            alert(isEditing.value ? "User updated!" : "User added!");
+            alert(
+                wasEditing
+                    ? "User updated successfully!"
+                    : "User added successfully!",
+            );
             resetForm();
         }
     } catch (error) {
         console.error("Failed operation:", error);
-        alert("Failed operation. Please check the console for details.");
     }
 };
 
-// Clipboard helper function
 const copyToClipboard = () => {
     navigator.clipboard.writeText(generatedTempPassword.value);
     alert("Temporary password copied to clipboard!");
@@ -456,16 +422,8 @@ const resetForm = () => {
     isEditing.value = false;
     currentUserId.value = null;
     form.value = { ...initialState };
+    userStore.errors = null;
 };
-
-//check matching password
-const passwordMatch = computed(() => {
-    return form.value.password === form.value.password_confirmation;
-});
-
-const showWarning = computed(() => {
-    return form.value.password_confirmation.length > 0 && !passwordMatch.value;
-});
 
 onMounted(() => {
     userStore.fetchUsers();
@@ -473,9 +431,8 @@ onMounted(() => {
 
 const logout = async () => {
     try {
-        console.log("Attempting to logout...");
-        await auth.logout();
-        console.log("Success! Redirecting...");
+        await authStore.logout();
+        router.replace({ name: "Login" });
     } catch (error) {
         console.error("Logout failed:", error);
     }
