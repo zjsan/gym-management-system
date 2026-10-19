@@ -319,6 +319,11 @@ const initialState = {
 const isEditing = ref(false);
 const currentUserId = ref(null);
 
+// State for the temporary password modal
+const showTempPasswordModal = ref(false);
+const generatedTempPassword = ref("");
+const createdUserName = ref("");
+
 const editUser = (user) => {
     isEditing.value = true;
     currentUserId.value = user.id;
@@ -353,6 +358,20 @@ const handleSubmit = async () => {
             );
         } else {
             result = await userStore.addUser(form.value);
+
+            if (result.success) {
+                // Capture the generated temp password returned by the backend
+                generatedTempPassword.value = result.tempPassword;
+                createdUserName.value = `${form.first_name} ${form.last_name}`;
+
+                // Show the temporary password pop-up modal
+                showTempPasswordModal.value = true;
+
+                // Reset your input form here...
+                form.first_name = "";
+                form.last_name = "";
+                form.email = "";
+            }
         }
         if (result && result.success) {
             alert(isEditing.value ? "User updated!" : "User added!");
