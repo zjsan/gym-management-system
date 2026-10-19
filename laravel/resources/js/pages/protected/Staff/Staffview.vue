@@ -26,6 +26,13 @@
                 Click here for Dashboard
             </button>
 
+            <button
+                @click="goToUserProfile"
+                class="bg-blue-500 text-white font-semibold rounded-lg shadow hover:bg-red-600 transition"
+            >
+                Click here for User Profile
+            </button>
+
             <!-- Reset Button -->
             <button
                 @click="handleResetFilters"
@@ -531,6 +538,10 @@ const goToPaymentHistory = () => {
 
 const goToDashboard = () => {
     router.push({ name: "DashboardView" });
+};
+
+const goToUserProfile = () => {
+    router.push({ name: "UserProfile" });
 };
 
 // Local states
