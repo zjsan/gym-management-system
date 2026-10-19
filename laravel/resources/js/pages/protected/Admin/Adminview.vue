@@ -383,6 +383,12 @@ const handleSubmit = async () => {
     }
 };
 
+// Clipboard helper function
+const copyToClipboard = () => {
+    navigator.clipboard.writeText(generatedTempPassword.value);
+    alert("Temporary password copied to clipboard!");
+};
+
 const handleToggleStatus = async (id) => {
     await userStore.toggleUserStatus(id);
 };
