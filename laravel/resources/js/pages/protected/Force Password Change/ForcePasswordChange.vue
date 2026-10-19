@@ -3,12 +3,27 @@
         <div class="max-w-md w-full bg-white rounded-lg shadow-md p-8">
             <div class="text-center mb-6">
                 <h2 class="text-2xl font-bold text-gray-800">
-                    Password Update Required
+                    {{
+                        isForced
+                            ? "Password Update Required"
+                            : "Change Password"
+                    }}
                 </h2>
                 <p class="text-sm text-gray-600 mt-1">
-                    For security reasons, you must change your temporary
-                    password before continuing.
+                    {{
+                        isForced
+                            ? "For security reasons, you must change your temporary password before continuing."
+                            : "Update your account password securely below."
+                    }}
                 </p>
+            </div>
+
+            <!-- Success Alert for Voluntary Update -->
+            <div
+                v-if="successMessage"
+                class="mb-4 bg-green-50 border border-green-200 text-green-600 px-4 py-3 rounded text-sm"
+            >
+                {{ successMessage }}
             </div>
 
             <!-- General Error Alert -->
@@ -109,6 +124,7 @@ const errorMessage = ref(null);
 const handleSubmit = async () => {
     errors.value = null;
     errorMessage.value = null;
+    successMessage.value = null;
 
     const result = await authStore.updatePassword(form);
 
