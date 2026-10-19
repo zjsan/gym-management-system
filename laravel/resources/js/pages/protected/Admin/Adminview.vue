@@ -430,11 +430,6 @@ const handleSubmit = async () => {
 
                 // Show the temporary password pop-up modal
                 showTempPasswordModal.value = true;
-
-                // Reset your input form here...
-                form.first_name = "";
-                form.last_name = "";
-                form.email = "";
             }
         }
         if (result && result.success) {
