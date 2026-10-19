@@ -121,6 +121,7 @@ const form = reactive({
 
 const errors = ref(null);
 const errorMessage = ref(null);
+const successMessage = ref(null);
 
 const handleSubmit = async () => {
     errors.value = null;
