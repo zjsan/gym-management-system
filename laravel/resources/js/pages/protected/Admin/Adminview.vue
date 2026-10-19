@@ -426,7 +426,7 @@ const handleSubmit = async () => {
             if (result.success) {
                 // Capture the generated temp password returned by the backend
                 generatedTempPassword.value = result.tempPassword;
-                createdUserName.value = `${form.first_name} ${form.last_name}`;
+                createdUserName.value = `${form.value.first_name} ${form.value.last_name}`;
 
                 // Show the temporary password pop-up modal
                 showTempPasswordModal.value = true;
