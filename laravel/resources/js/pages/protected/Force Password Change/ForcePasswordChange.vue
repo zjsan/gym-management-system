@@ -102,11 +102,12 @@
 </template>
 
 <script setup>
-import { reactive, ref } from "vue";
+import { reactive, ref, computed } from "vue";
 import { useAuthStore } from "@/stores/auth";
-import { useRouter } from "vue-router";
+import { useRouter, useRoute } from "vue-router";
 
 const authStore = useAuthStore();
+const route = useRoute();
 const router = useRouter();
 
 // Check if this is a forced reset or a voluntary profile update
