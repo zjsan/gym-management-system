@@ -289,6 +289,70 @@
             </div>
         </div>
 
+        <!-- Temporary Password Modal -->
+        <div
+            v-if="showTempPasswordModal"
+            class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 px-4"
+        >
+            <div
+                class="bg-white rounded-lg shadow-xl max-w-md w-full p-6 relative"
+            >
+                <div class="text-center">
+                    <div
+                        class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-green-100 mb-4"
+                    >
+                        <svg
+                            class="h-6 w-6 text-green-600"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                        >
+                            <path
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                stroke-width="2"
+                                d="M5 13l4 4L19 7"
+                            ></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-lg font-medium text-gray-900">
+                        User Created Successfully!
+                    </h3>
+                    <p class="text-sm text-gray-500 mt-1">
+                        A temporary password has been automatically generated
+                        for <strong>{{ createdUserName }}</strong
+                        >. Please copy and hand this over securely. It will not
+                        be shown again.
+                    </p>
+                </div>
+
+                <!-- Password Display Box -->
+                <div
+                    class="mt-4 bg-gray-50 border border-gray-200 rounded-md p-3 flex items-center justify-between"
+                >
+                    <span
+                        class="font-mono text-lg font-bold text-gray-800 tracking-wider"
+                        >{{ generatedTempPassword }}</span
+                    >
+                    <button
+                        @click="copyToClipboard"
+                        class="bg-blue-600 text-white text-xs px-3 py-1.5 rounded hover:bg-blue-700 transition-colors font-medium"
+                    >
+                        Copy
+                    </button>
+                </div>
+
+                <div class="mt-6">
+                    <button
+                        @click="showTempPasswordModal = false"
+                        class="w-full bg-gray-800 text-white py-2 rounded-md hover:bg-gray-900 transition-colors text-sm font-medium"
+                    >
+                        Done / Close
+                    </button>
+                </div>
+            </div>
+        </div>
+
         <button
             @click="logout"
             class="bg-red-500 text-white font-semibold rounded-lg shadow hover:bg-red-600 transition"
