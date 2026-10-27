@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\PasswordChangedMail;
 
 class AuthController extends Controller
 {
@@ -88,6 +90,8 @@ class AuthController extends Controller
             'must_change_password' => false, // Clear the force-reset flag
         ]);
 
+        Mail::to($user->email)->send(new PasswordChangedMail($user));
+        
         return response()->json([
             'message' => 'Password updated successfully.',
             'user' => $user->load('role'),
