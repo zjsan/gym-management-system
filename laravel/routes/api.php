@@ -15,12 +15,18 @@ Route::get('/user', function (Request $request) {
 })->middleware('auth:sanctum');
 
 Route::middleware(['web'])->group(function () {
-    Route::post('/login', [AuthController::class, 'login']);
+    // Limit login attempts to 5 per minute per IP/user
+    Route::post('/login', [AuthController::class, 'login'])
+        ->middleware('throttle:5,1');
+
     Route::post('/logout', [AuthController::class, 'logout']);
 
-    Route::post('/forgot-password', [AuthController::class, 'sendResetLinkEmail']);
-    Route::post('/reset-password', [AuthController::class, 'resetPassword']);
-
+    // Stricter limit for password resets (e.g., 3 requests per minute)
+    Route::post('/forgot-password', [AuthController::class, 'sendResetLinkEmail'])
+        ->middleware('throttle:3,1');
+        
+    Route::post('/reset-password', [AuthController::class, 'resetPassword'])
+        ->middleware('throttle:3,1');
 });
 
 Route::middleware(['auth:sanctum'])->group(function () {
