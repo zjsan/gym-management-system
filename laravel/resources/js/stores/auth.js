@@ -17,34 +17,38 @@ export const useAuthStore = defineStore("auth", {
 
     actions: {
         saveUserToStorage(user) {
-        this.user = user;
-        
-        // Convert to string safely to compare with what is already on disk
-        const currentStored = localStorage.getItem("user");
-        const stringifiedUser = user ? JSON.stringify(user) : null;
+            this.user = user;
 
-        // ONLY write to localStorage if the values are actually different.
-        // This stops tabs from triggering destructive 'storage' events on each other during race conditions.
-        if (currentStored !== stringifiedUser) {
-            if (stringifiedUser) {
-                localStorage.setItem("user", stringifiedUser);
-            } else {
-                localStorage.removeItem("user");
+            // Convert to string safely to compare with what is already on disk
+            const currentStored = localStorage.getItem("user");
+            const stringifiedUser = user ? JSON.stringify(user) : null;
+
+            // ONLY write to localStorage if the values are actually different.
+            // This stops tabs from triggering destructive 'storage' events on each other during race conditions.
+            if (currentStored !== stringifiedUser) {
+                if (stringifiedUser) {
+                    localStorage.setItem("user", stringifiedUser);
+                } else {
+                    localStorage.removeItem("user");
+                }
             }
-        }
-    },
+        },
 
         initTabSync() {
             window.addEventListener("storage", (event) => {
                 if (event.key === "user") {
-                    const newUser = event.newValue ? JSON.parse(event.newValue) : null;
+                    const newUser = event.newValue
+                        ? JSON.parse(event.newValue)
+                        : null;
                     this.user = newUser;
 
                     const currentRoute = router.currentRoute.value;
                     const currentRouteName = currentRoute.name;
 
                     // Determine if the current route needs any type of authentication/authorization
-                    const routeRequiresAuth = currentRoute.meta.requiresAuth || currentRoute.meta.requiresAdmin;
+                    const routeRequiresAuth =
+                        currentRoute.meta.requiresAuth ||
+                        currentRoute.meta.requiresAdmin;
 
                     if (!newUser && routeRequiresAuth) {
                         // User logged out in another tab, and this tab is on a protected route
@@ -90,8 +94,11 @@ export const useAuthStore = defineStore("auth", {
             this.error = null;
 
             try {
-                const response = await api.put("/user/update-password", passwordData);
-                
+                const response = await api.put(
+                    "/user/update-password",
+                    passwordData,
+                );
+
                 // Update local user data if needed
                 if (this.user) {
                     this.user.must_change_password = false;
@@ -100,7 +107,46 @@ export const useAuthStore = defineStore("auth", {
 
                 return { success: true, message: response.data.message };
             } catch (error) {
-                this.error = error.response?.data?.errors || error.response?.data?.message || "Failed to update password.";
+                this.error =
+                    error.response?.data?.errors ||
+                    error.response?.data?.message ||
+                    "Failed to update password.";
+                return { success: false, message: this.error };
+            } finally {
+                this.loading = false;
+            }
+        },
+
+        async sendPasswordResetLink(email) {
+            this.loading = true;
+            this.error = null;
+
+            try {
+                const response = await api.post("/forgot-password", { email });
+                return { success: true, message: response.data.message };
+            } catch (error) {
+                this.error =
+                    error.response?.data?.errors ||
+                    error.response?.data?.message ||
+                    "Failed to send reset link.";
+                return { success: false, message: this.error };
+            } finally {
+                this.loading = false;
+            }
+        },
+
+        async resetPassword(resetData) {
+            this.loading = true;
+            this.error = null;
+
+            try {
+                const response = await api.post("/reset-password", resetData);
+                return { success: true, message: response.data.message };
+            } catch (error) {
+                this.error =
+                    error.response?.data?.errors ||
+                    error.response?.data?.message ||
+                    "Failed to reset password.";
                 return { success: false, message: this.error };
             } finally {
                 this.loading = false;
@@ -118,7 +164,9 @@ export const useAuthStore = defineStore("auth", {
                 // Only logout if it's explicitly 401 AND we are certain the session is dead
                 if (error.response && error.response.status === 401) {
                     // Prevent false positives on cold tab load race conditions
-                    console.warn("Session expired or invalid. Clearing local state.");
+                    console.warn(
+                        "Session expired or invalid. Clearing local state.",
+                    );
                     this.saveUserToStorage(null);
                     if (router.currentRoute.value.name !== "Login") {
                         router.push({ name: "Login" });
