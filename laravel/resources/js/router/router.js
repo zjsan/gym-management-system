@@ -11,16 +11,31 @@ import SettingsView from "../pages/protected/Admin/SettingsView.vue";
 import DashboardView from "../pages/protected/Dashboard/DashboardView.vue";
 import ForcePasswordChange from "../pages/protected/Force Password Change/ForcePasswordChange.vue";
 import UserProfileView from "../pages/protected/User Profile/UserProfileView.vue";
+import ResetPassword from "../pages/protected/Force Password Change/ResetPasswordView.vue";
+import ForgotPassword from "../pages/public/ForgotPassword.vue";
 
 const routes = [
-
     { path: "/", component: Login, name: "Login", requiresAuth: false },
 
     {
-        path: '/force-password-change',
-        name: 'ForcePasswordChange',
+        path: "/force-password-change",
+        name: "ForcePasswordChange",
         component: ForcePasswordChange,
-        meta: { requiresAuth: true }
+        meta: { requiresAuth: true },
+    },
+
+    {
+        path: "/forgot-password",
+        name: "ForgotPassword",
+        component: ForgotPassword,
+        meta: { requiresGuest: true, requiresAuth: false },
+    },
+
+    {
+        path: "/reset-password",
+        name: "ResetPassword",
+        component: ResetPassword,
+        meta: { requiresGuest: true, requiresAuth: false },
     },
 
     {
@@ -31,10 +46,10 @@ const routes = [
     },
 
     {
-        path:"/user-profile",
+        path: "/user-profile",
         component: UserProfileView,
         name: "UserProfile",
-        meta: { requiresAuth: true}
+        meta: { requiresAuth: true },
     },
 
     {
@@ -64,7 +79,7 @@ const routes = [
         name: "MemberManagement",
         meta: { requiresAdmin: true, role: "staff" },
     },
-    
+
     {
         path: "/attendance",
         name: "attendance",
@@ -88,7 +103,7 @@ const router = createRouter({
 // Add this guard block to secure manual navigation
 router.beforeEach((to, from) => {
     const authStore = useAuthStore();
-    
+
     const requiresAuth = to.meta.requiresAuth || to.meta.requiresAdmin;
     const requiredRole = to.meta.role;
 
@@ -99,13 +114,13 @@ router.beforeEach((to, from) => {
 
     // 2. Logged in, trying to access Login page
     if (to.name === "Login" && authStore.isAuthenticated) {
-        return { name: "Dashboard", replace:true };
+        return { name: "Dashboard", replace: true };
     }
 
     // 3. Role verification (Admin / Staff checks)
     if (to.meta.requiresAdmin && requiredRole) {
         const userRole = authStore.user?.role?.slug;
-        
+
         // If user object exists but permissions aren't loaded yet, don't boot them out immediately.
         // Let the route load so components can show a loading state while fetchUser resolves.
         if (authStore.user && !userRole) {
@@ -117,9 +132,7 @@ router.beforeEach((to, from) => {
         }
     }
 
-    return true; 
-
+    return true;
 });
 
 export default router;
-
