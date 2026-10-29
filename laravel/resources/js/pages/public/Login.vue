@@ -40,7 +40,11 @@
 
                     <p class="text-sm text-gray-500 mt-4">
                         Forgot Password?
-                        <a href="#" class="text-blue-500 hover:underline">
+                        <a
+                            href="#"
+                            class="text-blue-500 hover:underline"
+                            @click.prevent="goToForGotPassword"
+                        >
                             Click here to reset
                         </a>
                     </p>
@@ -55,29 +59,36 @@
             </div>
         </div>
     </section>
-</template> 
+</template>
 <script setup>
-import { useAuthStore } from '../../stores/auth';
-import { ref } from 'vue';
+import { useAuthStore } from "../../stores/auth";
+import { ref } from "vue";
+import vueRouter from "vue-router";
 
 const auth = useAuthStore();
-const email = ref('');
-const password = ref('');
+const email = ref("");
+const password = ref("");
+
+const router = vueRouter.useRouter();
 
 //call login function from auth store
-const login = async() => {
+const login = async () => {
     try {
-        console.log('Attempting to login...');
+        console.log("Attempting to login...");
         await auth.login({
             email: email.value,
-            password: password.value
+            password: password.value,
         });
-        console.log('Success! Redirecting...');
+        console.log("Success! Redirecting...");
     } catch (error) {
-        console.error('Login failed:', error);
+        console.error("Login failed:", error);
         if (error.response && error.response.status === 422) {
-            console.log('Validation Errors:', error.response.data.errors);
+            console.log("Validation Errors:", error.response.data.errors);
         }
     }
 };
- </script>
+
+const goToForGotPassword = () => {
+    router.push({ name: "forgot-password" });
+};
+</script>
