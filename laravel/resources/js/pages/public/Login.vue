@@ -63,13 +63,13 @@
 <script setup>
 import { useAuthStore } from "../../stores/auth";
 import { ref } from "vue";
-import vueRouter from "vue-router";
+import { useRouter } from "vue-router";
 
 const auth = useAuthStore();
 const email = ref("");
 const password = ref("");
 
-const router = vueRouter.useRouter();
+const router = useRouter();
 
 //call login function from auth store
 const login = async () => {
