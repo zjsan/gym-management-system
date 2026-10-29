@@ -77,7 +77,7 @@
 
                 <div class="text-center mt-4">
                     <router-link
-                        to="/login"
+                        to="/"
                         class="text-sm font-medium text-blue-600 hover:text-blue-500"
                     >
                         Remember your password? Sign in
