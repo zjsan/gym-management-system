@@ -41,6 +41,16 @@ class UserSeeder extends Seeder
                 'role_id'=> $staffRole,
                 'must_change_password' => false,
             ],
+
+            //testing for the email
+            [
+                'first_name'=> 'Dezir', 
+                'last_name'=> 'Nocturn',
+                'email' => 'oragelemon25@gmail.com',
+                'password' => Hash::make('password1234'),
+                'role_id'=> $staffRole,
+                'must_change_password' => false,
+            ],
         ];
 
          //cleaning the emails table before seeding
