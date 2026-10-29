@@ -43,7 +43,7 @@
                         <a
                             href="#"
                             class="text-blue-500 hover:underline"
-                            @click.prevent="goToForGotPassword"
+                            @click.prevent="goToForgotPassword"
                         >
                             Click here to reset
                         </a>
@@ -88,7 +88,7 @@ const login = async () => {
     }
 };
 
-const goToForGotPassword = () => {
-    router.push({ name: "forgot-password" });
+const goToForgotPassword = () => {
+    router.push({ name: "ForgotPassword" });
 };
 </script>
