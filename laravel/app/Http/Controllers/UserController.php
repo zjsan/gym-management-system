@@ -8,6 +8,8 @@ use Illuminate\Support\Facades\Hash;
 use App\Models\Role;   
 use App\Http\Requests\StoreUserRequest;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\TemporaryPasswordMail;
 
 class UserController extends Controller
 {
@@ -42,11 +44,13 @@ class UserController extends Controller
             'must_change_password' => true, // Flag newly created users to change password on first login
         ]);
 
+        // Dispatch the email via Gmail SMTP
+        Mail::to($user->email)->send(new TemporaryPasswordMail($user, $tempPassword));
+
         //load the role relationship to return the user with its role data
         return response()->json([
             'message' => 'User created successfully.',
             'user' => $user->load('role'),
-            'temp_password' => $tempPassword, // Admin can view/copy this to give to the staff member
         ], 201);
     }
 
