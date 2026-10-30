@@ -32,13 +32,15 @@ class AppServiceProvider extends ServiceProvider
         });
 
         Gate::define('get-active-fee-rates', function (User $user){
-            return in_array(strtolower(trim( $user->role?->slug ?? '')), ['admin','staff']);
+            return in_array(strtolower(trim( $user->role?->slug ?? '')), ['admin','staff']);    
         });
 
         //for the vue component to generate the reset password link with the frontend url
         ResetPassword::createUrlUsing(function ($notifiable, string $token) {
-            $frontendUrl = config('app.frontend_url', 'http://localhost:5173');
-            return "{$frontendUrl}/reset-password?token={$token}&email={$notifiable->getEmailForPasswordReset()}";
+            $appUrl = config('app.url', 'http://localhost:8000');
+
+            // Point to Laravel, which loads the SPA, allowing Vue Router to handle /reset-password
+            return "{$appUrl}/reset-password?token={$token}&email=" . urlencode($notifiable->getEmailForPasswordReset());
         });
     } 
 }
