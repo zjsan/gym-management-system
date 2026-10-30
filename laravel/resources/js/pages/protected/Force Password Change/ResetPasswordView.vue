@@ -22,7 +22,7 @@
                 {{ successMessage }}
                 <div class="mt-2">
                     <router-link
-                        to="/login"
+                        to="/"
                         class="font-medium underline hover:text-green-800"
                     >
                         Click here to log in with your new password
