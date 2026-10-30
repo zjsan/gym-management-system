@@ -269,9 +269,9 @@
             </div>
         </div>
 
-        <!-- Temporary Password Modal -->
+        <!-- Success Confirmation Modal -->
         <div
-            v-if="showTempPasswordModal"
+            v-if="showSuccessModal"
             class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 px-4"
         >
             <div
@@ -298,36 +298,20 @@
                     <h3 class="text-lg font-medium text-gray-900">
                         User Created Successfully!
                     </h3>
-                    <p class="text-sm text-gray-500 mt-1">
-                        A temporary password has been automatically generated
-                        for <strong>{{ createdUserName }}</strong
-                        >. Please copy and hand this over securely. It will not
-                        be shown again.
+                    <p class="text-sm text-gray-600 mt-2">
+                        An account has been successfully created for
+                        <strong>{{ createdUserName }}</strong
+                        >. A temporary password has been automatically sent to
+                        their email address via Gmail SMTP.
                     </p>
-                </div>
-
-                <!-- Password Display Box -->
-                <div
-                    class="mt-4 bg-gray-50 border border-gray-200 rounded-md p-3 flex items-center justify-between"
-                >
-                    <span
-                        class="font-mono text-lg font-bold text-gray-800 tracking-wider"
-                        >{{ generatedTempPassword }}</span
-                    >
-                    <button
-                        @click="copyToClipboard"
-                        class="bg-blue-600 text-white text-xs px-3 py-1.5 rounded hover:bg-blue-700 transition-colors font-medium"
-                    >
-                        Copy
-                    </button>
                 </div>
 
                 <div class="mt-6">
                     <button
-                        @click="showTempPasswordModal = false"
-                        class="w-full bg-gray-800 text-white py-2 rounded-md hover:bg-gray-900 transition-colors text-sm font-medium"
+                        @click="showSuccessModal = false"
+                        class="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition-colors text-sm font-medium"
                     >
-                        Done / Close
+                        Done
                     </button>
                 </div>
             </div>
@@ -414,11 +398,6 @@ const handleSubmit = async () => {
     } catch (error) {
         console.error("Failed operation:", error);
     }
-};
-
-const copyToClipboard = () => {
-    navigator.clipboard.writeText(generatedTempPassword.value);
-    alert("Temporary password copied to clipboard!");
 };
 
 const handleToggleStatus = async (id) => {
