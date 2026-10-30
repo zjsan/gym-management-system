@@ -32,7 +32,6 @@ export const useUserStore = defineStore("userStore", {
 
                 return { 
                     success: true,
-                    tempPassword: res.data.temp_password,
                     message: res.data.message
                  };
             } catch (err) {
