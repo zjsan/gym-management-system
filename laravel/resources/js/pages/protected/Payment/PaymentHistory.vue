@@ -183,6 +183,27 @@
                 </svg>
                 Print Sales Summary
             </button>
+
+            <button
+                @click="showEmailModal = true"
+                class="px-4 py-1.5 bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold rounded-lg flex items-center gap-1.5 shadow-sm transition"
+            >
+                <!-- Email Icon -->
+                <svg
+                    class="w-4 h-4"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                >
+                    <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+                    />
+                </svg>
+                Email Summary
+            </button>
         </div>
 
         <!-- Transaction Table -->
@@ -351,6 +372,12 @@
         @close="isSummaryModalOpen = false"
     />
 
+    <!-- Component Tag -->
+    <EmailSalesSummaryModal
+        :is-open="showEmailModal"
+        @close="showEmailModal = false"
+    />
+
     <!-- <ReceiptModal
         :is-open="isReceiptModalOpen"
         :payment="selectedPayment"
@@ -364,6 +391,7 @@ import { usePaymentStore } from "@/stores/paymentStore";
 import { usePagination } from "@/composables/usePagination"; // Adjust import path if needed
 import SalesSummaryModal from "../Components/SalesSummaryModal.vue";
 import ReceiptModal from "../Components/ReceiptModal.vue";
+import EmailSalesSummaryModal from "../Components/EmailSalesSummaryModal.vue";
 
 const paymentStore = usePaymentStore();
 
@@ -391,6 +419,7 @@ onMounted(() => {
 const isSummaryModalOpen = ref(false); //flag for the summary modal
 const selectedPayment = ref(null);
 const isReceiptModalOpen = ref(false);
+const showEmailModal = ref(false);
 
 const openReceiptModal = (payment) => {
     selectedPayment.value = payment;
