@@ -352,6 +352,8 @@ const showTempPasswordModal = ref(false);
 const generatedTempPassword = ref("");
 const createdUserName = ref("");
 
+const showSuccessModal = ref(false);
+
 const form = ref({ ...initialState });
 
 const editUser = (user) => {
@@ -393,9 +395,12 @@ const handleSubmit = async () => {
                     ? "User updated successfully!"
                     : "User added successfully!",
             );
+
+            showSuccessModal.value = true;
             resetForm();
         }
     } catch (error) {
+        showSuccessModal.value = false;
         console.error("Failed operation:", error);
     }
 };
