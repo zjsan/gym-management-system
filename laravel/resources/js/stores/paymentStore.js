@@ -133,6 +133,21 @@ export const usePaymentStore = defineStore("payment", {
                     "Failed to export payment ledger.";
                 console.error("Failed to export payment ledger:", err);
             } finally {
+                this.loading = false;   
+            }
+        },
+
+        async emailSalesSummary(payload) {
+            this.loading = true;
+            this.errors = null;
+
+            try {
+                const response = await api.post("/reports/sales-summary/email", payload);
+                return { success: true, message: response.data.message };
+            } catch (err) {
+                this.errors = err.response?.data?.message || "Failed to send email report.";
+                return { success: false, message: this.error.value };
+            } finally {
                 this.loading = false;
             }
         },
