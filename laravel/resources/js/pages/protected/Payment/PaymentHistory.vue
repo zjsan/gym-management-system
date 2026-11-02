@@ -351,11 +351,11 @@
         @close="isSummaryModalOpen = false"
     />
 
-    <ReceiptModal
+    <!-- <ReceiptModal
         :is-open="isReceiptModalOpen"
         :payment="selectedPayment"
         @close="isReceiptModalOpen = false"
-    />
+    /> -->
 </template>
 
 <script setup>
