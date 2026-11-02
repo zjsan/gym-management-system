@@ -50,6 +50,9 @@ Route::middleware(['auth:sanctum'])->group(function () {
         //Financial reporting for the printable sales summary
         Route::get('/payments/sales-summary', [PaymentController::class, 'salesSummary']);
 
+        //Financial reporting for the sales summary email
+        Route::post('/reports/sales-summary/email', [PaymentController::class, 'emailSalesSummary']);
+
         //Export Payments to CSV endpoint
         Route::get('/payments/export', [PaymentController::class, 'export']);
 
