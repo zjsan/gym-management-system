@@ -348,7 +348,6 @@ const isEditing = ref(false);
 const currentUserId = ref(null);
 
 // State for the temporary password modal
-const showTempPasswordModal = ref(false);
 const generatedTempPassword = ref("");
 const createdUserName = ref("");
 
@@ -385,7 +384,7 @@ const handleSubmit = async () => {
             if (result.success) {
                 generatedTempPassword.value = result.tempPassword;
                 createdUserName.value = `${form.value.first_name} ${form.value.last_name}`;
-                showTempPasswordModal.value = true;
+                showSuccessModal.value = true;
             }
         }
 
@@ -396,7 +395,6 @@ const handleSubmit = async () => {
                     : "User added successfully!",
             );
 
-            showSuccessModal.value = true;
             resetForm();
         }
     } catch (error) {
