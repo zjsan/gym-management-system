@@ -15,7 +15,6 @@ class SalesSummaryMail extends Mailable
     public function __construct(
         public array $summaryData, 
         public string $rangeLabel, 
-        public string $dateRangeText
     ) {}
 
     public function envelope(): Envelope
