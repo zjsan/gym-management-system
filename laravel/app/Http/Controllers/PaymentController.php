@@ -204,19 +204,26 @@ class PaymentController extends Controller
 
         $query = Payment::query();
 
-        if ($period === 'today') {
-            $startDate = now()->startOfDay();
-            $endDate = now()->endOfDay();
-            $periodLabel = 'Today (' . now()->format('M d, Y') . ')';
-        } elseif ($period === 'weekly') {
-            $startDate = now()->startOfWeek();
-            $endDate = now()->endOfWeek();
-            $periodLabel = 'This Week (' . $startDate->format('M d') . ' - ' . $endDate->format('M d, Y') . ')';
-        } else {
-            $startDate = now()->startOfMonth();
-            $endDate = now()->endOfMonth();
-            $periodLabel = 'This Month (' . now()->format('F Y') . ')';
+        //period matching logic
+        switch ($period){
+            case 'today':
+                $startDate = now()->startOfDay();
+                $endDate = now()->endOfDay();
+                $periodLabel = 'Today (' . now()->format('M d, Y') . ')';
+                break;
+            case 'weekly':
+                $startDate = now()->startOfWeek();
+                $endDate = now()->endOfWeek();
+                $periodLabel = 'This Week (' . $startDate->format('M d') . ' - ' . $endDate->format('M d, Y') . ')';
+                break;
+            case 'monthly':
+            default:
+                $startDate = now()->startOfMonth();
+                $endDate = now()->endOfMonth();
+                $periodLabel = 'This Month (' . now()->format('F Y') . ')';
+                break;
         }
+
 
         $payments = $query->whereBetween('paid_at', [$startDate, $endDate])
             ->with(['processedBy:id,first_name,last_name', 'member:id,first_name,last_name', 'walkin:id,name'])
@@ -297,20 +304,25 @@ class PaymentController extends Controller
         $query = Payment::query();
 
         // period calculation logic
-        if ($period === 'today') {
-            $startDate = now()->startOfDay();
-            $endDate = now()->endOfDay();
-            $periodLabel = 'Today (' . now()->format('M d, Y') . ')';
-        } elseif ($period === 'weekly') {
-            $startDate = now()->startOfWeek();
-            $endDate = now()->endOfWeek();
-            $periodLabel = 'This Week (' . $startDate->format('M d') . ' - ' . $endDate->format('M d, Y') . ')';
-        } else {
-            $startDate = now()->startOfMonth();
-            $endDate = now()->endOfMonth();
-            $periodLabel = 'This Month (' . now()->format('F Y') . ')';
+        switch ($period) {
+            case 'today':
+                $startDate = now()->startOfDay();
+                $endDate = now()->endOfDay();
+                $periodLabel = 'Today (' . now()->format('M d, Y') . ')';
+                break;
+            case 'weekly':
+                $startDate = now()->startOfWeek();
+                $endDate = now()->endOfWeek();
+                $periodLabel = 'This Week (' . $startDate->format('M d') . ' - ' . $endDate->format('M d, Y') . ')';
+                break;
+            case 'monthly':
+            default:
+                $startDate = now()->startOfMonth();
+                $endDate = now()->endOfMonth();
+                $periodLabel = 'This Month (' . now()->format('F Y') . ')';
+                break;
         }
-
+ 
         $payments = $query->whereBetween('paid_at', [$startDate, $endDate])
             ->with(['processedBy:id,first_name,last_name', 'member:id,first_name,last_name', 'walkin:id,name'])
             ->get();
