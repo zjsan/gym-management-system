@@ -213,6 +213,7 @@ const period = ref("today");
 const recipientEmails = ref([""]);
 const successMessage = ref("");
 const errorMessage = ref("");
+const isEmailInputFilled = ref(true);
 
 watch(
     () => props.isOpen,
@@ -232,6 +233,16 @@ const removeEmailField = (index) => {
     recipientEmails.value.splice(index, 1);
 };
 
+const validateEmailInput = (email) => {
+    if (!email) {
+        isEmailInputFilled.value = false;
+        return false;
+    } else {
+        isEmailInputFilled.value = true;
+        return true;
+    }
+};
+
 const sendEmailSummary = async () => {
     successMessage.value = "";
     errorMessage.value = "";
@@ -240,6 +251,11 @@ const sendEmailSummary = async () => {
         emails: recipientEmails.value.filter((email) => email.trim() !== ""),
         period: period.value,
     };
+
+    if (validateEmailInput(payload.emails[0]) === false) {
+        errorMessage.value = "Please fill in the email address field.";
+        return;
+    }
 
     const result = await paymentStore.emailSalesSummary(payload);
 
