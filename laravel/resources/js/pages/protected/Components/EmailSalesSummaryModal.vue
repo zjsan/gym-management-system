@@ -168,11 +168,11 @@
                 </button>
                 <button
                     @click="sendEmailSummary"
-                    :disabled="loading"
+                    :disabled="paymentStore.loading"
                     class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold rounded-lg flex items-center gap-1.5 shadow-sm transition disabled:opacity-50"
                 >
                     <svg
-                        v-if="loading"
+                        v-if="paymentStore.loading"
                         class="animate-spin -ml-1 mr-2 h-4 w-4 text-white"
                         fill="none"
                         viewBox="0 0 24 24"
