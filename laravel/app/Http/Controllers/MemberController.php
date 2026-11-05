@@ -20,7 +20,7 @@ use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Auth;
 use Throwable;
 use Illuminate\Support\Carbon;
-
+use App\Mail\PaymentReceiptMail;
 
 class MemberController extends Controller
 {
@@ -134,6 +134,10 @@ class MemberController extends Controller
                     'paid_at' => now(),
                     'notes' => 'New member registration fee',
                 ]);
+
+                if ($member->email) {
+                    Mail::to($member->email)->send(new PaymentReceiptMail($payment, $member));
+                }
 
                 return [
                     'member' => $member,
@@ -264,6 +268,10 @@ class MemberController extends Controller
                     'paid_at' => now(),
                     'notes' => 'Monthly membership renewal fee',
                 ]);
+
+                if ($member->email) {
+                    Mail::to($member->email)->send(new PaymentReceiptMail($payment, $member));
+                }
 
                 return [
                     'member' => $member,
