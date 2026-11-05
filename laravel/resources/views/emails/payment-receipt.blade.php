@@ -26,7 +26,7 @@
         </tr>
     </table>
 
-    <p>If you have any questions regarding your account balance or membership status, please reach out to the front desk.</p>
+    <p>If you have any questions regarding your transaction or membership status, please reach out to the front desk.</p>
     
     <p style="margin-top: 30px; font-size: 0.85em; color: #6b7280;">
         Automated receipt generated from your Gym Management System via Gmail SMTP.
