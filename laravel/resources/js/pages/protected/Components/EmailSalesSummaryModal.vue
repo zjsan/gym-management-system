@@ -233,14 +233,19 @@ const removeEmailField = (index) => {
     recipientEmails.value.splice(index, 1);
 };
 
-const validateEmailInput = (email) => {
-    if (!email) {
+const validateEmails = () => {
+    // Filter out completely empty strings first
+    const activeEmails = recipientEmails.value
+        .map((e) => e.trim())
+        .filter((e) => e !== "");
+
+    if (activeEmails.length === 0) {
         isEmailInputFilled.value = false;
         return false;
-    } else {
-        isEmailInputFilled.value = true;
-        return true;
     }
+
+    isEmailInputFilled.value = true;
+    return true;
 };
 
 const sendEmailSummary = async () => {
@@ -252,8 +257,9 @@ const sendEmailSummary = async () => {
         period: period.value,
     };
 
-    if (validateEmailInput(payload.emails[0]) === false) {
-        errorMessage.value = "Please fill in the email address field.";
+    if (!validateEmails()) {
+        errorMessage.value =
+            "Please fill in at least one valid email address field.";
         return;
     }
 
