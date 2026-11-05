@@ -17,7 +17,7 @@ class PaymentReceiptMail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Official Gym Payment Receipt - #INV-' . str_pad($this->payment->id, 5, '0', STR_PAD_LEFT),
+            subject: 'Official Gym Payment Receipt - ' . $this->payment->receipt_no,
         );
     }
 

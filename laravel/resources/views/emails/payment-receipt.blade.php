@@ -10,7 +10,7 @@
     <table border="0" cellpadding="8" cellspacing="0" style="width: 100%; max-width: 450px; background: #f9f9f9; border: 1px solid #ddd; margin-bottom: 20px; border-radius: 6px;">
         <tr>
             <td><strong>Receipt Number:</strong></td>
-            <td>#INV-{{ str_pad($payment->id, 5, '0', STR_PAD_LEFT) }}</td>
+            <td>{{ $payment->receipt_no }}</td>
         </tr>
         <tr>
             <td><strong>Amount Paid:</strong></td>
