@@ -141,7 +141,8 @@ class MemberController extends Controller
                     Mail::to($member->email)->send(new PaymentReceiptMail($payment, $member));
 
                     //qr code email
-                    Mail::to($member->email)->queue(new MemberQrCodeMail($member));
+                    Mail::to($member->email)->send(new MemberQrCodeMail($member)); // for local testing
+                    // Mail::to($member->email)->queue(new MemberQrCodeMail($member));
                 }
 
                 return [
@@ -213,7 +214,7 @@ class MemberController extends Controller
         }
 
         try{
-            Mail::to($member->email)->queue(new MemberQrCodeMail($member));
+            Mail::to($member->email)->send(new MemberQrCodeMail($member)); // for local testing
 
             return response()->json([
                 'success' => true,
