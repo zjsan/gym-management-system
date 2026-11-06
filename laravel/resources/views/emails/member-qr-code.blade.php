@@ -15,7 +15,7 @@
 </head>
 <body>
     <div class="card">
-        <h2>Hello, {{ $member->first_name }}!</h2>
+        <h2>Welcome to the Gym, {{ $member->first_name }}!</h2>
         <p>Here is your digital access badge for entry at the gym front desk scanner.</p>
         
         <div class="qr-container" style="display: inline-block; width: 220px; height: 220px; margin: 20px auto;">
@@ -23,7 +23,7 @@
         </div>
 
         <p class="code">Badge ID: {{ $member->membership_no }}</p>
-        <p><small>Show this QR code on your mobile phone upon entry.</small></p>
+        <p><small>Present this QR code on your phone at the front desk scanner whenever you arrive for fast, automated attendance check-in.</small></p>
     </div>
 </body>
 </html>
