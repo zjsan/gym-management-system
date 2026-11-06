@@ -136,7 +136,12 @@ class MemberController extends Controller
                 ]);
 
                 if ($member->email) {
+
+                    //payment receipt email
                     Mail::to($member->email)->send(new PaymentReceiptMail($payment, $member));
+
+                    //qr code email
+                    Mail::to($member->email)->queue(new MemberQrCodeMail($member));
                 }
 
                 return [
