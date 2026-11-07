@@ -135,7 +135,17 @@ class MemberController extends Controller
                     'notes' => 'New member registration fee',
                 ]);
 
-                if ($member->email) {
+                return [
+                    'member' => $member,
+                    'payment' => $payment,
+                ];
+            });
+
+            //placing the email sending block after successful transaction to avoid ghost email if there were a problm
+            $member = $result['email'];
+            $payment = $result['payment'];
+
+            if ($member->email) {
 
                     //payment receipt email
                     Mail::to($member->email)->send(new PaymentReceiptMail($payment, $member));
@@ -143,17 +153,12 @@ class MemberController extends Controller
                     //qr code email
                     Mail::to($member->email)->send(new MemberQrCodeMail($member)); // for local testing
                     // Mail::to($member->email)->queue(new MemberQrCodeMail($member));
-                }
+            }
 
-                return [
-                    'member' => $member,
-                    'payment' => $payment,
-                ];
-            });
             return response()->json([
                 'message' => 'Member registered successfully.',
-                'data' => new MemberResource($result['member']),
-                'payment' => $result['payment'],
+                'data' => new MemberResource($member),
+                'payment' => $payment,
             ], 201);
 
         } catch (Throwable $e) { // Catch Throwable to capture both Exceptions and Errors
