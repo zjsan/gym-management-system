@@ -142,7 +142,7 @@ class MemberController extends Controller
             });
 
             //placing the email sending block after successful transaction to avoid ghost email if there were a problm
-            $member = $result['email'];
+            $member = $result['member'];
             $payment = $result['payment'];
 
             if ($member->email) {

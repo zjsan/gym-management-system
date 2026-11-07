@@ -58,8 +58,8 @@ class MemberQrCodeMail extends Mailable implements ShouldQueue
             ->generate($token);
 
         return [
-            Attachment::fromData(fn () => $qrImage, 'gym-access-qr.png')
-                ->mime('image/png'),
+           Attachment::fromData(fn () => $qrImage, 'gym-access-qr.png')
+                ->withMime('image/png'), // Changed from ->mime() to ->withMime()
         ];
     }
 }
