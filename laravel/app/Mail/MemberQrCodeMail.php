@@ -40,22 +40,28 @@ class MemberQrCodeMail extends Mailable implements ShouldQueue
     /**
      * Get the message content definition.
      */
-   public function content(): Content
+    public function content(): Content
     {
-        // Fallback safely to prevent null type errors during previews or incomplete records
         $token = $this->member->qr_token 
-        ?? $this->member->membership_no
-        ?? 'PREVIEW-FALLBACK-' . ($this->member->id ?? 'unknown');
+            ?? $this->member->membership_no 
+            ?? 'PREVIEW-FALLBACK-' . ($this->member->id ?? 'unknown');
 
-        $qrSvg = (string) QrCode::size(250)->format('svg')->generate($token);
+        // Generate PNG instead of SVG
+        $qrImagePng = QrCode::format('png')
+            ->size(250)
+            ->errorCorrection('H')
+            ->generate($token);
+
+        // Convert to base64 data URI so email clients can render it safely
+        $qrCodeDataUri = 'data:image/png;base64,' . base64_encode($qrImagePng);
 
         return new Content(
             view: 'emails.member-qr-code',
             with: [
-                'qrSvg' => $qrSvg,
+                'qrCodeDataUri' => $qrCodeDataUri,
             ],
         );
-    }
+}
 
     /**
      * Get the attachments for the message.
