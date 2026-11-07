@@ -5,7 +5,7 @@ FROM php:8.4-fpm-bullseye
 ENV TZ=Asia/Manila
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
-# 3. Install system dependencies & PHP extensions
+# 3. Install system dependencies, PHP extensions, and Imagick
 RUN apt-get update && apt-get install -y \
     curl \
     zip \
@@ -17,9 +17,12 @@ RUN apt-get update && apt-get install -y \
     libonig-dev \
     libxml2-dev \
     libzip-dev \
+    libmagickwand-dev \
     && apt-get clean && rm -rf /var/lib/apt/lists/* \
     && docker-php-ext-configure gd --with-freetype --with-jpeg \
-    && docker-php-ext-install pdo pdo_mysql bcmath gd zip
+    && docker-php-ext-install pdo pdo_mysql bcmath gd zip \
+    && pecl install imagick \
+    && docker-php-ext-enable imagick
 
 # 4. Copy Composer binary from official image
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
