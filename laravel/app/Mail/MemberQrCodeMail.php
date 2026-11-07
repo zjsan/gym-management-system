@@ -42,34 +42,24 @@ class MemberQrCodeMail extends Mailable implements ShouldQueue
      */
     public function content(): Content
     {
-        $token = $this->member->qr_token 
-            ?? $this->member->membership_no 
-            ?? 'PREVIEW-FALLBACK-' . ($this->member->id ?? 'unknown');
+        return new Content(
+            view: 'emails.member-qr-code',
+        );
+    }
 
-        // Generate PNG instead of SVG
-        $qrImagePng = QrCode::format('png')
-            ->size(250)
+    public function attachments(): array
+    {
+        $token = $this->member->qr_token ?? $this->member->membership_no;
+
+        // Generates clean PNG binary stream using the newly installed Imagick extension
+        $qrImage = QrCode::format('png')
+            ->size(400)
             ->errorCorrection('H')
             ->generate($token);
 
-        // Convert to base64 data URI so email clients can render it safely
-        $qrCodeDataUri = 'data:image/png;base64,' . base64_encode($qrImagePng);
-
-        return new Content(
-            view: 'emails.member-qr-code',
-            with: [
-                'qrCodeDataUri' => $qrCodeDataUri,
-            ],
-        );
-}
-
-    /**
-     * Get the attachments for the message.
-     *
-     * @return array<int, Attachment>
-     */
-    public function attachments(): array
-    {
-        return [];
+        return [
+            Attachment::fromData(fn () => $qrImage, 'gym-access-qr.png')
+                ->mime('image/png'),
+        ];
     }
 }
