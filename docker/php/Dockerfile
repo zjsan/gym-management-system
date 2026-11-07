@@ -1,5 +1,5 @@
-# 1. Base Image
-FROM php:8.4-fpm-bullseye
+# 1. Base Image pinned to the patched PHP version (8.4.27+) on Debian Bookworm
+FROM php:8.4.27-fpm-bookworm
 
 # 2. Timezone configuration
 ENV TZ=Asia/Manila
