@@ -5,8 +5,12 @@ FROM php:8.4.27-fpm-bookworm
 ENV TZ=Asia/Manila
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
-# 3. Install system dependencies, PHP extensions, and Imagick
-RUN apt-get update && apt-get install -y \
+# 3. Install system dependencies, PHP extensions, and Imagick (with HTTPS and IPv4 enforcement)
+RUN echo "Acquire::ForceIPv4 \"true\";" > /etc/apt/apt.conf.d/99force-ipv4 \
+    && sed -i 's/http:\/\/deb.debian.org/https:\/\/deb.debian.org/g' /etc/apt/sources.list.d/debian.sources 2>/dev/null || true \
+    && sed -i 's/http:\/\/deb.debian.org/https:\/\/deb.debian.org/g' /etc/apt/sources.list 2>/dev/null || true \
+    && apt-get update && apt-get install -y \
+    ca-certificates \
     curl \
     zip \
     unzip \
