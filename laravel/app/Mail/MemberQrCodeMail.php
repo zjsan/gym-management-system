@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Mail;
 
 use App\Models\Member;
@@ -23,7 +22,6 @@ class MemberQrCodeMail extends Mailable implements ShouldQueue
      */
     public function __construct(Member $member)
     {
-        //
         $this->member = $member;
     }
     
@@ -42,24 +40,39 @@ class MemberQrCodeMail extends Mailable implements ShouldQueue
      */
     public function content(): Content
     {
+        // Generate token and create base64 Data URI for inline display in the email body
+        $token = $this->member->qr_token ?? $this->member->membership_no;
+        
+        $qrImageBinary = QrCode::format('png')
+            ->size(400)
+            ->errorCorrection('H')
+            ->generate($token);
+
+        $qrCodeDataUri = 'data:image/png;base64,' . base64_encode($qrImageBinary);
+
         return new Content(
             view: 'emails.member-qr-code',
+            with: [
+                'qrCodeDataUri' => $qrCodeDataUri, // Pass it explicitly to the view
+            ],
         );
     }
 
+    /**
+     * Get the attachments for the message.
+     */
     public function attachments(): array
     {
         $token = $this->member->qr_token ?? $this->member->membership_no;
 
-        // Generates clean PNG binary stream using the newly installed Imagick extension
-        $qrImage = QrCode::format('png')
+        $qrImageBinary = QrCode::format('png')
             ->size(400)
             ->errorCorrection('H')
             ->generate($token);
 
         return [
-           Attachment::fromData(fn () => $qrImage, 'gym-access-qr.png')
-                ->withMime('image/png'), // Changed from ->mime() to ->withMime()
+            Attachment::fromData(fn () => $qrImageBinary, 'gym-access-qr.png')
+                ->withMime('image/png'),
         ];
     }
 }
