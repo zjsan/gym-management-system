@@ -43,12 +43,11 @@ class MemberQrCodeMail extends Mailable implements ShouldQueue
         // Generate token and create base64 Data URI for inline display in the email body
         $token = $this->member->qr_token ?? $this->member->membership_no;
         
-        // Convert the HtmlString return object to a raw string using ->toString()
-        $qrImageBinary = QrCode::format('png')
+        // Convert the HtmlString return object to a raw string
+        $qrImageBinary = (string) QrCode::format('png')
             ->size(400)
             ->errorCorrection('H')
-            ->generate($token)
-            ->toString();
+            ->generate($token);
 
         $qrCodeDataUri = 'data:image/png;base64,' . base64_encode($qrImageBinary);
 
@@ -68,11 +67,10 @@ class MemberQrCodeMail extends Mailable implements ShouldQueue
         $token = $this->member->qr_token ?? $this->member->membership_no;
 
         // Ensure raw string conversion for attachment payload as well
-        $qrImageBinary = QrCode::format('png')
+        $qrImageBinary = (string) QrCode::format('png')
             ->size(400)
             ->errorCorrection('H')
-            ->generate($token)
-            ->toString();
+            ->generate($token);
 
         return [
             Attachment::fromData(fn () => $qrImageBinary, 'gym-access-qr.png')
