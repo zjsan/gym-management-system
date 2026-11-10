@@ -15,11 +15,11 @@
         <p>Here is your digital access badge for entry at the gym front desk scanner.</p>
         
         <div class="qr-container">
-            <!-- Rendered securely as a base64 PNG image -->
-            <img src="{{ $qrCodeDataUri }}" alt="Member QR Code" class="qr-image">
+            <!-- Renders cleanly using Laravel's secure CID inline embedding -->
+            <img src="{{ $message->embedData($qrImageBinary, 'gym-access-qr.png', 'image/png') }}" alt="Member QR Code" class="qr-image">
         </div>
 
-        <p class="code">Badge ID: {{ $member->membership_no }}</p>
+        <p class="code">Badge ID: {{ $membership_no = $member->membership_no }}</p>
         <p><small>Present this QR code on your phone at the front desk scanner whenever you arrive for fast, automated attendance check-in.</small></p>
     </div>
 </body>

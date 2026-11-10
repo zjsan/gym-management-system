@@ -43,18 +43,16 @@ class MemberQrCodeMail extends Mailable implements ShouldQueue
         // Generate token and create base64 Data URI for inline display in the email body
         $token = $this->member->qr_token ?? $this->member->membership_no;
         
-        // Convert the HtmlString return object to a raw string
+       // Generate raw binary string for both the inline view and the download attachment
         $qrImageBinary = (string) QrCode::format('png')
             ->size(400)
             ->errorCorrection('H')
             ->generate($token);
 
-        $qrCodeDataUri = 'data:image/png;base64,' . base64_encode($qrImageBinary);
-
         return new Content(
             view: 'emails.member-qr-code',
             with: [
-                'qrCodeDataUri' => $qrCodeDataUri, // Pass it explicitly to the view
+                'qrImageBinary' => $qrImageBinary,
             ],
         );
     }
