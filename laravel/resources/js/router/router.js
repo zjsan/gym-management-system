@@ -100,34 +100,41 @@ const router = createRouter({
     routes,
 });
 
-// Add this guard block to secure manual navigation
+// secure manual navigation
 router.beforeEach((to, from) => {
     const authStore = useAuthStore();
 
+    // 1. Check if route requires any form of authentication
     const requiresAuth = to.meta.requiresAuth || to.meta.requiresAdmin;
-    const requiredRole = to.meta.role;
-
-    // 1. Not logged in, trying to access protected page
     if (requiresAuth && !authStore.isAuthenticated) {
         return { name: "Login", replace: true };
     }
 
-    // 2. Logged in, trying to access Login page
+    // 2. Prevent logged-in users from hitting the login page
     if (to.name === "Login" && authStore.isAuthenticated) {
         return { name: "Dashboard", replace: true };
     }
 
-    // 3. Role verification (Admin / Staff checks)
-    if (to.meta.requiresAdmin && requiredRole) {
+    // 3. Admin-only route protection
+    if (to.meta.requiresAdmin) {
+        const userRole = authStore.user?.role?.slug;
+        if (userRole !== "admin") {
+            return { name: "Dashboard", replace: true };
+        }
+    }
+
+    // 4. Specific Role verification (e.g., staff-only views)
+    if (to.meta.role) {
         const userRole = authStore.user?.role?.slug;
 
-        // If user object exists but permissions aren't loaded yet, don't boot them out immediately.
-        // Let the route load so components can show a loading state while fetchUser resolves.
+        // Allow temporary pass if user object is loading
         if (authStore.user && !userRole) {
-            return true; // Allow navigation to continue, component will wait for state
+            return true;
         }
 
-        if (userRole !== requiredRole) {
+        if (userRole !== to.meta.role && userRole !== "admin") {
+            // Note: Allowing 'admin' to also view staff tools is usually ideal in gyms,
+            // but change to strict equality (userRole !== to.meta.role) if admins shouldn't see it.
             return { name: "Dashboard", replace: true };
         }
     }
