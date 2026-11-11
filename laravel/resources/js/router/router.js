@@ -63,28 +63,28 @@ const routes = [
         path: "/admin-page",
         component: Adminview,
         name: "Adminview",
-        meta: { requiresAdmin: true, role: "admin" },
+        meta: { requiresAdmin: true }, // Admin only
     },
 
     {
         path: "/gym-setting",
         component: SettingsView,
         name: "SettingsView",
-        meta: { requiresAdmin: true, role: "admin" },
+        meta: { requiresAdmin: true }, // Admin only
     },
 
     {
         path: "/member-management",
         component: MemberManagement,
         name: "MemberManagement",
-        meta: { requiresAdmin: true, role: "staff" },
+        meta: { requiresAuth: true, role: "staff" }, // Staff access
     },
 
     {
         path: "/attendance",
-        name: "attendance",
         component: AttendanceDashboard,
-        meta: { requiresAdmin: true, role: "staff" },
+        name: "attendance",
+        meta: { requiresAuth: true, role: "staff" }, // Staff access
     },
 
     {
