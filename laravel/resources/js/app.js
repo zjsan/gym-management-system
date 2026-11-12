@@ -20,8 +20,7 @@ app.mount("#app");
 
 // Verify session with backend after mount if user exists locally
 if (authStore.user) {
-    
-    // Give the browser layout and cookies a moment to synchronize completely 
+    // Give the browser layout and cookies a moment to synchronize completely
     // across windows before checking the backend state.
     window.requestAnimationFrame(() => {
         setTimeout(() => {
