@@ -9,6 +9,8 @@ import { useAuthStore } from "@/stores/auth";
 import { useIdleTimeout } from "@/composables/useIdleTimeout";
 import IdleWarningModal from "@/pages/protected/Components/IdleWarningModal.vue";
 
+const authStore = useAuthStore();
+
 //  For testing right now, change 15 * 60 * 1000 to 10000 (10 seconds)
 const {
     showWarningModal,
