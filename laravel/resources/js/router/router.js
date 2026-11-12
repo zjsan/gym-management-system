@@ -132,9 +132,8 @@ router.beforeEach((to, from) => {
             return true;
         }
 
-        if (userRole !== to.meta.role && userRole !== "admin") {
-            // Note: Allowing 'admin' to also view staff tools is usually ideal in gyms,
-            // but change to strict equality (userRole !== to.meta.role) if admins shouldn't see it.
+        if (userRole !== to.meta.role) {
+            // change to (userRole !== to.meta.role && userRole !== "admin") if admins must see it.
             return { name: "Dashboard", replace: true };
         }
     }
