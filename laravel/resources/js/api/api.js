@@ -18,10 +18,12 @@ api.interceptors.response.use(
             if (router.currentRoute.value.name !== "Login") {
                 import("@/stores/auth").then(({ useAuthStore }) => {
                     const authStore = useAuthStore();
-                    
+
                     // Only clear if authenticated to prevent cross-tab cascading loops
                     if (authStore.isAuthenticated) {
                         authStore.saveUserToStorage(null);
+                        authStore.error =
+                            "Your session has expired. Please log in again.";
                         router.push({ name: "Login" });
                     }
                 });
