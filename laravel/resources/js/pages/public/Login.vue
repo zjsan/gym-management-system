@@ -49,6 +49,10 @@
                         </a>
                     </p>
 
+                    <span v-if="auth.error" class="text-red-500 text-sm mt-4">
+                        {{ auth.error }}
+                    </span>
+
                     <!-- <p class="text-sm text-gray-500 mt-4">
                         Don't have an account?
                         <a href="#" class="text-blue-500 hover:underline">
