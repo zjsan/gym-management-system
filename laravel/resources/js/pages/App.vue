@@ -1,5 +1,12 @@
 <template>
     <router-view />
+
+    <!-- Idle Warning Modal -->
+    <IdleWarningModal
+        :show="showWarningModal"
+        :secondsRemaining="secondsRemaining"
+        @extend="extendSession"
+    />
 </template>
 <script setup></script>
 
