@@ -168,6 +168,8 @@ export const useAuthStore = defineStore("auth", {
                         "Session expired or invalid. Clearing local state.",
                     );
                     this.saveUserToStorage(null);
+                    this.error =
+                        "Your session has expired. Please log in again.";
                     if (router.currentRoute.value.name !== "Login") {
                         router.push({ name: "Login" });
                     }
