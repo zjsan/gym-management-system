@@ -22,6 +22,11 @@
 @tailwind components;
 @tailwind utilities;
 
+body {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  @apply bg-[#0F1115] text-slate-100 antialiased;
+}
+
 @theme inline {
     --font-heading:
         var(--font-sans);
