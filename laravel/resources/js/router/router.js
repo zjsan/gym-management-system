@@ -104,36 +104,41 @@ const router = createRouter({
 router.beforeEach((to, from) => {
     const authStore = useAuthStore();
 
-    // 1. Check if route requires any form of authentication
+    // Check if route requires any form of authentication
     const requiresAuth = to.meta.requiresAuth || to.meta.requiresAdmin;
     if (requiresAuth && !authStore.isAuthenticated) {
         return { name: "Login", replace: true };
     }
 
-    // 2. Prevent logged-in users from hitting the login page
+    // Prevent logged-in users from hitting the login page
     if (to.name === "Login" && authStore.isAuthenticated) {
         return { name: "Dashboard", replace: true };
     }
 
-    // 3. Admin-only route protection
+    //  Admin-only route protection
     if (to.meta.requiresAdmin) {
+        // If user exists in storage but role isn't loaded yet, allow pass-through 
+        // until fetchUser resolves or rejects with 401
+        if (authStore.isAuthenticated && !authStore.user?.role) {
+            return true;
+        }
+
         const userRole = authStore.user?.role?.slug;
-        if (userRole !== "admin") {
+        if (userRole && userRole !== "admin") {
             return { name: "Dashboard", replace: true };
         }
     }
 
-    // 4. Specific Role verification (e.g., staff-only views)
+    //  Specific Role verification staff-only views
     if (to.meta.role) {
         const userRole = authStore.user?.role?.slug;
 
-        // Allow temporary pass if user object is loading
-        if (authStore.user && !userRole) {
+        // Allow temporary pass if user is authenticated but role object is still syncing
+        if (authStore.isAuthenticated && !userRole) {
             return true;
         }
 
         if (userRole !== to.meta.role) {
-            // change to (userRole !== to.meta.role && userRole !== "admin") if admins must see it.
             return { name: "Dashboard", replace: true };
         }
     }
