@@ -154,22 +154,21 @@ export const useAuthStore = defineStore("auth", {
         },
 
         async fetchUser() {
-            if (!this.user) return;
+            if (!this.isAuthenticated) return;
 
             try {
                 const response = await api.get("/user");
-                this.saveUserToStorage(response.data);
+                
+                // Extract the user object correctly from Laravel's JSON wrapper
+                const userData = response.data.user || response.data;
+                
+                this.saveUserToStorage(userData);
                 this.error = null;
             } catch (error) {
-                // Only logout if it's explicitly 401 AND we are certain the session is dead
                 if (error.response && error.response.status === 401) {
-                    // Prevent false positives on cold tab load race conditions
-                    console.warn(
-                        "Session expired or invalid. Clearing local state.",
-                    );
+                    console.warn("Session expired or invalid. Clearing local state.");
                     this.saveUserToStorage(null);
-                    this.error =
-                        "Your session has expired. Please log in again.";
+                    this.error = "Your session has expired. Please log in again.";
                     if (router.currentRoute.value.name !== "Login") {
                         router.push({ name: "Login" });
                     }
