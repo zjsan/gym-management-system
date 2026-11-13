@@ -200,9 +200,18 @@
             </Card>
 
             <!-- Clean Footer Meta -->
-            <p class="text-center text-xs text-slate-400 mt-6 font-medium">
-                &copy; 2026 IMAQ Gym Management System &bull; Ilocos Norte
-            </p>
+            <div
+                class="mt-8 pt-6 border-t border-slate-800/80 text-center space-y-1"
+            >
+                <p class="text-xs font-semibold text-slate-400 tracking-wide">
+                    &copy; {{ currentYear }} IMAQ Gym Management System
+                </p>
+                <p class="text-[11px] text-slate-500 font-medium">
+                    Proudly serving
+                    <span class="text-slate-400">Ilocos Norte</span> &bull; All
+                    rights reserved.
+                </p>
+            </div>
         </div>
     </div>
 </template>
@@ -229,6 +238,9 @@ const email = ref("");
 const password = ref("");
 const showPassword = ref(false);
 const router = useRouter();
+
+// Dynamic year for the footer
+const currentYear = ref(new Date().getFullYear());
 
 const login = async () => {
     try {
