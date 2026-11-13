@@ -33,7 +33,7 @@ const {
         authStore.error =
             "Your session has expired due to inactivity. Please log in again.";
     },
-    10000, // 10 seconds idle time (for testing)
+    15 * 60 * 1000, // 15 minutes idle time (for testing)
     60 * 1000, // 60 seconds warning countdown
 );
 
