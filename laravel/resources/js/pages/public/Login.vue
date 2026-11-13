@@ -1,55 +1,56 @@
 <template>
     <div
-        class="min-h-screen w-full flex items-center justify-center bg-[#0F1115] relative overflow-hidden px-4"
+        class="min-h-screen w-full flex flex-col items-center justify-center bg-[#F8F9FA] px-4 py-12 relative selection:bg-[#F8313B]/15 selection:text-[#F8313B]"
     >
-        <!-- Subtle Background Glow -->
+        <!-- Subtle Athletic Top Accent Line -->
+        <div class="fixed top-0 left-0 right-0 h-1 bg-[#F8313B] z-50"></div>
+
+        <!-- Subtle Architectural Grid Texture -->
         <div
-            class="absolute -top-32 -left-32 w-96 h-96 bg-[#F8313B]/10 rounded-full blur-3xl pointer-events-none"
-        ></div>
-        <div
-            class="absolute -bottom-32 -right-32 w-96 h-96 bg-[#F8313B]/5 rounded-full blur-3xl pointer-events-none"
+            class="absolute inset-0 bg-[radial-gradient(#E2E8F0_1px,transparent_1px)] [background-size:20px_20px] opacity-60 pointer-events-none"
         ></div>
 
-        <div class="w-full max-w-md relative z-10">
+        <div class="w-full max-w-[420px] relative z-10 animate-fade-in-up">
             <!-- Shadcn Card Container -->
             <Card
-                class="bg-white text-slate-900 p-8 sm:p-10 rounded-xl shadow-2xl border border-slate-200"
+                class="bg-white text-[#0F1115] p-8 sm:p-10 rounded-lg shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-200/90"
             >
                 <!-- Logo & Header Section -->
                 <CardHeader
-                    class="flex flex-col items-center text-center p-0 mb-6 space-y-3"
+                    class="flex flex-col items-center text-center p-0 mb-8 space-y-3"
                 >
-                    <!-- Actual Logo Image Asset -->
                     <div
-                        class="w-20 h-20 rounded-2xl bg-slate-50 flex items-center justify-center p-2 border border-slate-100 shadow-sm"
+                        class="w-20 h-20 flex items-center justify-center mb-1"
                     >
                         <img
-                            src="@/assets/images/logo.png"
+                            :src="logoImg"
                             alt="IMAQ Gym Logo"
-                            class="w-full h-full object-contain"
+                            class="w-full h-full object-contain drop-shadow-sm"
                         />
                     </div>
 
-                    <CardTitle
-                        class="text-xl sm:text-2xl font-black tracking-tight text-[#0F1115]"
-                    >
-                        IMAQ GYM MANAGEMENT SYSTEM
-                    </CardTitle>
-                    <CardDescription
-                        class="text-xs font-semibold text-slate-500 uppercase tracking-wider"
-                    >
-                        Ilocos Norte Operations Portal
-                    </CardDescription>
+                    <div class="space-y-1">
+                        <CardTitle
+                            class="text-xl sm:text-2xl font-extrabold tracking-tight text-[#F8313B]"
+                        >
+                            IMAQ GYM MANAGEMENT SYSTEM
+                        </CardTitle>
+                        <CardDescription
+                            class="text-xs font-medium text-slate-500 tracking-wide"
+                        >
+                            Sign in to access your operations portal
+                        </CardDescription>
+                    </div>
                 </CardHeader>
 
                 <!-- Form Content -->
                 <CardContent class="p-0">
-                    <form @submit.prevent="login" class="space-y-4">
+                    <form @submit.prevent="login" class="space-y-5">
                         <!-- Email Field -->
                         <div class="space-y-1.5">
                             <Label
                                 for="email"
-                                class="text-xs font-bold uppercase tracking-wider text-slate-700"
+                                class="text-xs font-bold text-[#0F1115] tracking-wide"
                             >
                                 Email
                             </Label>
@@ -58,7 +59,7 @@
                                 type="email"
                                 v-model="email"
                                 placeholder="johndoe@gmail.com"
-                                class="w-full px-4 py-2.5 rounded-lg bg-white border-2 border-slate-200 text-slate-900 placeholder:text-slate-400 text-sm focus-visible:outline-none focus-visible:border-[#F8313B] focus-visible:ring-0 transition-all duration-200"
+                                class="h-11 w-full px-3.5 rounded-md bg-white border border-slate-300 text-[#0F1115] placeholder:text-slate-400 text-sm focus-visible:outline-none focus-visible:border-[#F8313B] focus-visible:ring-2 focus-visible:ring-[#F8313B]/15 transition-all duration-150"
                                 required
                             />
                         </div>
@@ -67,7 +68,7 @@
                         <div class="space-y-1.5">
                             <Label
                                 for="password"
-                                class="text-xs font-bold uppercase tracking-wider text-slate-700"
+                                class="text-xs font-bold text-[#0F1115] tracking-wide"
                             >
                                 Password
                             </Label>
@@ -77,14 +78,19 @@
                                     :type="showPassword ? 'text' : 'password'"
                                     v-model="password"
                                     placeholder="password"
-                                    class="w-full px-4 py-2.5 pr-10 rounded-lg bg-white border-2 border-slate-200 text-slate-900 placeholder:text-slate-400 text-sm focus-visible:outline-none focus-visible:border-[#F8313B] focus-visible:ring-0 transition-all duration-200"
+                                    class="h-11 w-full px-3.5 pr-10 rounded-md bg-white border border-slate-300 text-[#0F1115] placeholder:text-slate-400 text-sm focus-visible:outline-none focus-visible:border-[#F8313B] focus-visible:ring-2 focus-visible:ring-[#F8313B]/15 transition-all duration-150"
                                     required
                                 />
                                 <!-- Password Toggle Icon -->
                                 <button
                                     type="button"
                                     @click="showPassword = !showPassword"
-                                    class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 focus:outline-none"
+                                    :aria-label="
+                                        showPassword
+                                            ? 'Hide password'
+                                            : 'Show password'
+                                    "
+                                    class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-[#0F1115] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#F8313B] rounded p-0.5 transition-colors"
                                 >
                                     <svg
                                         v-if="!showPassword"
@@ -122,12 +128,13 @@
                                     </svg>
                                 </button>
                             </div>
-                            <!-- Forgot Password Link -->
+
+                            <!-- Forgot Password Link aligned right below password field -->
                             <div class="flex justify-end pt-1">
                                 <a
                                     href="#"
                                     @click.prevent="goToForgotPassword"
-                                    class="text-xs font-semibold text-[#111111] hover:text-[#F8313B] transition"
+                                    class="text-xs font-semibold text-slate-600 hover:text-[#F8313B] transition-colors"
                                 >
                                     Forgot Password?
                                 </a>
@@ -138,10 +145,11 @@
                         <transition name="fade">
                             <div
                                 v-if="auth.error"
-                                class="p-3 rounded-lg bg-red-50 border border-red-200 flex items-start gap-2.5 text-red-700 text-xs font-medium"
+                                role="alert"
+                                class="p-3 rounded-md bg-red-50 border border-red-200/80 flex items-start gap-2.5 text-[#F8313B] text-xs font-medium"
                             >
                                 <svg
-                                    class="w-4 h-4 text-[#F8313B] shrink-0 mt-0.5"
+                                    class="w-4 h-4 shrink-0 mt-0.5"
                                     fill="none"
                                     stroke="currentColor"
                                     viewBox="0 0 24 24"
@@ -157,15 +165,15 @@
                             </div>
                         </transition>
 
-                        <!-- Shadcn Button with #F8313B Accent -->
+                        <!-- Primary Submit Button -->
                         <Button
                             type="submit"
                             :disabled="auth.loading"
-                            class="w-full mt-4 py-3 bg-[#F8313B] hover:bg-[#d9252f] active:scale-[0.98] text-white font-bold rounded-lg shadow-md shadow-[#F8313B]/25 transition-all duration-150 flex items-center justify-center gap-2 text-sm disabled:opacity-70 disabled:cursor-not-allowed"
+                            class="w-full h-11 mt-2 bg-[#F8313B] hover:bg-[#e0242e] active:scale-[0.98] text-white font-bold rounded-md shadow-sm shadow-[#F8313B]/20 transition-all duration-150 flex items-center justify-center gap-2 text-sm disabled:opacity-70 disabled:cursor-not-allowed"
                         >
                             <svg
                                 v-if="auth.loading"
-                                class="animate-spin -ml-1 mr-2 h-4 w-4 text-white"
+                                class="animate-spin -ml-1 mr-1.5 h-4 w-4 text-white"
                                 fill="none"
                                 viewBox="0 0 24 24"
                             >
@@ -191,9 +199,9 @@
                 </CardContent>
             </Card>
 
-            <!-- Footer Meta -->
-            <p class="text-center text-xs text-slate-500 mt-6">
-                &copy; 2026 IMAQ Gym Management. All rights reserved.
+            <!-- Clean Footer Meta -->
+            <p class="text-center text-xs text-slate-400 mt-6 font-medium">
+                &copy; 2026 IMAQ Gym Management System &bull; Ilocos Norte
             </p>
         </div>
     </div>
@@ -204,7 +212,6 @@ import { useAuthStore } from "../../stores/auth";
 import { ref } from "vue";
 import { useRouter } from "vue-router";
 
-// Import ShadcnVue components (adjust path if your components alias uses '@/components/ui')
 import {
     Card,
     CardHeader,
@@ -215,6 +222,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
+import logoImg from "@/assets/images/imaq-logo.png";
 
 const auth = useAuthStore();
 const email = ref("");
@@ -246,5 +254,20 @@ const goToForgotPassword = () => {
 .fade-enter-from,
 .fade-leave-to {
     opacity: 0;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.animate-fade-in-up {
+    animation: fadeInUp 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 </style>
