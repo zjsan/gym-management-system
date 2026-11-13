@@ -11,20 +11,15 @@ const app = createApp(App);
 app.use(pinia);
 app.use(router);
 
-// Initialize cross-tab synchronization listener
 const authStore = useAuthStore();
 authStore.initTabSync();
 
-// Mount the app first so the router and currentRoute are fully active
-app.mount("#app");
-
-// Verify session with backend after mount if user exists locally
-if (authStore.user) {
-    // Give the browser layout and cookies a moment to synchronize completely
-    // across windows before checking the backend state.
-    window.requestAnimationFrame(() => {
-        setTimeout(() => {
-            authStore.fetchUser();
-        }, 300);
+// If we have a cached user, silently sync fresh permissions in the background 
+// without blocking the initial DOM render or throwing permission errors.
+if (authStore.isAuthenticated) {
+    authStore.fetchUser().catch(() => {
+        // Interceptor will handle 401 redirects if session is genuinely dead
     });
 }
+
+app.mount("#app");
