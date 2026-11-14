@@ -73,7 +73,7 @@ const removeVisibilityChange = () =>
 
 onMounted(() => {
     setupListeners();
-    addVisilibilityChange();
+    addVisibilityChange();
 });
 
 onUnmounted(() => {
