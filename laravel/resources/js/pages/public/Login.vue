@@ -31,10 +31,11 @@
 
                     <div class="space-y-1">
                         <CardTitle
-                            class="text-xl sm:text-2xl font-extrabold tracking-tight text-[#F8313B]"
+                            class="text-lg sm:text-xl font-extrabold tracking-tight text-[#F8313B] whitespace-nowrap"
                         >
-                            IMAQ GYM MANAGEMENT SYSTEM
+                            {{ branding.appName }}
                         </CardTitle>
+
                         <CardDescription
                             class="text-xs font-medium text-slate-500 tracking-wide"
                         >
@@ -90,7 +91,7 @@
                                             ? 'Hide password'
                                             : 'Show password'
                                     "
-                                    class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-[#0F1115] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#F8313B] rounded p-0.5 transition-colors"
+                                    class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-[#0F1115] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#F8313B] rounded p-0.5 transition-colors cursor-pointer"
                                 >
                                     <svg
                                         v-if="!showPassword"
@@ -169,7 +170,7 @@
                         <Button
                             type="submit"
                             :disabled="auth.loading"
-                            class="w-full h-11 mt-2 bg-[#F8313B] hover:bg-[#e0242e] active:scale-[0.98] text-white font-bold rounded-md shadow-sm shadow-[#F8313B]/20 transition-all duration-150 flex items-center justify-center gap-2 text-sm disabled:opacity-70 disabled:cursor-not-allowed"
+                            class="w-full h-11 mt-2 bg-[#F8313B] hover:bg-[#e0242e] active:scale-[0.98] text-white font-bold rounded-md shadow-sm shadow-[#F8313B]/20 transition-all duration-150 flex items-center justify-center gap-2 text-sm disabled:opacity-70 disabled:cursor-not-allowed cursor-pointer"
                         >
                             <svg
                                 v-if="auth.loading"
