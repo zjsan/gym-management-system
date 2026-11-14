@@ -4,10 +4,16 @@
             &copy; {{ currentYear }} {{ branding.appName }}
         </p>
         <p class="text-[11px] text-slate-500 font-medium">
-            Secure Operations Portal &bull;
+            All rights reserved &bull;
             <span class="text-slate-600">{{ branding.location }}</span>
             <span class="text-[10px] text-slate-400">
                 &bull; v{{ branding.version }}</span
+            >
+            &bull;
+            <a
+                href="mailto:zjsantos25@gmail.com"
+                class="hover:text-slate-400 transition-colors"
+                >IT Support</a
             >
         </p>
     </div>
