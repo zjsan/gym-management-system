@@ -17,10 +17,10 @@
             >
                 <!-- Logo & Header Section -->
                 <CardHeader
-                    class="flex flex-col items-center text-center p-0 mb-8 space-y-3"
+                    class="flex flex-col items-center text-center p-0 mb-5 space-y-2.5"
                 >
                     <div
-                        class="w-20 h-20 flex items-center justify-center mb-1"
+                        class="w-16 h-16 sm:w-20 sm:h-20 flex items-center justify-center mb-0.5"
                     >
                         <img
                             :src="logoImg"
@@ -46,7 +46,7 @@
 
                 <!-- Form Content -->
                 <CardContent class="p-0">
-                    <form @submit.prevent="login" class="space-y-5">
+                    <form @submit.prevent="login" class="space-y-4">
                         <!-- Email Field -->
                         <div class="space-y-1.5">
                             <Label
