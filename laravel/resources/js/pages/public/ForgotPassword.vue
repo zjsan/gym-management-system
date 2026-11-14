@@ -184,21 +184,8 @@
                 </CardContent>
             </Card>
 
-            <!-- Clean Footer Meta (Matching Login Page & Config) -->
-            <div
-                class="mt-8 pt-6 border-t border-slate-200/80 text-center space-y-1"
-            >
-                <p class="text-xs font-semibold text-slate-600 tracking-wide">
-                    &copy; {{ currentYear }} {{ branding.appName }}
-                </p>
-                <p class="text-[11px] text-slate-500 font-medium">
-                    Secure Operations Portal &bull;
-                    <span class="text-slate-600">{{ branding.location }}</span>
-                    <span class="text-[10px] text-slate-400">
-                        &bull; v{{ branding.version }}</span
-                    >
-                </p>
-            </div>
+            <!--Footer section-->
+            <AuthFooter />
         </div>
     </div>
 </template>
@@ -207,6 +194,7 @@
 import { ref } from "vue";
 import { useAuthStore } from "@/stores/auth";
 import { branding } from "@/config/branding"; // Adjust path if needed
+import AuthFooter from "@/components/ui/common/AuthFooter.vue";
 
 import {
     Card,
