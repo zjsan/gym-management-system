@@ -20,6 +20,19 @@ import IdleWarningModal from "@/pages/protected/Components/IdleWarningModal.vue"
 const authStore = useAuthStore();
 
 //  For testing right now, change 15 * 60 * 1000 to 10000 (10 seconds)
+// adjust time out for 30-1hr in production
+
+// ==========================================
+// PRODUCTION SESSION TIMEOUT CONFIGURATION
+// ==========================================
+// - Idle Threshold: 1 hour (60 * 60 * 1000 ms)
+//   Allows staff to handle longer tasks on the gym floor
+//   without constant interruptions, while still securing
+//   the terminal if they leave for lunch or go home.
+// - Warning Countdown: 2 minutes (2 * 60 * 1000 ms)
+//   Provides a generous window for staff to notice the
+//   modal and return to their desk to extend the session.
+// ==========================================
 const {
     showWarningModal,
     secondsRemaining,
