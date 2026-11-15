@@ -36,6 +36,15 @@ const routes = [
         name: "ResetPassword",
         component: ResetPassword,
         meta: { requiresGuest: true, requiresAuth: false },
+        beforeEnter: (to, from) => {
+            if (!to.query.token || !to.query.email) {
+                return { 
+                    name: "ForgotPassword", 
+                    query: { error: "Invalid or missing reset link." } 
+                };
+            }
+            // Returning nothing (undefined) automatically allows navigation
+        }
     },
 
     {
