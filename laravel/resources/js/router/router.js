@@ -38,13 +38,13 @@ const routes = [
         meta: { requiresGuest: true, requiresAuth: false },
         beforeEnter: (to, from) => {
             if (!to.query.token || !to.query.email) {
-                return { 
-                    name: "ForgotPassword", 
-                    query: { error: "Invalid or missing reset link." } 
+                return {
+                    name: "ForgotPassword",
+                    query: { error: "Invalid or missing reset link." },
                 };
             }
             // Returning nothing (undefined) automatically allows navigation
-        }
+        },
     },
 
     {
@@ -113,21 +113,36 @@ const router = createRouter({
 router.beforeEach((to, from) => {
     const authStore = useAuthStore();
 
+    // Prevent authenticated users from visiting guest-only routes
+    if (to.meta.requiresGuest && authStore.isAuthenticated) {
+        return { name: "Dashboard", replace: true };
+    }
+
+    // Enforce Force Password Change if user is logged in with a temporary password flag
+    const mustChangePassword = authStore.user?.must_change_password;
+
+    if (authStore.isAuthenticated && mustChangePassword) {
+        if (to.name !== "ForcePasswordChange") {
+            return { name: "ForcePasswordChange", replace: true };
+        }
+    } else if (
+        to.name === "ForcePasswordChange" &&
+        authStore.isAuthenticated &&
+        !mustChangePassword
+    ) {
+        // If user try to hit force-password-change when they already updated it, bounce them back
+        return { name: "Dashboard", replace: true };
+    }
+
     // Check if route requires any form of authentication
     const requiresAuth = to.meta.requiresAuth || to.meta.requiresAdmin;
     if (requiresAuth && !authStore.isAuthenticated) {
         return { name: "Login", replace: true };
     }
 
-    // Prevent logged-in users from hitting the login page
-    if (to.name === "Login" && authStore.isAuthenticated) {
-        return { name: "Dashboard", replace: true };
-    }
-
-    //  Admin-only route protection
+    // Admin-only route protection
     if (to.meta.requiresAdmin) {
-        // If user exists in storage but role isn't loaded yet, allow pass-through 
-        // until fetchUser resolves or rejects with 401
+        // Allow pass-through if user exists but role isn't loaded yet
         if (authStore.isAuthenticated && !authStore.user?.role) {
             return true;
         }
@@ -142,7 +157,6 @@ router.beforeEach((to, from) => {
     if (to.meta.role) {
         const userRole = authStore.user?.role?.slug;
 
-        // Allow temporary pass if user is authenticated but role object is still syncing
         if (authStore.isAuthenticated && !userRole) {
             return true;
         }
