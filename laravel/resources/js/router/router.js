@@ -13,6 +13,7 @@ import ForcePasswordChange from "../pages/protected/Force Password Change/ForceP
 import UserProfileView from "../pages/protected/User Profile/UserProfileView.vue";
 import ResetPassword from "../pages/protected/Force Password Change/ResetPasswordView.vue";
 import ForgotPassword from "../pages/public/ForgotPassword.vue";
+import Notfound from "../pages/views/NotFound.vue";
 
 const routes = [
     { path: "/", component: Login, name: "Login", requiresAuth: false },
@@ -101,6 +102,13 @@ const routes = [
         name: "payment",
         component: PaymentHistory,
         meta: { requiresAuth: true },
+    },
+
+    {
+        path: "/:pathMatch(.*)*",
+        name: "NotFound",
+        component: Notfound,
+        meta: { requiresAuth: false },
     },
 ];
 
