@@ -1,23 +1,55 @@
 import { createWebHistory, createRouter } from "vue-router";
 import { useAuthStore } from "@/stores/auth";
 
-import Login from "../pages/public/Login.vue";
-import Dashboard from "../pages/protected/Main.vue";
-import Adminview from "../pages/protected/Admin/Adminview.vue";
-import MemberManagement from "../pages/protected/Staff/Staffview.vue";
-import AttendanceDashboard from "../pages/protected/Staff/AttendanceDashboard.vue";
-import PaymentHistory from "../pages/protected/Payment/PaymentHistory.vue";
-import SettingsView from "../pages/protected/Admin/SettingsView.vue";
-import DashboardView from "../pages/protected/Dashboard/DashboardView.vue";
-import ForcePasswordChange from "../pages/protected/Force Password Change/ForcePasswordChange.vue";
-import UserProfileView from "../pages/protected/User Profile/UserProfileView.vue";
-import ResetPassword from "../pages/protected/Force Password Change/ResetPasswordView.vue";
-import ForgotPassword from "../pages/public/ForgotPassword.vue";
-import Notfound from "../pages/views/NotFound.vue";
+// Layouts
+import AppLayout from "@/pages/protected/AppLayout.vue";
+
+// Public Pages
+import Login from "@/pages/public/Login.vue";
+import ForgotPassword from "@/pages/public/ForgotPassword.vue";
+import ResetPassword from "@/pages/protected/Force Password Change/ResetPasswordView.vue";
+
+// Protected Pages
+import DashboardView from "@/pages/protected/Dashboard/DashboardView.vue";
+import Adminview from "@/pages/protected/Admin/Adminview.vue";
+import MemberManagement from "@/pages/protected/Staff/Staffview.vue";
+import AttendanceDashboard from "@/pages/protected/Staff/AttendanceDashboard.vue";
+import PaymentHistory from "@/pages/protected/Payment/PaymentHistory.vue";
+import SettingsView from "@/pages/protected/Admin/SettingsView.vue";
+import ForcePasswordChange from "@/pages/protected/Force Password Change/ForcePasswordChange.vue";
+import UserProfileView from "@/pages/protected/User Profile/UserProfileView.vue";
+import Notfound from "@/pages/views/NotFound.vue";
 
 const routes = [
-    { path: "/", component: Login, name: "Login", requiresAuth: false },
+    // Public / Guest Routes
+    {
+        path: "/",
+        component: Login,
+        name: "Login",
+        meta: { requiresGuest: true },
+    },
+    {
+        path: "/forgot-password",
+        component: ForgotPassword,
+        name: "ForgotPassword",
+        meta: { requiresGuest: true },
+    },
+    {
+        path: "/reset-password",
+        component: ResetPassword,
+        name: "ResetPassword",
+        meta: { requiresGuest: true },
+        beforeEnter: (to) => {
+            if (!to.query.token || !to.query.email) {
+                return {
+                    name: "ForgotPassword",
+                    query: { error: "Invalid or missing reset link." },
+                };
+            }
+        },
+    },
 
+    // Standalone Protected Route (No Sidebar/Header)
     {
         path: "/force-password-change",
         name: "ForcePasswordChange",
@@ -25,90 +57,55 @@ const routes = [
         meta: { requiresAuth: true },
     },
 
+    // Protected App Shell Routes (Shared Sidebar & Header)
     {
-        path: "/forgot-password",
-        name: "ForgotPassword",
-        component: ForgotPassword,
-        meta: { requiresGuest: true, requiresAuth: false },
-    },
-
-    {
-        path: "/reset-password",
-        name: "ResetPassword",
-        component: ResetPassword,
-        meta: { requiresGuest: true, requiresAuth: false },
-        beforeEnter: (to, from) => {
-            if (!to.query.token || !to.query.email) {
-                return {
-                    name: "ForgotPassword",
-                    query: { error: "Invalid or missing reset link." },
-                };
-            }
-            // Returning nothing (undefined) automatically allows navigation
-        },
-    },
-
-    {
-        path: "/dashboard",
-        component: Dashboard,
-        name: "Dashboard",
+        path: "/",
+        component: AppLayout,
         meta: { requiresAuth: true },
+        children: [
+            { path: "dashboard", name: "Dashboard", component: DashboardView },
+            {
+                path: "user-profile",
+                name: "UserProfile",
+                component: UserProfileView,
+            },
+            {
+                path: "member-management",
+                name: "MemberManagement",
+                component: MemberManagement,
+                meta: { role: "staff" },
+            },
+            {
+                path: "attendance",
+                name: "attendance",
+                component: AttendanceDashboard,
+                meta: { role: "staff" },
+            },
+            {
+                path: "payment-history",
+                name: "payment",
+                component: PaymentHistory,
+            },
+            {
+                path: "admin-page",
+                name: "Adminview",
+                component: Adminview,
+                meta: { requiresAdmin: true },
+            },
+            {
+                path: "gym-setting",
+                name: "SettingsView",
+                component: SettingsView,
+                meta: { requiresAdmin: true },
+            },
+        ],
     },
 
-    {
-        path: "/user-profile",
-        component: UserProfileView,
-        name: "UserProfile",
-        meta: { requiresAuth: true },
-    },
-
-    {
-        path: "/dashboard-view",
-        component: DashboardView,
-        name: "DashboardView",
-        meta: { requiresAuth: true },
-    },
-
-    {
-        path: "/admin-page",
-        component: Adminview,
-        name: "Adminview",
-        meta: { requiresAdmin: true }, // Admin only
-    },
-
-    {
-        path: "/gym-setting",
-        component: SettingsView,
-        name: "SettingsView",
-        meta: { requiresAdmin: true }, // Admin only
-    },
-
-    {
-        path: "/member-management",
-        component: MemberManagement,
-        name: "MemberManagement",
-        meta: { requiresAuth: true, role: "staff" }, // Staff access
-    },
-
-    {
-        path: "/attendance",
-        component: AttendanceDashboard,
-        name: "attendance",
-        meta: { requiresAuth: true, role: "staff" }, // Staff access
-    },
-
-    {
-        path: "/payment-history",
-        name: "payment",
-        component: PaymentHistory,
-        meta: { requiresAuth: true },
-    },
-
+    // Catch-All 404
     {
         path: "/:pathMatch(.*)*",
         name: "NotFound",
         component: Notfound,
-        meta: { requiresAuth: false },
     },
 ];
 
