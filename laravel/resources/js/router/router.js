@@ -2,22 +2,22 @@ import { createWebHistory, createRouter } from "vue-router";
 import { useAuthStore } from "@/stores/auth";
 
 // Layouts
-import AppLayout from "@/pages/protected/AppLayout.vue";
+import AppLayout from "@/pages/private/AppLayout.vue";
 
 // Public Pages
 import Login from "@/pages/public/Login.vue";
 import ForgotPassword from "@/pages/public/ForgotPassword.vue";
-import ResetPassword from "@/pages/protected/Force Password Change/ResetPasswordView.vue";
+import ResetPassword from "@/pages/private/Force Password Change/ResetPasswordView.vue";
 
 // Protected Pages
-import DashboardView from "@/pages/protected/Dashboard/DashboardView.vue";
-import Adminview from "@/pages/protected/Admin/Adminview.vue";
-import MemberManagement from "@/pages/protected/Staff/Staffview.vue";
-import AttendanceDashboard from "@/pages/protected/Staff/AttendanceDashboard.vue";
-import PaymentHistory from "@/pages/protected/Payment/PaymentHistory.vue";
-import SettingsView from "@/pages/protected/Admin/SettingsView.vue";
-import ForcePasswordChange from "@/pages/protected/Force Password Change/ForcePasswordChange.vue";
-import UserProfileView from "@/pages/protected/User Profile/UserProfileView.vue";
+import DashboardView from "@/pages/private/Dashboard/DashboardView.vue";
+import Adminview from "@/pages/private/Admin/Adminview.vue";
+import MemberManagement from "@/pages/private/Staff/Staffview.vue";
+import AttendanceDashboard from "@/pages/private/Staff/AttendanceDashboard.vue";
+import PaymentHistory from "@/pages/private/Payment/PaymentHistory.vue";
+import SettingsView from "@/pages/private/Admin/SettingsView.vue";
+import ForcePasswordChange from "@/pages/private/Force Password Change/ForcePasswordChange.vue";
+import UserProfileView from "@/pages/private/User Profile/UserProfileView.vue";
 import Notfound from "@/pages/views/NotFound.vue";
 
 const routes = [
