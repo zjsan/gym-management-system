@@ -195,11 +195,11 @@
 <script setup>
 import { computed, onMounted, onUnmounted } from "vue";
 import { useDashboardStore } from "@/stores/dashboardStore";
-import RevenueBarChart from "@/pages/protected/Components/RevenueBarChart.vue";
-import AttendanceLineChart from "@/pages/protected/Components/AttendanceLineChart.vue";
-import PeakHoursChart from "@/pages/protected/Components/PeakHoursChart.vue";
-import VisitorRatioChart from "@/pages/protected/Components/VisitorRatioChart.vue";
-import ExpirationWatchlistCard from "@/pages/protected/Components/ExpirationWatchlistCard.vue";
+import RevenueBarChart from "@/pages/private/Components/RevenueBarChart.vue";
+import AttendanceLineChart from "@/pages/private/Components/AttendanceLineChart.vue";
+import PeakHoursChart from "@/pages/private/Components/PeakHoursChart.vue";
+import VisitorRatioChart from "@/pages/private/Components/VisitorRatioChart.vue";
+import ExpirationWatchlistCard from "@/pages/private/Components/ExpirationWatchlistCard.vue";
 import { useAuthStore } from "@/stores/auth";
 import { useMemberStore } from "@/stores/memberStore";
 import { useRouter } from "vue-router";

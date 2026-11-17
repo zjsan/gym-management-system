@@ -15,7 +15,7 @@ import { onMounted, onUnmounted } from "vue";
 import { useAuthStore } from "@/stores/auth";
 import { useIdleTimeout } from "@/composables/useIdleTimeout";
 import api from "../api/api";
-import IdleWarningModal from "@/pages/protected/Components/IdleWarningModal.vue";
+import IdleWarningModal from "./private/Components/IdleWarningModal.vue";
 
 const authStore = useAuthStore();
 

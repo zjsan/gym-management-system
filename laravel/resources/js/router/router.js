@@ -2,10 +2,10 @@ import { createWebHistory, createRouter } from "vue-router";
 import { useAuthStore } from "@/stores/auth";
 
 // Layouts
-import AppLayout from "@/pages/private/AppLayout.vue";
+import AppLayout from "../pages/private/Layout/AppLayout.vue";
 
 // Public Pages
-import Login from "@/pages/public/Login.vue";
+import Login from "../pages/public/Login.vue";
 import ForgotPassword from "@/pages/public/ForgotPassword.vue";
 import ResetPassword from "@/pages/private/Force Password Change/ResetPasswordView.vue";
 

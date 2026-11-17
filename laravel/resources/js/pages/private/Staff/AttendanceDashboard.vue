@@ -320,7 +320,7 @@ import { ref, onMounted, onBeforeUnmount, nextTick } from "vue";
 import { Html5Qrcode } from "html5-qrcode";
 import { useAttendanceStore } from "@/stores/attendance";
 import { useRouter } from "vue-router";
-import MemberVerificationModal from "@/pages/protected/Staff/MemberVerificationModal.vue";
+import MemberVerificationModal from "@/pages/private/Staff/MemberVerificationModal.vue";
 
 const router = useRouter();
 
