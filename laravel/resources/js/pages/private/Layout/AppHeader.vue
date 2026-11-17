@@ -1,55 +1,72 @@
 <template>
     <header
-        class="h-16 bg-white border-b border-gray-200 px-6 flex items-center justify-between shrink-0 shadow-xs z-30"
+        class="h-20 bg-white border-b border-gray-100 px-6 md:px-8 flex items-center justify-between shrink-0 shadow-2xs z-30"
     >
-        <!-- Left: Mobile Menu Toggle & Dynamic Title -->
+        <!-- Left: Mobile Menu Trigger & Dynamic Context Breadcrumb -->
         <div class="flex items-center gap-4">
             <button
                 @click="$emit('toggle-sidebar')"
-                class="lg:hidden text-gray-500 hover:text-gray-700 p-2 rounded-lg hover:bg-gray-100 transition"
+                class="lg:hidden text-gray-500 hover:text-gray-900 p-2 rounded-xl hover:bg-gray-100 transition"
+                aria-label="Toggle navigation menu"
             >
                 <Menu class="w-5 h-5" />
             </button>
-            <div class="flex items-center gap-2">
+
+            <div class="flex flex-col">
+                <span
+                    class="text-[10px] font-bold uppercase tracking-wider text-gray-400"
+                    >Portal View</span
+                >
                 <h1
-                    class="text-sm md:text-base font-extrabold text-gray-900 tracking-tight"
+                    class="text-sm md:text-base font-black text-gray-900 tracking-tight"
                 >
                     {{ currentRouteTitle }}
                 </h1>
             </div>
         </div>
 
-        <!-- Right: Actions & User Menu -->
-        <div class="flex items-center gap-3">
-            <!-- Active Shift Badge -->
+        <!-- Right: Operational Status & User Profile Trigger -->
+        <div class="flex items-center gap-4">
+            <!-- Active Shift Indicator Pill -->
             <div
-                class="hidden sm:flex items-center gap-2 px-3 py-1.5 bg-emerald-50 border border-emerald-200/60 rounded-lg"
+                class="hidden sm:flex items-center gap-2 px-3 py-1.5 bg-emerald-50 border border-emerald-200/60 rounded-full"
             >
-                <span class="w-2 h-2 rounded-full bg-emerald-600"></span>
-                <span class="text-[11px] font-bold text-emerald-700"
+                <span
+                    class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"
+                ></span>
+                <span
+                    class="text-[11px] font-bold text-emerald-700 tracking-wide"
                     >Shift Active</span
                 >
             </div>
 
-            <div class="h-5 w-px bg-gray-200 hidden sm:block"></div>
+            <div class="h-6 w-px bg-gray-200 hidden sm:block"></div>
 
-            <!-- Profile Button -->
+            <!-- Profile & Account Menu Link -->
             <router-link
                 :to="{ name: 'UserProfile' }"
-                class="flex items-center gap-2 text-xs font-semibold text-gray-700 hover:text-emerald-600 transition bg-gray-50 hover:bg-gray-100 py-2 px-3 rounded-xl border border-gray-200 shadow-2xs"
+                class="flex items-center gap-3 group py-1.5 px-3 rounded-xl hover:bg-gray-50 border border-transparent hover:border-gray-200 transition-all duration-200"
             >
-                <User class="w-4 h-4 text-gray-500" />
-                <span class="hidden sm:inline">Profile</span>
-            </router-link>
+                <div class="text-right hidden md:block">
+                    <p
+                        class="text-xs font-bold text-gray-900 group-hover:text-[#E5433C] transition"
+                    >
+                        {{ authStore.user?.name || "Administrator" }}
+                    </p>
+                    <p
+                        class="text-[11px] font-medium text-gray-400 truncate max-w-[160px]"
+                    >
+                        {{ authStore.user?.email || "staff@imaqgym.com" }}
+                    </p>
+                </div>
 
-            <!-- Logout Button -->
-            <button
-                @click="handleLogout"
-                class="flex items-center gap-1.5 text-xs font-semibold text-red-600 hover:text-red-700 bg-red-50 hover:bg-red-100 py-2 px-3 rounded-xl transition border border-red-200/80 shadow-2xs"
-            >
-                <LogOut class="w-4 h-4" />
-                <span class="hidden sm:inline">Logout</span>
-            </button>
+                <!-- Crimson Brand Avatar -->
+                <div
+                    class="w-10 h-10 rounded-xl bg-red-50 border-2 border-[#E5433C]/20 group-hover:border-[#E5433C] flex items-center justify-center text-[#E5433C] shadow-2xs transition-all"
+                >
+                    <User class="w-5 h-5" />
+                </div>
+            </router-link>
         </div>
     </header>
 </template>
@@ -58,7 +75,7 @@
 import { computed } from "vue";
 import { useRoute } from "vue-router";
 import { useAuthStore } from "@/stores/auth";
-import { Menu, User, LogOut } from "lucide-vue-next";
+import { Menu, User } from "lucide-vue-next";
 
 defineEmits(["toggle-sidebar"]);
 
@@ -73,25 +90,17 @@ const currentRouteTitle = computed(() => {
         case "MemberManagement":
             return "Member Directory & Management";
         case "attendance":
-            return "Attendance & QR Check-in";
+            return "Attendance & QR Check-in Terminal";
         case "payment":
-            return "Financial Ledger";
+            return "Financial Ledger & Transactions";
         case "Adminview":
-            return "Administration Control";
+            return "Administration Control Center";
         case "SettingsView":
-            return "Gym Settings";
+            return "Gym Settings & Configurations";
         case "UserProfile":
-            return "User Profile & Security";
+            return "User Profile & Security Settings";
         default:
-            return "Gym Portal";
+            return "Gym Management Portal";
     }
 });
-
-const handleLogout = async () => {
-    try {
-        await authStore.logout();
-    } catch (error) {
-        console.error("Logout error:", error);
-    }
-};
 </script>

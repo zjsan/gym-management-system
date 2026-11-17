@@ -1,80 +1,85 @@
 <template>
-    <!-- Mobile Backdrop Overlay -->
+    <!-- Mobile Backdrop with Smooth Transition -->
     <div
         v-if="isOpen"
         @click="$emit('close')"
-        class="fixed inset-0 z-40 bg-gray-900/50 backdrop-blur-sm lg:hidden"
+        class="fixed inset-0 z-40 bg-slate-950/50 backdrop-blur-xs transition-opacity lg:hidden"
     ></div>
 
-    <!-- Sidebar Container -->
+    <!-- Sidebar Shell -->
     <aside
         :class="[
-            'fixed inset-y-0 left-0 z-50 w-72 bg-slate-900 text-slate-300 flex flex-col border-r border-slate-800 transition-transform duration-300 ease-in-out lg:static lg:translate-x-0',
+            'fixed inset-y-0 left-0 z-50 w-72 bg-[#E5433C] text-white flex flex-col shadow-xl transition-transform duration-300 ease-in-out lg:static lg:translate-x-0',
             isOpen ? 'translate-x-0' : '-translate-x-full',
         ]"
     >
-        <!-- Brand / Logo Header -->
+        <!-- Brand Header -->
         <div
-            class="h-16 flex items-center justify-between px-6 border-b border-slate-800/80 bg-slate-950/40"
+            class="h-20 flex items-center justify-between px-6 border-b border-white/10 shrink-0"
         >
-            <div class="flex items-center gap-3">
+            <div class="flex items-center gap-3.5">
                 <div
-                    class="w-9 h-9 rounded-xl bg-gradient-to-tr from-emerald-600 to-teal-500 flex items-center justify-center text-white shadow-md shadow-emerald-900/20 font-bold"
+                    class="w-10 h-10 rounded-xl bg-white/10 border border-white/20 flex items-center justify-center shadow-inner"
                 >
-                    I
+                    <span class="text-white font-black text-sm tracking-tighter"
+                        >IMQ</span
+                    >
                 </div>
                 <div>
                     <span
-                        class="text-sm font-extrabold text-white tracking-wider"
+                        class="block text-xs font-extrabold tracking-wider uppercase text-white"
                         >IMAQ GYM</span
                     >
                     <span
-                        class="block text-[10px] font-medium text-emerald-400 tracking-widest uppercase"
-                        >Operations Portal</span
+                        class="block text-[10px] font-medium tracking-widest text-white/70 uppercase"
+                        >Operations Suite</span
                     >
                 </div>
             </div>
             <!-- Mobile Close Button -->
             <button
                 @click="$emit('close')"
-                class="lg:hidden text-slate-400 hover:text-white p-1"
+                class="lg:hidden p-2 rounded-lg text-white/80 hover:text-white hover:bg-white/10 transition"
             >
                 <X class="w-5 h-5" />
             </button>
         </div>
 
-        <!-- Navigation Menu -->
-        <nav class="flex-1 px-4 py-6 space-y-1.5 overflow-y-auto">
+        <!-- Navigation Links Container -->
+        <nav
+            class="flex-1 px-4 py-6 space-y-1.5 overflow-y-auto scrollbar-thin"
+        >
             <template v-for="item in visibleMenuItems" :key="item.name">
-                <!-- Section Header (if defined) -->
-                <div v-if="item.sectionHeader" class="pt-5 pb-2 px-3">
+                <!-- Section Group Header -->
+                <div v-if="item.sectionHeader" class="pt-6 pb-2 px-3">
                     <p
-                        class="text-[10px] font-bold uppercase tracking-wider text-slate-500"
+                        class="text-[10px] font-bold uppercase tracking-wider text-white/60"
                     >
                         {{ item.sectionHeader }}
                     </p>
                 </div>
 
+                <!-- Nav Item Link -->
                 <router-link
                     :to="{ name: item.routeName }"
                     @click="$emit('close')"
-                    class="flex items-center gap-3 px-3.5 py-3 rounded-xl text-xs font-semibold transition group relative"
-                    active-class="bg-emerald-600 text-white shadow-lg shadow-emerald-900/30"
+                    class="group flex items-center gap-3.5 px-4 py-3 rounded-xl text-xs font-semibold text-white/80 hover:text-white hover:bg-white/10 transition-all duration-200"
+                    active-class="!bg-white !text-slate-900 !font-bold shadow-md shadow-black/5"
                 >
                     <component
                         :is="item.icon"
-                        class="w-4 h-4 transition-transform group-hover:scale-110"
+                        class="w-4 h-4 shrink-auto transition-transform duration-200 group-hover:scale-110"
                     />
-                    <span>{{ item.name }}</span>
+                    <span class="truncate">{{ item.name }}</span>
                 </router-link>
             </template>
         </nav>
 
-        <!-- User Profile Quick Footer -->
-        <div class="p-4 border-t border-slate-800/80 bg-slate-950/60">
+        <!-- User Quick-Profile / Shift Status Footer -->
+        <div class="p-4 border-t border-white/10 bg-black/10 shrink-0">
             <div class="flex items-center gap-3">
                 <div
-                    class="w-10 h-10 rounded-xl bg-slate-800 text-emerald-400 font-bold flex items-center justify-center text-xs border border-slate-700 shadow-inner"
+                    class="w-10 h-10 rounded-xl bg-white/20 text-white font-extrabold flex items-center justify-center text-xs border border-white/25 shadow-inner shrink-0"
                 >
                     {{ userInitials }}
                 </div>
@@ -84,14 +89,13 @@
                     </p>
                     <div class="flex items-center gap-1.5 mt-0.5">
                         <span
-                            class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"
+                            class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"
                         ></span>
                         <span
-                            class="text-[10px] font-medium text-slate-400 capitalize truncate"
-                            >{{
-                                authStore.user?.role?.slug || "Active Shift"
-                            }}</span
+                            class="text-[10px] font-medium text-white/80 capitalize truncate"
                         >
+                            {{ authStore.user?.role?.slug || "Active Shift" }}
+                        </span>
                     </div>
                 </div>
             </div>
@@ -104,10 +108,10 @@ import { computed } from "vue";
 import { useAuthStore } from "@/stores/auth";
 import {
     LayoutDashboard,
+    ShieldCheck,
     Users,
     QrCode,
     CreditCard,
-    ShieldCheck,
     Settings,
     X,
 } from "lucide-vue-next";
@@ -133,16 +137,15 @@ const userInitials = computed(() => {
     return name.substring(0, 2).toUpperCase();
 });
 
-// Dynamic menu structure using Lucide component mappings
 const menuItems = computed(() => [
     {
-        name: "Dashboard Overview",
+        name: "Dashboard",
         routeName: "Dashboard",
         icon: LayoutDashboard,
         visible: () => true,
     },
     {
-        name: "Member Management",
+        name: "Members",
         routeName: "MemberManagement",
         icon: Users,
         visible: () => authStore.isStaff || authStore.isAdmin,
