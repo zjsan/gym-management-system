@@ -122,13 +122,13 @@
         <div
             class="h-14 px-3 border-t border-zinc-200/80 bg-zinc-50/70 flex items-center shrink-0"
         >
-            <div class="w-full flex items-center justify-between gap-1.5">
+            <div class="w-full flex items-center justify-between gap-2">
                 <router-link
                     :to="{ name: 'UserProfile' }"
                     @click="$emit('close')"
-                    class="group flex items-center gap-2.5 min-w-0 flex-1 p-1.5 rounded-lg hover:bg-white hover:shadow-2xs border border-transparent hover:border-zinc-200/80 transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#F8313B]/20"
+                    class="group flex items-center gap-2 min-w-0 flex-1 py-1 px-1.5 rounded-lg hover:bg-white hover:shadow-2xs border border-transparent hover:border-zinc-200/80 transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#F8313B]/20"
                 >
-                    <!-- Signature Crimson Avatar Badge (Synced with Check-in CTA) -->
+                    <!-- Signature Crimson Avatar Badge -->
                     <div
                         class="w-8 h-8 rounded-lg bg-[#F8313B] group-hover:bg-[#e0242e] text-white flex items-center justify-center shrink-0 shadow-xs shadow-[#F8313B]/25 transition-colors"
                     >
