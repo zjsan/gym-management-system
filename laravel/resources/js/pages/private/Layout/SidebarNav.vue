@@ -24,7 +24,7 @@
             isOpen ? 'translate-x-0' : '-translate-x-full',
         ]"
     >
-        <!-- Brand Header -->
+        <!-- Brand Header with Logo -->
         <div
             class="h-14 flex items-center justify-between px-4 border-b border-zinc-200/70 shrink-0"
         >
@@ -33,26 +33,28 @@
                 @click="$emit('close')"
                 class="flex items-center gap-2.5 min-w-0 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#F8313B]"
             >
-                <div
-                    class="w-7 h-7 rounded-lg bg-[#F8313B] flex items-center justify-center text-white font-bold text-[11px] tracking-tighter ring-1 ring-inset ring-black/10 shrink-0"
-                >
-                    {{ brandInitials }}
+                <div class="w-7 h-7 flex items-center justify-center shrink-0">
+                    <img
+                        :src="logoImg"
+                        :alt="`${branding.appName || 'IMAQ Gym'} Logo`"
+                        class="w-full h-full object-contain drop-shadow-xs"
+                    />
                 </div>
-                <div class="min-w-0 leading-none">
+                <div class="min-w-0 leading-tight">
                     <span
-                        class="block text-[13px] font-semibold tracking-tight text-zinc-950 truncate"
+                        class="block text-[13px] font-bold tracking-tight text-[#0F1115] truncate"
                     >
                         {{ branding.appName || "IMAQ Gym" }}
                     </span>
                     <span
-                        class="block text-[11px] font-medium text-zinc-500 mt-0.5 truncate"
+                        class="block text-[11px] font-medium text-zinc-500 truncate"
                     >
                         Operations Portal
                     </span>
                 </div>
             </router-link>
 
-            <!-- Mobile Close Button (44px touch target) -->
+            <!-- Mobile Close Button -->
             <button
                 type="button"
                 @click="$emit('close')"
@@ -87,7 +89,7 @@
                         :class="[
                             'group flex items-center justify-between gap-2.5 px-2.5 py-2 rounded-lg text-[13px] transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#F8313B]',
                             isActive
-                                ? 'bg-zinc-100/90 text-zinc-950 font-semibold'
+                                ? 'bg-rose-50/80 text-[#F8313B] font-semibold'
                                 : 'text-zinc-600 font-medium hover:text-zinc-950 hover:bg-zinc-50',
                         ]"
                     >
@@ -104,7 +106,7 @@
                             <span class="truncate">{{ item.name }}</span>
                         </span>
 
-                        <!-- Subtle Active Dot -->
+                        <!-- Active Dot Indicator -->
                         <span
                             v-if="isActive"
                             class="w-1.5 h-1.5 rounded-full bg-[#F8313B] shrink-0"
@@ -115,7 +117,7 @@
             </template>
         </nav>
 
-        <!-- Consolidated Staff Profile & Safe Shift-End Footer -->
+        <!-- Bottom Staff Card & Logout Footer -->
         <div class="p-3 border-t border-zinc-200/70 bg-zinc-50/50 shrink-0">
             <div class="flex items-center justify-between gap-1.5">
                 <router-link
@@ -123,14 +125,15 @@
                     @click="$emit('close')"
                     class="flex items-center gap-2.5 min-w-0 flex-1 p-1.5 rounded-lg hover:bg-zinc-100/80 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#F8313B]"
                 >
+                    <!-- Lucide User Icon with Login Brand Accent -->
                     <div
-                        class="w-7 h-7 rounded-md bg-zinc-900 text-white font-semibold flex items-center justify-center text-[11px] tracking-tight shrink-0"
+                        class="w-7 h-7 rounded-md bg-rose-50 border border-rose-200/60 text-[#F8313B] flex items-center justify-center shrink-0"
                     >
-                        {{ userInitials }}
+                        <User class="w-3.5 h-3.5" />
                     </div>
                     <div class="min-w-0 flex-1">
                         <p
-                            class="text-xs font-semibold text-zinc-950 truncate leading-tight"
+                            class="text-xs font-semibold text-[#0F1115] truncate leading-tight"
                         >
                             {{ authStore.user?.name || "Staff User" }}
                         </p>
@@ -167,7 +170,7 @@
                         'px-2.5 py-2 rounded-lg text-xs font-medium transition-all shrink-0 flex items-center gap-1.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#F8313B]',
                         confirmLogout
                             ? 'bg-[#F8313B] text-white shadow-xs'
-                            : 'text-zinc-500 hover:text-zinc-950 hover:bg-zinc-200/60',
+                            : 'text-zinc-500 hover:text-[#F8313B] hover:bg-rose-50',
                     ]"
                 >
                     <Loader2
@@ -189,6 +192,7 @@ import { ref, computed } from "vue";
 import { useRouter } from "vue-router";
 import { useAuthStore } from "@/stores/auth";
 import { branding } from "@/config/branding";
+import logoImg from "@/assets/images/imaq-logo.png";
 import {
     LayoutDashboard,
     Users,
@@ -197,6 +201,7 @@ import {
     ShieldCheck,
     Settings,
     LogOut,
+    User,
     Loader2,
     X,
 } from "lucide-vue-next";
@@ -221,21 +226,6 @@ const navigate = (routeName) => {
     router.push({ name: routeName });
     emit("close");
 };
-
-const brandInitials = computed(() => {
-    const name = branding.appName || "IMAQ";
-    return name.substring(0, 3).toUpperCase();
-});
-
-const userInitials = computed(() => {
-    const name = authStore.user?.name;
-    if (!name) return "SU";
-    const parts = name.trim().split(/\s+/);
-    if (parts.length >= 2) {
-        return `${parts[0][0]}${parts[1][0]}`.toUpperCase();
-    }
-    return name.substring(0, 2).toUpperCase();
-});
 
 const menuItems = computed(() => [
     {
