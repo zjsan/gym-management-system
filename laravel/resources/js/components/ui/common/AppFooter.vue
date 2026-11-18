@@ -7,20 +7,23 @@
         >
             <!-- Left: Brand Identity & Operational Location -->
             <div class="flex items-center gap-2 min-w-0">
-                <span class="font-semibold text-[#0F1115] truncate">
+                <span class="font-semibold text-[#0F1115] shrink-0">
                     &copy; {{ currentYear }}
                     {{ branding.appName || "IMAQ Gym" }}
                 </span>
                 <template v-if="branding.location">
-                    <span class="text-zinc-300 shrink-0" aria-hidden="true"
+                    <span
+                        class="hidden sm:inline text-zinc-300 shrink-0"
+                        aria-hidden="true"
                         >&middot;</span
                     >
-                    <span class="font-medium text-zinc-500 truncate">{{
-                        branding.location
-                    }}</span>
+                    <span
+                        class="hidden sm:inline font-medium text-zinc-500 truncate min-w-0"
+                    >
+                        {{ branding.location }}
+                    </span>
                 </template>
             </div>
-
             <!-- Right: Live Network Status, Support & Version -->
             <div class="flex items-center gap-3 shrink-0">
                 <div
