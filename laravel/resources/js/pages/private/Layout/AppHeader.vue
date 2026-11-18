@@ -1,6 +1,6 @@
 <template>
     <header
-        class="h-14 bg-white/95 backdrop-blur-xs border-b border-zinc-200/80 px-4 sm:px-6 lg:px-8 flex items-center justify-between gap-4 shrink-0 z-30"
+        class="min-h-16 py-3 bg-white/95 backdrop-blur-xs border-b border-zinc-200/80 px-4 sm:px-6 lg:px-8 flex items-center justify-between gap-4 shrink-0 z-30"
     >
         <!-- Left: Mobile Drawer Trigger & Dynamic Breadcrumb -->
         <div class="flex items-center gap-2.5 min-w-0">
@@ -19,7 +19,7 @@
             >
                 <router-link
                     :to="{ name: 'Dashboard' }"
-                    class="hidden sm:inline font-medium text-zinc-500 hover:text-zinc-950 transition-colors truncate"
+                    class="hidden sm:inline font-medium text-zinc-500 hover:text-zinc-950 transition-colors truncate max-w-[200px]"
                 >
                     {{ branding.appName || "Portal" }}
                 </router-link>
@@ -28,7 +28,7 @@
                     aria-hidden="true"
                 />
                 <h1
-                    class="font-semibold text-[13px] text-[#0F1115] tracking-tight truncate"
+                    class="font-bold text-[13.5px] text-[#0F1115] tracking-tight truncate"
                 >
                     {{ currentRouteTitle }}
                 </h1>
@@ -41,24 +41,31 @@
             <button
                 type="button"
                 @click="$emit('open-search')"
-                class="inline-flex items-center gap-2 h-8 px-2.5 sm:px-3 rounded-md bg-white hover:bg-zinc-50 text-zinc-500 border border-slate-300 text-xs transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#F8313B]/15 focus-visible:border-[#F8313B] cursor-pointer"
+                class="inline-flex items-center gap-2 h-9 px-2.5 sm:px-3 rounded-lg bg-zinc-50/70 hover:bg-zinc-100/80 text-zinc-500 border border-zinc-200/90 text-xs transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#F8313B]/15 focus-visible:border-[#F8313B] cursor-pointer"
             >
-                <Search class="w-3.5 h-3.5 text-slate-400 shrink-0" />
-                <span class="hidden md:inline">Find member or pass...</span>
+                <Search class="w-3.5 h-3.5 text-zinc-500 shrink-0" />
+                <span class="hidden md:inline font-medium"
+                    >Find member or pass...</span
+                >
                 <kbd
-                    class="hidden sm:inline-flex items-center gap-0.5 px-1.5 py-0.5 text-[10px] font-mono font-medium text-zinc-500 bg-slate-100 rounded border border-slate-200"
+                    class="hidden sm:inline-flex items-center gap-0.5 px-1.5 py-0.5 text-[10px] font-mono font-semibold text-zinc-500 bg-white rounded border border-zinc-200/90 shadow-2xs"
                 >
                     ⌘K
                 </kbd>
             </button>
 
-            <!-- Primary Front-Desk Check-in Button (Matching Login Red Accent) -->
+            <!-- Primary Front-Desk Check-in Button -->
             <router-link
                 v-if="authStore.isStaff || authStore.isAdmin"
                 :to="{ name: 'attendance' }"
-                class="inline-flex items-center gap-1.5 h-8 px-3 rounded-md bg-[#F8313B] hover:bg-[#e0242e] active:scale-[0.98] text-white text-xs font-bold transition-all shadow-sm shadow-[#F8313B]/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#F8313B]/15"
+                :class="[
+                    'inline-flex items-center gap-1.5 h-9 px-3.5 rounded-lg text-xs font-bold transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#F8313B]/20',
+                    route.name === 'attendance'
+                        ? 'bg-[#F8313B]/10 text-[#F8313B] ring-1 ring-inset ring-[#F8313B]/25'
+                        : 'bg-[#F8313B] hover:bg-[#e0242e] active:scale-[0.98] text-white shadow-sm shadow-[#F8313B]/20',
+                ]"
             >
-                <QrCode class="w-3.5 h-3.5 text-white" />
+                <QrCode class="w-3.5 h-3.5 shrink-0" />
                 <span>Check-in</span>
             </router-link>
         </div>
