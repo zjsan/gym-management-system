@@ -24,9 +24,8 @@
             isOpen ? 'translate-x-0' : '-translate-x-full',
         ]"
     >
-        <!-- Brand Header with Enlarged Logo & Full Uncut Name -->
         <div
-            class="min-h-16 py-3.5 flex items-center justify-between gap-2.5 px-4 border-b border-zinc-200/70 shrink-0"
+            class="h-16 flex items-center justify-between gap-2.5 px-4 border-b border-zinc-200/80 shrink-0"
         >
             <router-link
                 :to="{ name: 'Dashboard' }"
@@ -42,9 +41,9 @@
                         class="w-full h-full object-contain drop-shadow-xs"
                     />
                 </div>
-                <div class="min-w-0 flex-1 leading-snug">
+                <div class="min-w-0 flex-1 leading-tight">
                     <span
-                        class="block text-[13.5px] font-extrabold tracking-tight text-[#0F1115] break-words"
+                        class="block text-[13px] font-extrabold tracking-tight text-[#0F1115] line-clamp-2"
                     >
                         {{ branding.appName || "IMAQ Gym" }}
                     </span>
@@ -120,8 +119,10 @@
         </nav>
 
         <!-- Bottom Staff Card & Logout Footer -->
-        <div class="p-3 border-t border-zinc-200/70 bg-zinc-50/70 shrink-0">
-            <div class="flex items-center justify-between gap-1.5">
+        <div
+            class="h-14 px-3 border-t border-zinc-200/80 bg-zinc-50/70 flex items-center shrink-0"
+        >
+            <div class="w-full flex items-center justify-between gap-1.5">
                 <router-link
                     :to="{ name: 'UserProfile' }"
                     @click="$emit('close')"

@@ -1,6 +1,6 @@
 <template>
     <header
-        class="min-h-16 py-3 bg-white/95 backdrop-blur-xs border-b border-zinc-200/80 px-4 sm:px-6 lg:px-8 flex items-center justify-between gap-4 shrink-0 z-30"
+        class="h-16 bg-white/95 backdrop-blur-xs border-b border-zinc-200/80 px-4 sm:px-6 lg:px-8 flex items-center justify-between gap-4 shrink-0 z-30"
     >
         <!-- Left: Mobile Drawer Trigger & Dynamic Breadcrumb -->
         <div class="flex items-center gap-2.5 min-w-0">
