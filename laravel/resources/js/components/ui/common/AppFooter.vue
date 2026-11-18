@@ -1,60 +1,59 @@
 <template>
     <footer
-        class="mt-auto w-full border-t border-slate-200/90 bg-white px-6 py-3.5 text-xs text-slate-500 transition-colors"
+        class="w-full border-t border-zinc-200/80 bg-white px-4 sm:px-6 lg:px-8 py-2 text-[11px] text-zinc-500 shrink-0"
     >
         <div
-            class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-2.5"
+            class="max-w-[1400px] mx-auto flex items-center justify-between gap-4"
         >
-            <!-- Left: Brand Identity & Operational Location -->
-            <div
-                class="flex flex-wrap items-center justify-center sm:justify-start gap-2"
-            >
-                <span class="font-semibold text-[#0F1115] tracking-tight">
-                    &copy; {{ currentYear }} {{ branding.appName }}
+            <!-- Left: Brand Identity & Location -->
+            <div class="flex items-center gap-2 min-w-0 truncate">
+                <span class="font-medium text-zinc-700 truncate">
+                    &copy; {{ currentYear }}
+                    {{ branding.appName || "IMAQ Gym" }}
                 </span>
-                <span
-                    v-if="branding.location"
-                    class="text-slate-300"
-                    aria-hidden="true"
-                    >&bull;</span
-                >
-                <span
-                    v-if="branding.location"
-                    class="font-medium text-slate-500"
-                >
-                    {{ branding.location }}
-                </span>
+                <template v-if="branding.location">
+                    <span class="text-zinc-300" aria-hidden="true"
+                        >&middot;</span
+                    >
+                    <span class="truncate">{{ branding.location }}</span>
+                </template>
             </div>
 
-            <!-- Right: System Status, IT Support & Build Version -->
-            <div class="flex items-center gap-3 font-medium">
-                <div class="hidden md:flex items-center gap-1.5 text-slate-600">
-                    <span class="relative flex h-2 w-2">
-                        <span
-                            class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"
-                        ></span>
-                        <span
-                            class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"
-                        ></span>
+            <!-- Right: Live Network Status, Support & Version -->
+            <div class="flex items-center gap-3 shrink-0">
+                <div
+                    class="hidden sm:flex items-center gap-1.5"
+                    :title="
+                        isOnline
+                            ? 'Connected to server'
+                            : 'Offline — check local internet'
+                    "
+                >
+                    <span
+                        :class="[
+                            'w-1.5 h-1.5 rounded-full',
+                            isOnline ? 'bg-emerald-500' : 'bg-amber-500',
+                        ]"
+                    />
+                    <span class="text-zinc-600 font-medium">
+                        {{ isOnline ? "Online" : "Offline Mode" }}
                     </span>
-                    <span class="text-[11px]">System Online</span>
                 </div>
 
-                <span class="hidden md:inline text-slate-300" aria-hidden="true"
+                <span class="hidden sm:inline text-zinc-300" aria-hidden="true"
                     >|</span
                 >
 
                 <a
                     href="mailto:zjsantos25@gmail.com"
-                    class="text-slate-600 hover:text-[#F8313B] transition-colors duration-150 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#F8313B] rounded px-1"
+                    class="text-zinc-600 hover:text-zinc-950 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#F8313B] rounded px-0.5"
                 >
-                    IT Support
+                    Support
                 </a>
 
-                <span class="text-slate-300" aria-hidden="true">&bull;</span>
-
                 <span
-                    class="font-mono text-[11px] tabular-nums px-2 py-0.5 rounded bg-slate-100 text-slate-600 border border-slate-200/70"
+                    v-if="branding.version"
+                    class="font-mono tabular-nums px-1.5 py-0.5 rounded bg-zinc-100 text-zinc-600 border border-zinc-200/70"
                 >
                     v{{ branding.version }}
                 </span>
@@ -64,7 +63,25 @@
 </template>
 
 <script setup>
+import { ref, onMounted, onUnmounted } from "vue";
 import { branding } from "@/config/branding";
 
 const currentYear = new Date().getFullYear();
+const isOnline = ref(
+    typeof navigator !== "undefined" ? navigator.onLine : true,
+);
+
+const updateOnlineStatus = () => {
+    isOnline.value = navigator.onLine;
+};
+
+onMounted(() => {
+    window.addEventListener("online", updateOnlineStatus);
+    window.addEventListener("offline", updateOnlineStatus);
+});
+
+onUnmounted(() => {
+    window.removeEventListener("online", updateOnlineStatus);
+    window.removeEventListener("offline", updateOnlineStatus);
+});
 </script>
