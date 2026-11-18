@@ -1,21 +1,23 @@
 <template>
     <footer
-        class="w-full border-t border-zinc-200/80 bg-white px-4 sm:px-6 lg:px-8 py-2 text-[11px] text-zinc-500 shrink-0"
+        class="w-full min-h-[57px] border-t border-zinc-200/80 bg-white px-4 sm:px-6 lg:px-8 py-3.5 text-xs text-zinc-500 flex items-center shrink-0"
     >
         <div
-            class="max-w-[1400px] mx-auto flex items-center justify-between gap-4"
+            class="w-full max-w-[1400px] mx-auto flex items-center justify-between gap-4"
         >
-            <!-- Left: Brand Identity & Location -->
-            <div class="flex items-center gap-2 min-w-0 truncate">
-                <span class="font-medium text-zinc-700 truncate">
+            <!-- Left: Brand Identity & Operational Location -->
+            <div class="flex items-center gap-2 min-w-0">
+                <span class="font-semibold text-[#0F1115] truncate">
                     &copy; {{ currentYear }}
                     {{ branding.appName || "IMAQ Gym" }}
                 </span>
                 <template v-if="branding.location">
-                    <span class="text-zinc-300" aria-hidden="true"
+                    <span class="text-zinc-300 shrink-0" aria-hidden="true"
                         >&middot;</span
                     >
-                    <span class="truncate">{{ branding.location }}</span>
+                    <span class="font-medium text-zinc-500 truncate">{{
+                        branding.location
+                    }}</span>
                 </template>
             </div>
 
@@ -35,7 +37,7 @@
                             isOnline ? 'bg-emerald-500' : 'bg-amber-500',
                         ]"
                     />
-                    <span class="text-zinc-600 font-medium">
+                    <span class="text-zinc-600 font-medium text-[11px]">
                         {{ isOnline ? "Online" : "Offline Mode" }}
                     </span>
                 </div>
@@ -46,14 +48,14 @@
 
                 <a
                     href="mailto:zjsantos25@gmail.com"
-                    class="text-zinc-600 hover:text-zinc-950 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#F8313B] rounded px-0.5"
+                    class="text-zinc-600 hover:text-[#F8313B] font-medium text-[11px] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#F8313B] rounded px-1"
                 >
                     Support
                 </a>
 
                 <span
                     v-if="branding.version"
-                    class="font-mono tabular-nums px-1.5 py-0.5 rounded bg-zinc-100 text-zinc-600 border border-zinc-200/70"
+                    class="font-mono text-[11px] tabular-nums px-2 py-0.5 rounded-md bg-zinc-100 text-zinc-600 border border-zinc-200/80"
                 >
                     v{{ branding.version }}
                 </span>
