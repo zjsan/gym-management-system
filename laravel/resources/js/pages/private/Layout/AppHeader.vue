@@ -28,37 +28,37 @@
                     aria-hidden="true"
                 />
                 <h1
-                    class="font-semibold text-[13px] text-zinc-950 tracking-tight truncate"
+                    class="font-semibold text-[13px] text-[#0F1115] tracking-tight truncate"
                 >
                     {{ currentRouteTitle }}
                 </h1>
             </nav>
         </div>
 
-        <!-- Right: Global Command Search & Primary Front-Desk Action -->
+        <!-- Right: Global Command Search & Primary Action -->
         <div class="flex items-center gap-2 sm:gap-2.5 shrink-0">
-            <!-- Quick Member / Command Palette Trigger -->
+            <!-- Quick Member Search Trigger -->
             <button
                 type="button"
-                @click="$emit('open-command')"
-                class="inline-flex items-center gap-2 h-8 px-2.5 sm:px-3 rounded-lg bg-zinc-50 hover:bg-zinc-100/80 text-zinc-500 border border-zinc-200/90 text-xs transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#F8313B]"
+                @click="$emit('open-search')"
+                class="inline-flex items-center gap-2 h-8 px-2.5 sm:px-3 rounded-md bg-white hover:bg-zinc-50 text-zinc-500 border border-slate-300 text-xs transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#F8313B]/15 focus-visible:border-[#F8313B] cursor-pointer"
             >
-                <Search class="w-3.5 h-3.5 text-zinc-500 shrink-0" />
+                <Search class="w-3.5 h-3.5 text-slate-400 shrink-0" />
                 <span class="hidden md:inline">Find member or pass...</span>
                 <kbd
-                    class="hidden sm:inline-flex items-center gap-0.5 px-1.5 py-0.5 text-[10px] font-mono font-medium text-zinc-500 bg-white rounded border border-zinc-200/90"
+                    class="hidden sm:inline-flex items-center gap-0.5 px-1.5 py-0.5 text-[10px] font-mono font-medium text-zinc-500 bg-slate-100 rounded border border-slate-200"
                 >
                     ⌘K
                 </kbd>
             </button>
 
-            <!-- Primary Front-Desk CTA: Instant QR / Walk-in Check-in -->
+            <!-- Primary Front-Desk Check-in Button (Matching Login Red Accent) -->
             <router-link
                 v-if="authStore.isStaff || authStore.isAdmin"
                 :to="{ name: 'attendance' }"
-                class="inline-flex items-center gap-1.5 h-8 px-3 rounded-lg bg-zinc-950 hover:bg-zinc-800 text-white text-xs font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#F8313B] focus-visible:ring-offset-1"
+                class="inline-flex items-center gap-1.5 h-8 px-3 rounded-md bg-[#F8313B] hover:bg-[#e0242e] active:scale-[0.98] text-white text-xs font-bold transition-all shadow-sm shadow-[#F8313B]/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#F8313B]/15"
             >
-                <QrCode class="w-3.5 h-3.5 text-[#F8313B]" />
+                <QrCode class="w-3.5 h-3.5 text-white" />
                 <span>Check-in</span>
             </router-link>
         </div>
@@ -72,7 +72,7 @@ import { useAuthStore } from "@/stores/auth";
 import { branding } from "@/config/branding";
 import { Menu, ChevronRight, Search, QrCode } from "lucide-vue-next";
 
-defineEmits(["toggle-sidebar", "open-command"]);
+defineEmits(["toggle-sidebar", "open-search"]);
 
 const route = useRoute();
 const authStore = useAuthStore();
