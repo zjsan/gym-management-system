@@ -265,13 +265,13 @@ const menuItems = computed(() => [
         name: "Members",
         routeName: "MemberManagement",
         icon: Users,
-        visible: () => authStore.isStaff || authStore.isAdmin,
+        visible: () => authStore.isStaff,
     },
     {
         name: "Attendance",
         routeName: "attendance",
         icon: QrCode,
-        visible: () => authStore.isStaff || authStore.isAdmin,
+        visible: () => authStore.isStaff,
     },
     {
         name: "Payments",
