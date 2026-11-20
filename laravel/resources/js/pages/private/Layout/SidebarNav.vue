@@ -70,7 +70,7 @@
         <!-- Navigation Menu -->
         <nav class="flex-1 px-3 py-4 space-y-1 overflow-y-auto">
             <template v-for="item in visibleMenuItems" :key="item.routeName">
-                <div v-if="item.sectionHeader" class="pt-5 pb-1.5 px-3">
+                <div v-if="item.sectionHeader" class="pt-3.5 pb-1 px-3">
                     <p
                         class="text-[11px] font-semibold uppercase tracking-wider text-zinc-500"
                     >
