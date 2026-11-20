@@ -1,7 +1,7 @@
 <script setup>
 import { reactiveOmit } from "@vueuse/core";
+import { cn } from "cn";
 import { DialogDescription, useForwardProps } from "reka-ui";
-import { cn } from "@/lib/utils";
 
 const props = defineProps({
   asChild: { type: Boolean, required: false },

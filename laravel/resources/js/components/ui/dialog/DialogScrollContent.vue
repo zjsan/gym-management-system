@@ -1,6 +1,7 @@
 <script setup>
 import { X } from "@lucide/vue";
 import { reactiveOmit } from "@vueuse/core";
+import { cn } from "cn";
 import {
   DialogClose,
   DialogContent,
@@ -8,11 +9,8 @@ import {
   DialogPortal,
   useForwardPropsEmits,
 } from "reka-ui";
-import { cn } from "@/lib/utils";
 
-defineOptions({
-  inheritAttrs: false,
-});
+defineOptions({ inheritAttrs: false });
 
 const props = defineProps({
   forceMount: { type: Boolean, required: false },

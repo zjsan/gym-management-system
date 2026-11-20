@@ -1,7 +1,7 @@
 <script setup>
 import { reactiveOmit } from "@vueuse/core";
+import { cn } from "cn";
 import { DialogOverlay } from "reka-ui";
-import { cn } from "@/lib/utils";
 
 const props = defineProps({
   forceMount: { type: Boolean, required: false },
