@@ -54,19 +54,19 @@
                 </kbd>
             </button>
 
-            <!-- Primary Front-Desk Check-in Button -->
+            <!-- Dynamic Primary CTA Based on Role Access -->
             <router-link
-                v-if="authStore.isStaff || authStore.isAdmin"
-                :to="{ name: 'attendance' }"
+                v-if="headerCta"
+                :to="{ name: headerCta.routeName }"
                 :class="[
                     'inline-flex items-center gap-1.5 h-9 px-3.5 rounded-lg text-xs font-bold transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#F8313B]/20',
-                    route.name === 'attendance'
+                    route.name === headerCta.routeName
                         ? 'bg-[#F8313B]/10 text-[#F8313B] ring-1 ring-inset ring-[#F8313B]/25'
                         : 'bg-[#F8313B] hover:bg-[#e0242e] active:scale-[0.98] text-white shadow-sm shadow-[#F8313B]/20',
                 ]"
             >
-                <QrCode class="w-3.5 h-3.5 shrink-0" />
-                <span>Check-in</span>
+                <component :is="headerCta.icon" class="w-3.5 h-3.5 shrink-0" />
+                <span>{{ headerCta.label }}</span>
             </router-link>
         </div>
     </header>
@@ -77,7 +77,13 @@ import { computed } from "vue";
 import { useRoute } from "vue-router";
 import { useAuthStore } from "@/stores/auth";
 import { branding } from "@/config/branding";
-import { Menu, ChevronRight, Search, QrCode } from "lucide-vue-next";
+import {
+    Menu,
+    ChevronRight,
+    Search,
+    QrCode,
+    CreditCard,
+} from "lucide-vue-next";
 
 defineEmits(["toggle-sidebar", "open-search"]);
 
@@ -96,5 +102,29 @@ const ROUTE_TITLES = {
 
 const currentRouteTitle = computed(() => {
     return route.meta?.title || ROUTE_TITLES[route.name] || "Overview";
+});
+
+const headerCta = computed(() => {
+    if (authStore.isStaff) {
+        return {
+            label: "Check-in",
+            routeName: "attendance",
+            icon: QrCode,
+        };
+    }
+
+    if (authStore.isAdmin) {
+        return {
+            label: "Payments",
+            routeName: "payment",
+            icon: CreditCard,
+        };
+    }
+
+    return {
+        label: "Payments",
+        routeName: "payment",
+        icon: CreditCard,
+    };
 });
 </script>
