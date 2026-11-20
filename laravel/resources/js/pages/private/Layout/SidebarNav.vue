@@ -24,6 +24,7 @@
             isOpen ? 'translate-x-0' : '-translate-x-full',
         ]"
     >
+        <!-- Brand Header (Exact h-16) -->
         <div
             class="h-16 flex items-center justify-between gap-2.5 px-4 border-b border-zinc-200/80 shrink-0"
         >
@@ -94,13 +95,6 @@
                                 : 'text-zinc-600 font-medium hover:text-[#0F1115] hover:bg-zinc-100/80',
                         ]"
                     >
-                        <!-- Left Precision Indicator Bar (Matches Check-in Crimson) -->
-                        <span
-                            v-if="isActive"
-                            class="absolute left-0 top-2 bottom-2 w-[3px] rounded-r-full bg-[#F8313B]"
-                            aria-hidden="true"
-                        />
-
                         <span class="flex items-center gap-3 min-w-0">
                             <component
                                 :is="item.icon"
@@ -118,7 +112,7 @@
             </template>
         </nav>
 
-        <!-- Bottom Staff Card & Logout Footer -->
+        <!-- Bottom Staff Card & Logout Trigger (Exact h-14) -->
         <div
             class="h-14 px-3 border-t border-zinc-200/80 bg-zinc-50/70 flex items-center shrink-0"
         >
@@ -128,7 +122,6 @@
                     @click="$emit('close')"
                     class="group flex items-center gap-2 min-w-0 flex-1 py-1 px-1.5 rounded-lg hover:bg-white hover:shadow-2xs border border-transparent hover:border-zinc-200/80 transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#F8313B]/20"
                 >
-                    <!-- Signature Crimson Avatar Badge -->
                     <div
                         class="w-8 h-8 rounded-lg bg-[#F8313B] group-hover:bg-[#e0242e] text-white flex items-center justify-center shrink-0 shadow-xs shadow-[#F8313B]/25 transition-colors"
                     >
@@ -155,39 +148,61 @@
                     </div>
                 </router-link>
 
+                <!-- AlertDialog Trigger Button -->
                 <button
                     type="button"
-                    @click="handleLogout"
+                    @click="isLogoutDialogOpen = true"
+                    title="End Shift & Logout"
+                    aria-label="End shift and logout"
+                    class="p-2 rounded-lg text-zinc-500 hover:text-[#F8313B] hover:bg-[#F8313B]/[0.08] transition-colors shrink-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#F8313B]/20 cursor-pointer"
+                >
+                    <LogOut class="w-4 h-4" />
+                </button>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Shadcn AlertDialog for Intentional Shift-End Confirmation -->
+    <AlertDialog v-model:open="isLogoutDialogOpen">
+        <AlertDialogContent
+            class="sm:max-w-[380px] bg-white border border-zinc-200/90 rounded-xl p-5 shadow-xl"
+        >
+            <AlertDialogHeader class="space-y-1.5 text-left">
+                <AlertDialogTitle
+                    class="text-sm font-bold tracking-tight text-[#0F1115]"
+                >
+                    Sign out of your account?
+                </AlertDialogTitle>
+                <AlertDialogDescription
+                    class="text-xs leading-relaxed text-zinc-500"
+                >
+                    You will need to sign back in to access your workspace.
+                </AlertDialogDescription>
+            </AlertDialogHeader>
+
+            <AlertDialogFooter class="mt-4 flex flex-row justify-end gap-2">
+                <AlertDialogCancel
                     :disabled="isLoggingOut"
-                    :title="
-                        confirmLogout
-                            ? 'Click again to confirm logout'
-                            : 'End Shift & Logout'
-                    "
-                    :aria-label="
-                        confirmLogout
-                            ? 'Confirm logout'
-                            : 'End shift and logout'
-                    "
-                    :class="[
-                        'px-2.5 py-2 rounded-lg text-xs font-bold transition-all shrink-0 flex items-center gap-1.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#F8313B]/20 cursor-pointer',
-                        confirmLogout
-                            ? 'bg-[#F8313B] hover:bg-[#e0242e] active:scale-[0.98] text-white shadow-sm shadow-[#F8313B]/20'
-                            : 'text-zinc-500 hover:text-[#F8313B] hover:bg-[#F8313B]/[0.08]',
-                    ]"
+                    class="mt-0 h-8 px-3 rounded-lg border border-zinc-200 bg-white hover:bg-zinc-50 text-zinc-700 text-xs font-semibold transition-colors cursor-pointer"
+                >
+                    Cancel
+                </AlertDialogCancel>
+                <AlertDialogAction
+                    @click.prevent="confirmLogout"
+                    :disabled="isLoggingOut"
+                    class="h-8 px-3.5 rounded-lg bg-[#F8313B] hover:bg-[#e0242e] active:scale-[0.98] text-white text-xs font-bold shadow-sm shadow-[#F8313B]/20 transition-all inline-flex items-center gap-1.5 disabled:opacity-70 cursor-pointer"
                 >
                     <Loader2
                         v-if="isLoggingOut"
                         class="w-3.5 h-3.5 animate-spin"
                     />
-                    <LogOut v-else class="w-3.5 h-3.5" />
-                    <span v-if="confirmLogout" class="text-[11px]"
-                        >Confirm</span
-                    >
-                </button>
-            </div>
-        </div>
-    </aside>
+                    <span>{{
+                        isLoggingOut ? "Signing out..." : "Sign out"
+                    }}</span>
+                </AlertDialogAction>
+            </AlertDialogFooter>
+        </AlertDialogContent>
+    </AlertDialog>
 </template>
 
 <script setup>
@@ -196,6 +211,16 @@ import { useRouter } from "vue-router";
 import { useAuthStore } from "@/stores/auth";
 import { branding } from "@/config/branding";
 import logoImg from "@/assets/images/imaq-logo.png";
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import {
     LayoutDashboard,
     Users,
@@ -221,9 +246,8 @@ const emit = defineEmits(["close"]);
 const router = useRouter();
 const authStore = useAuthStore();
 
+const isLogoutDialogOpen = ref(false);
 const isLoggingOut = ref(false);
-const confirmLogout = ref(false);
-let confirmTimer = null;
 
 const navigate = (routeName) => {
     router.push({ name: routeName });
@@ -274,23 +298,15 @@ const visibleMenuItems = computed(() =>
     menuItems.value.filter((item) => item.visible()),
 );
 
-const handleLogout = async () => {
-    if (!confirmLogout.value) {
-        confirmLogout.value = true;
-        clearTimeout(confirmTimer);
-        confirmTimer = setTimeout(() => {
-            confirmLogout.value = false;
-        }, 3500);
-        return;
-    }
-
+const confirmLogout = async () => {
     isLoggingOut.value = true;
     try {
         await authStore.logout();
+        isLogoutDialogOpen.value = false;
     } catch (error) {
         console.error("Logout failed:", error);
+    } finally {
         isLoggingOut.value = false;
-        confirmLogout.value = false;
     }
 };
 </script>
