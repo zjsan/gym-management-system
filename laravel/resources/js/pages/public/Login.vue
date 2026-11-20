@@ -211,6 +211,7 @@ import { useAuthStore } from "../../stores/auth";
 import { ref } from "vue";
 import { useRouter } from "vue-router";
 import { branding } from "@/config/branding";
+import { CONTACT_EMAIL, CONTACT_MAILTO } from "@/config/contact";
 import AuthFooter from "@/components/ui/common/AuthFooter.vue";
 
 import {

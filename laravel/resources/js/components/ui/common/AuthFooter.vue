@@ -11,7 +11,7 @@
             >
             &bull;
             <a
-                href="mailto:zjsantos25@gmail.com"
+                :href="CONTACT_MAILTO"
                 class="hover:text-slate-400 transition-colors"
                 >IT Support</a
             >
@@ -21,5 +21,6 @@
 
 <script setup>
 import { branding } from "@/config/branding";
+import { CONTACT_EMAIL, CONTACT_MAILTO } from "@/config/contact";
 const currentYear = new Date().getFullYear();
 </script>
