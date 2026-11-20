@@ -50,7 +50,7 @@
                 >
 
                 <a
-                    href="mailto:zjsantos25@gmail.com"
+                    :href="CONTACT_MAILTO"
                     class="text-zinc-600 hover:text-[#F8313B] font-medium text-[11px] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#F8313B] rounded px-1"
                 >
                     Support
@@ -70,6 +70,7 @@
 <script setup>
 import { ref, onMounted, onUnmounted } from "vue";
 import { branding } from "@/config/branding";
+import { CONTACT_EMAIL, CONTACT_MAILTO } from "@/config/contact";
 
 const currentYear = new Date().getFullYear();
 const isOnline = ref(
