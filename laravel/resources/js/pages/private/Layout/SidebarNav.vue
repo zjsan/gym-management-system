@@ -130,19 +130,16 @@
                     <div class="min-w-0 flex-1">
                         <p
                             class="text-xs font-semibold text-[#0F1115] truncate leading-tight"
+                            :title="fullName"
                         >
-                            {{ authStore.user?.name || "Staff User" }}
+                            {{ fullName }}
                         </p>
-                        <div class="flex items-center gap-1.5 mt-0.5">
-                            <span
-                                class="w-1.5 h-1.5 rounded-full bg-emerald-500 shrink-0"
-                            />
-                            <p
-                                class="text-[11px] font-medium text-zinc-500 capitalize truncate leading-tight"
-                            >
-                                {{ formattedRole }}
-                            </p>
-                        </div>
+                        <p
+                            class="text-[11px] font-medium text-zinc-500 truncate leading-tight mt-0.5"
+                            :title="authStore.user?.email"
+                        >
+                            {{ authStore.user?.email || "No email provided" }}
+                        </p>
                     </div>
                 </router-link>
 
@@ -295,6 +292,18 @@ const menuItems = computed(() => [
 const visibleMenuItems = computed(() =>
     menuItems.value.filter((item) => item.visible()),
 );
+
+const fullName = computed(() => {
+    const user = authStore.user;
+    if (!user) return "Staff User";
+
+    const combined = [user.first_name, user.last_name]
+        .filter(Boolean)
+        .join(" ")
+        .trim();
+
+    return combined || user.name || "Staff User";
+});
 
 const formattedRole = computed(() => {
     const rawRole = authStore.user?.role?.slug || authStore.user?.role?.name;
