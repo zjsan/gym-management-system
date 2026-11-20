@@ -140,9 +140,7 @@
                             <p
                                 class="text-[11px] font-medium text-zinc-500 capitalize truncate leading-tight"
                             >
-                                {{
-                                    authStore.user?.role?.slug || "Active Shift"
-                                }}
+                                {{ formattedRole }}
                             </p>
                         </div>
                     </div>
@@ -297,6 +295,12 @@ const menuItems = computed(() => [
 const visibleMenuItems = computed(() =>
     menuItems.value.filter((item) => item.visible()),
 );
+
+const formattedRole = computed(() => {
+    const rawRole = authStore.user?.role?.slug || authStore.user?.role?.name;
+    if (!rawRole) return "Active Shift";
+    return String(rawRole).replace(/[_-]+/g, " ");
+});
 
 const confirmLogout = async () => {
     isLoggingOut.value = true;
