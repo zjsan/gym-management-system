@@ -136,9 +136,14 @@
                                 {{ fullName }}
                             </p>
                             <span
-                                class="shrink-0 inline-flex items-center px-1.5 rounded text-[10px] font-semibold capitalize text-[#F8313B] leading-none"
+                                class="text-[10px] text-slate-400 shrink-0 leading-none"
+                                aria-hidden="true"
+                                >&bull;</span
                             >
-                                &bull; {{ formattedRole }}
+                            <span
+                                class="shrink-0 text-[10px] font-bold capitalize text-[#F8313B] leading-none"
+                            >
+                                {{ formattedRole }}
                             </span>
                         </div>
 
