@@ -12,7 +12,7 @@ const props = defineProps({
     skipCheck: true,
   },
   asChild: { type: Boolean, required: false },
-  as: { type: null, required: false, default: "button" },
+  as: { type: [String, Object, Function], required: false, default: "button" },
 });
 </script>
 
