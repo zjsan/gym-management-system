@@ -14,7 +14,7 @@
                         todayDateLabel
                     }}</span>
                     <span class="mx-1.5 text-zinc-300">&middot;</span>
-                    <span>Live floor &amp; financial telemetry</span>
+                    <span>Live gym &amp; sales overview</span>
                 </p>
             </div>
 
