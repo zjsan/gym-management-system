@@ -157,7 +157,7 @@ const ROUTE_TITLES = {
     payment: "Payments & Collections",
     Adminview: "Admin Control",
     SettingsView: "Gym Settings",
-    UserProfile: "Account & Shift Profile",
+    UserProfile: "Account Settings",
 };
 
 const currentRouteTitle = computed(() => {
@@ -248,7 +248,7 @@ const roleCommandItems = computed(() => {
             visible: authStore.isAdmin,
         },
         {
-            label: "Account & Profile",
+            label: "Account Settings",
             keywords: "profile password account shift",
             hint: "Account",
             routeName: "UserProfile",
