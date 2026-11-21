@@ -13,9 +13,9 @@
                 </span>
                 <template v-if="branding.location">
                     <span
-                        class="hidden sm:inline text-zinc-300 shrink-0"
+                        class="text-[10px] text-slate-400 shrink-0 leading-none"
                         aria-hidden="true"
-                        >&middot;</span
+                        >&bull;</span
                     >
                     <span
                         class="hidden sm:inline font-medium text-zinc-500 truncate min-w-0"
