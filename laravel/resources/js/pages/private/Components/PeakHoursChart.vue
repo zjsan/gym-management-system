@@ -1,5 +1,5 @@
 <template>
-    <div class="h-64 relative">
+    <div class="h-64 relative w-full">
         <Bar :data="chartData" :options="chartOptions" />
     </div>
 </template>
@@ -34,37 +34,67 @@ const props = defineProps({
     },
 });
 
-const chartData = computed(() => ({
-    labels: props.hourlyData.map((d) => d.hour),
-    datasets: [
-        {
-            label: "Total Check-ins (30 Days)",
-            data: props.hourlyData.map((d) => d.checkins),
-            backgroundColor: "#3B82F6", // Blue
-            hoverBackgroundColor: "#1D4ED8",
-            borderRadius: 4,
-        },
-    ],
-}));
+const chartData = computed(() => {
+    const counts = props.hourlyData.map((d) => Number(d.checkins || 0));
+    const maxVal = Math.max(...counts, 0);
 
-const chartOptions = {
+    return {
+        labels: props.hourlyData.map((d) => d.hour),
+        datasets: [
+            {
+                label: "Check-ins (30 Days)",
+                data: counts,
+                backgroundColor: counts.map((val) =>
+                    maxVal > 0 && val === maxVal ? "#F8313B" : "#0F1115",
+                ),
+                hoverBackgroundColor: "#F8313B",
+                borderRadius: 4,
+                maxBarThickness: 22,
+            },
+        ],
+    };
+});
+
+const chartOptions = computed(() => ({
     responsive: true,
     maintainAspectRatio: false,
     plugins: {
         legend: { display: false },
         tooltip: {
+            backgroundColor: "#FFFFFF",
+            titleColor: "#0F1115",
+            bodyColor: "#52525B",
+            borderColor: "#E4E4E7",
+            borderWidth: 1,
+            padding: 10,
+            cornerRadius: 8,
+            titleFont: { size: 11, weight: "700" },
+            bodyFont: { size: 12, weight: "600" },
             callbacks: {
-                label: (context) => ` ${context.raw} Check-ins`,
+                label: (context) =>
+                    ` ${Number(context.raw || 0).toLocaleString("en-PH")} Check-ins`,
             },
         },
     },
     scales: {
-        x: { grid: { display: false } },
+        x: {
+            grid: { display: false },
+            border: { display: false },
+            ticks: {
+                color: "#71717A",
+                font: { size: 11, weight: "500" },
+            },
+        },
         y: {
             beginAtZero: true,
-            ticks: { precision: 0 },
-            grid: { color: "#F3F4F6" },
+            border: { display: false },
+            ticks: {
+                precision: 0,
+                color: "#71717A",
+                font: { size: 11, weight: "500" },
+            },
+            grid: { color: "#F4F4F5" },
         },
     },
-};
+}));
 </script>
