@@ -248,7 +248,7 @@ const roleCommandItems = computed(() => {
             visible: authStore.isAdmin,
         },
         {
-            label: "Account Settings",
+            label: "Account Settings    ",
             keywords: "profile password account shift",
             hint: "Account",
             routeName: "UserProfile",
