@@ -1,6 +1,6 @@
 <template>
     <div
-        class="h-dvh w-full overflow-hidden bg-zinc-50/80 flex text-zinc-950 antialiased selection:bg-[#F8313B]/15 selection:text-[#F8313B]"
+        class="h-dvh w-full overflow-hidden bg-[#F4F5F7] flex text-zinc-950 antialiased selection:bg-[#F8313B]/15 selection:text-[#F8313B]"
     >
         <!-- Persistent / Responsive Sidebar -->
         <SidebarNav :is-open="isSidebarOpen" @close="isSidebarOpen = false" />

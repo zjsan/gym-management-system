@@ -71,7 +71,7 @@
             >
                 <!-- Today's Revenue -->
                 <div
-                    class="group relative p-5 sm:p-6 hover:bg-zinc-50/40 transition-colors"
+                    class="group relative p-5 sm:p-6 hover:bg-zinc-50/80 transition-colors"
                 >
                     <!-- Subtle Top Brand Indicator on Hover -->
                     <span
@@ -136,7 +136,7 @@
 
                 <!-- Monthly Revenue -->
                 <div
-                    class="group relative p-5 sm:p-6 hover:bg-zinc-50/40 transition-colors"
+                    class="group relative p-5 sm:p-6 hover:bg-zinc-50/80 transition-colors"
                 >
                     <span
                         class="absolute inset-x-0 top-0 h-[2px] bg-[#0F1115] opacity-0 group-hover:opacity-100 transition-opacity"
@@ -204,7 +204,7 @@
                 class="grid grid-cols-1 sm:grid-cols-3 divide-y sm:divide-y-0 sm:divide-x divide-zinc-200/80"
             >
                 <!-- Active Members -->
-                <div class="p-5 hover:bg-zinc-50/40 transition-colors">
+                <div class="p-5 hover:bg-zinc-50/80 transition-colors">
                     <div class="flex items-center justify-between gap-2">
                         <span
                             class="text-xs font-semibold text-zinc-500 tracking-tight"
@@ -238,7 +238,7 @@
                 </div>
 
                 <!-- Expired Members -->
-                <div class="p-5 hover:bg-zinc-50/40 transition-colors">
+                <div class="p-5 hover:bg-zinc-50/80 transition-colors">
                     <div class="flex items-center justify-between gap-2">
                         <span
                             class="text-xs font-semibold text-zinc-500 tracking-tight"
@@ -282,7 +282,7 @@
                 </div>
 
                 <!-- Today's Check-ins -->
-                <div class="p-5 hover:bg-zinc-50/40 transition-colors">
+                <div class="p-5 hover:bg-zinc-50/80 transition-colors">
                     <div class="flex items-center justify-between gap-2">
                         <span
                             class="text-xs font-semibold text-zinc-500 tracking-tight"
