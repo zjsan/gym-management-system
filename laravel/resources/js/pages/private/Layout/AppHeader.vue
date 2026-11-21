@@ -27,11 +27,12 @@
                     class="hidden sm:inline w-3.5 h-3.5 text-zinc-400 shrink-0"
                     aria-hidden="true"
                 />
-                <h1
+                <span
+                    aria-current="page"
                     class="font-bold text-[13.5px] text-[#0F1115] tracking-tight truncate"
                 >
                     {{ currentRouteTitle }}
-                </h1>
+                </span>
             </nav>
         </div>
 
@@ -248,7 +249,7 @@ const roleCommandItems = computed(() => {
             visible: authStore.isAdmin,
         },
         {
-            label: "Account Settings    ",
+            label: "Account Settings",
             keywords: "profile password account shift",
             hint: "Account",
             routeName: "UserProfile",
