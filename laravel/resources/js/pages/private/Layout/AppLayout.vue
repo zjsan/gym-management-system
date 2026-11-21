@@ -8,10 +8,7 @@
         <!-- Main Column -->
         <div class="flex-1 flex flex-col min-w-0 h-full overflow-hidden">
             <!-- Top Navigation Header -->
-            <AppHeader
-                @toggle-sidebar="isSidebarOpen = !isSidebarOpen"
-                @open-command="$emit('open-command')"
-            />
+            <AppHeader @toggle-sidebar="isSidebarOpen = !isSidebarOpen" />
 
             <!-- Main Scrollable Canvas -->
             <main class="flex-1 overflow-y-auto scroll-smooth">
@@ -31,8 +28,6 @@ import { ref, onMounted, onUnmounted } from "vue";
 import SidebarNav from "@/pages/private/Layout/SidebarNav.vue";
 import AppHeader from "@/pages/private/Layout/AppHeader.vue";
 import AppFooter from "@/components/ui/common/AppFooter.vue";
-
-defineEmits(["open-command"]);
 
 const isSidebarOpen = ref(false);
 
