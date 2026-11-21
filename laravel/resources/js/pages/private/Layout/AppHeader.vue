@@ -144,7 +144,9 @@ const isCommandOpen = ref(false);
 const shortcutLabel = computed(() => {
     if (
         typeof navigator !== "undefined" &&
-        /Mac|iPhone|iPad/.test(navigator.platform)
+        /Mac|iPhone|iPad/.test(
+            navigator.userAgentData?.platform || navigator.platform,
+        )
     ) {
         return "⌘K";
     }
