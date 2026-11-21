@@ -211,7 +211,6 @@ import { useAuthStore } from "../../stores/auth";
 import { ref } from "vue";
 import { useRouter } from "vue-router";
 import { branding } from "@/config/branding";
-import { CONTACT_EMAIL, CONTACT_MAILTO } from "@/config/contact";
 import AuthFooter from "@/components/ui/common/AuthFooter.vue";
 
 import {
@@ -231,9 +230,6 @@ const email = ref("");
 const password = ref("");
 const showPassword = ref(false);
 const router = useRouter();
-
-// Dynamic year for the footer
-const currentYear = ref(new Date().getFullYear());
 
 const login = async () => {
     try {
