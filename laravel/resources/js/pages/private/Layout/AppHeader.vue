@@ -65,6 +65,9 @@
                         ? 'bg-[#F8313B]/10 text-[#F8313B] ring-1 ring-inset ring-[#F8313B]/25'
                         : 'bg-[#F8313B] hover:bg-[#e0242e] active:scale-[0.98] text-white shadow-sm shadow-[#F8313B]/20',
                 ]"
+                :aria-current="
+                    route.name === headerCta.routeName ? 'page' : undefined
+                "
             >
                 <component :is="headerCta.icon" class="w-3.5 h-3.5 shrink-0" />
                 <span>{{ headerCta.label }}</span>
