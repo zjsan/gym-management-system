@@ -189,13 +189,6 @@
                 </AlertDialogDescription>
             </AlertDialogHeader>
 
-            <p
-                v-if="logoutError"
-                class="mt-2 text-xs font-medium text-[#F8313B] bg-[#F8313B]/10 border border-[#F8313B]/20 rounded-lg px-3 py-2"
-            >
-                {{ logoutError }}
-            </p>
-
             <AlertDialogFooter class="mt-4 flex flex-row justify-end gap-2">
                 <AlertDialogCancel
                     :disabled="isLoggingOut"
@@ -262,7 +255,6 @@ const authStore = useAuthStore();
 
 const isLogoutDialogOpen = ref(false);
 const isLoggingOut = ref(false);
-const logoutError = ref("");
 
 const handleNavClick = (event, navigate) => {
     navigate(event);
@@ -338,16 +330,8 @@ const formattedRole = computed(() => {
 
 const confirmLogout = async () => {
     isLoggingOut.value = true;
-    logoutError.value = "";
-    try {
-        await authStore.logout();
-        isLogoutDialogOpen.value = false;
-    } catch (error) {
-        console.error("Logout failed:", error);
-        logoutError.value =
-            "Unable to sign out right now. Please check your connection and try again.";
-    } finally {
-        isLoggingOut.value = false;
-    }
+    await authStore.logout();
+    isLogoutDialogOpen.value = false;
+    isLoggingOut.value = false;
 };
 </script>
