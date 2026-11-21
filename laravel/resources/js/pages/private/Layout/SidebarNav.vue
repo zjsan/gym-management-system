@@ -113,7 +113,7 @@
 
         <!-- Bottom Staff Card (Name + Role Pill + Email) & Logout Trigger -->
         <div
-            class="min-h-16 px-3 py-2.5 border-t border-zinc-200/80 bg-zinc-50/70 flex items-center shrink-0"
+            class="h-16 px-3 border-t border-zinc-200/80 bg-zinc-50/70 flex items-center shrink-0"
         >
             <div class="w-full flex items-center justify-between gap-2">
                 <router-link
@@ -262,7 +262,6 @@ const handleNavClick = (event, navigate) => {
 };
 
 const openLogoutDialog = () => {
-    logoutError.value = "";
     isLogoutDialogOpen.value = true;
 };
 
