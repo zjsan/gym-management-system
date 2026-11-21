@@ -161,8 +161,8 @@ const ROUTE_TITLES = {
     MemberManagement: "Members",
     attendance: "Attendance & QR Check-in",
     payment: "Payments & Collections",
-    Adminview: "Admin Control",
-    SettingsView: "Gym Settings",
+    AdminControl: "Admin Control",
+    GymSettings: "Gym Settings",
     UserProfile: "Account Settings",
 };
 

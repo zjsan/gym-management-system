@@ -7,18 +7,18 @@ import AppLayout from "../pages/private/Layout/AppLayout.vue";
 // Public Pages
 import Login from "../pages/public/Login.vue";
 import ForgotPassword from "@/pages/public/ForgotPassword.vue";
-import ResetPassword from "@/pages/private/Force Password Change/ResetPasswordView.vue";
+import ResetPassword from "@/pages/private/Auth/ResetPasswordView.vue";
 
 // Protected Pages
-import DashboardView from "@/pages/private/Dashboard/DashboardView.vue";
-import Adminview from "@/pages/private/Admin/Adminview.vue";
-import MemberManagement from "@/pages/private/Staff/Staffview.vue";
-import AttendanceDashboard from "@/pages/private/Staff/AttendanceDashboard.vue";
+import Dashboard from "@/pages/private/Dashboard/Dashboard.vue";
+import AdminControl from "@/pages/private/Admin/AdminControl.vue";
+import MemberManagement from "@/pages/private/Staff/MemberManagement.vue";
+import Attendance from "@/pages/private/Staff/Attendance.vue";
 import PaymentHistory from "@/pages/private/Payment/PaymentHistory.vue";
-import SettingsView from "@/pages/private/Admin/SettingsView.vue";
-import ForcePasswordChange from "@/pages/private/Force Password Change/ForcePasswordChange.vue";
-import UserProfileView from "@/pages/private/User Profile/UserProfileView.vue";
-import Notfound from "@/pages/views/NotFound.vue";
+import GymSettings from "@/pages/private/Admin/GymSettings.vue";
+import ForcePasswordChange from "@/pages/private/Auth/ForcePasswordChange.vue";
+import UserProfile from "@/pages/private/Account/UserProfile.vue";
+import Notfound from "@/pages/public/NotFound.vue";
 
 const routes = [
     // Public / Guest Routes
@@ -63,11 +63,11 @@ const routes = [
         component: AppLayout,
         meta: { requiresAuth: true },
         children: [
-            { path: "dashboard", name: "Dashboard", component: DashboardView },
+            { path: "dashboard", name: "Dashboard", component: Dashboard },
             {
                 path: "user-profile",
                 name: "UserProfile",
-                component: UserProfileView,
+                component: UserProfile,
             },
             {
                 path: "member-management",
@@ -78,7 +78,7 @@ const routes = [
             {
                 path: "attendance",
                 name: "attendance",
-                component: AttendanceDashboard,
+                component: Attendance,
                 meta: { role: "staff" },
             },
             {
@@ -88,14 +88,14 @@ const routes = [
             },
             {
                 path: "admin-page",
-                name: "Adminview",
-                component: Adminview,
+                name: "AdminControl",
+                component: AdminControl,
                 meta: { requiresAdmin: true },
             },
             {
                 path: "gym-setting",
-                name: "SettingsView",
-                component: SettingsView,
+                name: "GymSettings",
+                component: GymSettings,
                 meta: { requiresAdmin: true },
             },
         ],

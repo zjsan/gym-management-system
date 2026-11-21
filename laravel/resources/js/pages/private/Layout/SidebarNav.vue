@@ -294,13 +294,13 @@ const menuItems = computed(() => [
     {
         sectionHeader: "Administration",
         name: "Admin Control",
-        routeName: "Adminview",
+        routeName: "AdminControl",
         icon: ShieldCheck,
         visible: () => authStore.isAdmin,
     },
     {
         name: "Gym Settings",
-        routeName: "SettingsView",
+        routeName: "GymSettings",
         icon: Settings,
         visible: () => authStore.isAdmin,
     },
