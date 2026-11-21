@@ -80,18 +80,17 @@
 
                 <router-link
                     :to="{ name: item.routeName }"
-                    @click="$emit('close')"
-                    v-slot="{ isActive }"
+                    v-slot="{ href, navigate, isActive }"
                     custom
                 >
                     <a
-                        :href="$router.resolve({ name: item.routeName }).href"
-                        @click.prevent="navigate(item.routeName)"
+                        :href="href"
+                        @click="handleNavClick($event, navigate)"
                         :aria-current="isActive ? 'page' : undefined"
                         :class="[
                             'group relative flex items-center justify-between gap-2.5 px-3 py-2.5 rounded-lg text-[13px] transition-all duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#F8313B]/20',
                             isActive
-                                ? 'bg-[#F8313B] group-hover:bg-[#e0242e] text-white font-semibold ring-1 ring-inset ring-[#F8313B]/20'
+                                ? 'bg-[#F8313B] hover:bg-[#e0242e] text-white font-semibold ring-1 ring-inset ring-[#F8313B]/20'
                                 : 'text-zinc-600 font-medium hover:text-[#0F1115] hover:bg-zinc-100/80',
                         ]"
                     >
@@ -112,15 +111,15 @@
             </template>
         </nav>
 
-        <!-- Bottom Staff Card & Logout Trigger (Exact h-14) -->
+        <!-- Bottom Staff Card (Name + Role Pill + Email) & Logout Trigger -->
         <div
-            class="h-14 px-3 border-t border-zinc-200/80 bg-zinc-50/70 flex items-center shrink-0"
+            class="min-h-16 px-3 py-2.5 border-t border-zinc-200/80 bg-zinc-50/70 flex items-center shrink-0"
         >
             <div class="w-full flex items-center justify-between gap-2">
                 <router-link
                     :to="{ name: 'UserProfile' }"
                     @click="$emit('close')"
-                    class="group flex items-center gap-2 min-w-0 flex-1 py-1 px-1.5 rounded-lg hover:bg-white hover:shadow-2xs border border-transparent hover:border-zinc-200/80 transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#F8313B]/20"
+                    class="group flex items-center gap-2.5 min-w-0 flex-1 py-1 px-1.5 rounded-lg hover:bg-white hover:shadow-2xs border border-transparent hover:border-zinc-200/80 transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#F8313B]/20"
                 >
                     <div
                         class="w-8 h-8 rounded-lg bg-[#F8313B] group-hover:bg-[#e0242e] text-white flex items-center justify-center shrink-0 shadow-xs shadow-[#F8313B]/25 transition-colors"
@@ -128,14 +127,24 @@
                         <User class="w-4 h-4 stroke-[2.25]" />
                     </div>
                     <div class="min-w-0 flex-1">
+                        <!-- Row 1: Full Name + Formatted Role Badge -->
+                        <div class="flex items-center gap-1.5 min-w-0">
+                            <p
+                                class="text-xs font-semibold text-[#0F1115] truncate leading-tight"
+                                :title="fullName"
+                            >
+                                {{ fullName }}
+                            </p>
+                            <span
+                                class="shrink-0 inline-flex items-center px-1.5 rounded text-[10px] font-semibold capitalize text-[#F8313B] leading-none"
+                            >
+                                &bull; {{ formattedRole }}
+                            </span>
+                        </div>
+
+                        <!-- Row 2: Email Address -->
                         <p
-                            class="text-xs font-semibold text-[#0F1115] truncate leading-tight"
-                            :title="fullName"
-                        >
-                            {{ fullName }}
-                        </p>
-                        <p
-                            class="text-[11px] font-medium text-zinc-500 truncate leading-tight mt-0.5"
+                            class="text-[11px] font-medium text-zinc-500 truncate leading-tight mt-1"
                             :title="authStore.user?.email"
                         >
                             {{ authStore.user?.email || "No email provided" }}
@@ -146,7 +155,7 @@
                 <!-- AlertDialog Trigger Button -->
                 <button
                     type="button"
-                    @click="isLogoutDialogOpen = true"
+                    @click="openLogoutDialog"
                     title="End Shift & Logout"
                     aria-label="End shift and logout"
                     class="p-2 rounded-lg text-zinc-500 hover:text-[#F8313B] hover:bg-[#F8313B]/[0.08] transition-colors shrink-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#F8313B]/20 cursor-pointer"
@@ -175,6 +184,13 @@
                 </AlertDialogDescription>
             </AlertDialogHeader>
 
+            <p
+                v-if="logoutError"
+                class="mt-2 text-xs font-medium text-[#F8313B] bg-[#F8313B]/10 border border-[#F8313B]/20 rounded-lg px-3 py-2"
+            >
+                {{ logoutError }}
+            </p>
+
             <AlertDialogFooter class="mt-4 flex flex-row justify-end gap-2">
                 <AlertDialogCancel
                     :disabled="isLoggingOut"
@@ -202,7 +218,6 @@
 
 <script setup>
 import { ref, computed } from "vue";
-import { useRouter } from "vue-router";
 import { useAuthStore } from "@/stores/auth";
 import { branding } from "@/config/branding";
 import logoImg from "@/assets/images/imaq-logo.png";
@@ -238,15 +253,20 @@ defineProps({
 
 const emit = defineEmits(["close"]);
 
-const router = useRouter();
 const authStore = useAuthStore();
 
 const isLogoutDialogOpen = ref(false);
 const isLoggingOut = ref(false);
+const logoutError = ref("");
 
-const navigate = (routeName) => {
-    router.push({ name: routeName });
+const handleNavClick = (event, navigate) => {
+    navigate(event);
     emit("close");
+};
+
+const openLogoutDialog = () => {
+    logoutError.value = "";
+    isLogoutDialogOpen.value = true;
 };
 
 const menuItems = computed(() => [
@@ -307,17 +327,20 @@ const fullName = computed(() => {
 
 const formattedRole = computed(() => {
     const rawRole = authStore.user?.role?.slug || authStore.user?.role?.name;
-    if (!rawRole) return "Active Shift";
+    if (!rawRole) return "Staff";
     return String(rawRole).replace(/[_-]+/g, " ");
 });
 
 const confirmLogout = async () => {
     isLoggingOut.value = true;
+    logoutError.value = "";
     try {
         await authStore.logout();
         isLogoutDialogOpen.value = false;
     } catch (error) {
         console.error("Logout failed:", error);
+        logoutError.value =
+            "Unable to sign out right now. Please check your connection and try again.";
     } finally {
         isLoggingOut.value = false;
     }
