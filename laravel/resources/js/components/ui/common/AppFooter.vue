@@ -70,7 +70,7 @@
 <script setup>
 import { ref, onMounted, onUnmounted } from "vue";
 import { branding } from "@/config/branding";
-import { CONTACT_EMAIL, CONTACT_MAILTO } from "@/config/contact";
+import { CONTACT_MAILTO } from "@/config/contact";
 
 const currentYear = new Date().getFullYear();
 const isOnline = ref(
