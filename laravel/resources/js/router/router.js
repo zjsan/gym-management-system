@@ -7,7 +7,7 @@ import AppLayout from "../pages/private/Layout/AppLayout.vue";
 // Public Pages
 import Login from "../pages/public/Login.vue";
 import ForgotPassword from "@/pages/public/ForgotPassword.vue";
-import ResetPassword from "@/pages/private/Auth/ResetPassword.vue";
+import ResetPassword from "@/pages/public/ResetPassword.vue";
 
 // Protected Pages
 import Dashboard from "@/pages/private/Dashboard/Dashboard.vue";
