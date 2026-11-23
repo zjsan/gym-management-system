@@ -108,7 +108,7 @@ class DashboardController extends Controller
                 'walkins.name as walkin_name'
             )
             ->orderBy('payments.created_at', 'DESC')
-            ->limit(5)
+            ->limit(7)
             ->get()
             ->map(function ($tx) {
                 // Resolve the payer name hierarchy
