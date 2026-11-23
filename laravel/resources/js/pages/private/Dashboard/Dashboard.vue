@@ -326,47 +326,11 @@
 
         <!-- Analytics & Activity Split Grid -->
         <div class="grid grid-cols-1 xl:grid-cols-12 gap-6 items-start">
-            <!-- Left 8 Columns: Structured Charts & Expiration Watchlist -->
+            <!-- Left 8 Columns: Data Storytelling Flow (Trends -> Capacity/Mix -> Retention Action) -->
             <div class="xl:col-span-8 space-y-6">
+                <!-- Beat 1: 7-Day Momentum (Financial & Sign-up Trend -> Foot Traffic Trend) -->
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
-                    <!-- 7-Day Attendance Line Chart -->
-                    <Card
-                        class="bg-white border-zinc-200/80 shadow-2xs rounded-xl"
-                    >
-                        <CardHeader
-                            class="p-5 pb-3 border-b border-zinc-100 flex flex-row items-center justify-between gap-2 space-y-0"
-                        >
-                            <div>
-                                <CardTitle
-                                    class="text-[13px] font-bold tracking-tight text-[#0F1115]"
-                                >
-                                    Attendance Volume
-                                </CardTitle>
-                                <CardDescription
-                                    class="text-[11px] text-zinc-500 mt-0.5"
-                                >
-                                    Daily check-ins over past 7 days
-                                </CardDescription>
-                            </div>
-                            <span
-                                class="px-2 py-0.5 text-[10px] font-mono font-semibold text-zinc-500 bg-zinc-100/80 rounded border border-zinc-200/70"
-                            >
-                                7D
-                            </span>
-                        </CardHeader>
-                        <CardContent class="p-5 pt-4">
-                            <Skeleton
-                                v-if="isInitialLoading"
-                                class="h-52 w-full rounded-lg bg-zinc-100"
-                            />
-                            <AttendanceLineChart
-                                v-else
-                                :trend-data="dashboardStore.attendanceTrendData"
-                            />
-                        </CardContent>
-                    </Card>
-
-                    <!-- 7-Day Revenue Bar Chart -->
+                    <!-- 1. 7-Day Revenue & Registrations Bar Chart -->
                     <Card
                         class="bg-white border-zinc-200/80 shadow-2xs rounded-xl"
                     >
@@ -403,7 +367,47 @@
                         </CardContent>
                     </Card>
 
-                    <!-- Peak Hours Check-in Distribution -->
+                    <!-- 2. 7-Day Attendance Volume Line Chart -->
+                    <Card
+                        class="bg-white border-zinc-200/80 shadow-2xs rounded-xl"
+                    >
+                        <CardHeader
+                            class="p-5 pb-3 border-b border-zinc-100 flex flex-row items-center justify-between gap-2 space-y-0"
+                        >
+                            <div>
+                                <CardTitle
+                                    class="text-[13px] font-bold tracking-tight text-[#0F1115]"
+                                >
+                                    Attendance Volume
+                                </CardTitle>
+                                <CardDescription
+                                    class="text-[11px] text-zinc-500 mt-0.5"
+                                >
+                                    Daily check-ins over past 7 days
+                                </CardDescription>
+                            </div>
+                            <span
+                                class="px-2 py-0.5 text-[10px] font-mono font-semibold text-zinc-500 bg-zinc-100/80 rounded border border-zinc-200/70"
+                            >
+                                7D
+                            </span>
+                        </CardHeader>
+                        <CardContent class="p-5 pt-4">
+                            <Skeleton
+                                v-if="isInitialLoading"
+                                class="h-52 w-full rounded-lg bg-zinc-100"
+                            />
+                            <AttendanceLineChart
+                                v-else
+                                :trend-data="dashboardStore.attendanceTrendData"
+                            />
+                        </CardContent>
+                    </Card>
+                </div>
+
+                <!-- Beat 2: Floor Capacity & Audience Mix (When it peaks -> Who visits) -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                    <!-- 3. Peak Hours Check-in Distribution -->
                     <Card
                         class="bg-white border-zinc-200/80 shadow-2xs rounded-xl"
                     >
@@ -442,7 +446,7 @@
                         </CardContent>
                     </Card>
 
-                    <!-- Member vs Walk-in Traffic Ratio -->
+                    <!-- 4. Member vs Walk-in Traffic Ratio -->
                     <Card
                         class="bg-white border-zinc-200/80 shadow-2xs rounded-xl"
                     >
@@ -480,7 +484,7 @@
                     </Card>
                 </div>
 
-                <!-- Expiration Watchlist (Staff Only) -->
+                <!-- Beat 3: Actionable Retention (Expiring Members Watchlist for Staff) -->
                 <ExpirationWatchlistCard
                     v-if="authStore.isStaff"
                     :watchlist="dashboardStore.expirationWatchlist"
@@ -488,9 +492,9 @@
                 />
             </div>
 
-            <!-- Right 4 Columns: Recent Payments Ledger Feed -->
+            <!-- Right 4 Columns: Live Transaction Ledger Feed -->
             <Card
-                class="xl:col-span-4 bg-white border-zinc-200/80 shadow-2xs rounded-xl overflow-hidden"
+                class="xl:col-span-4 bg-white border-zinc-200/80 shadow-2xs rounded-xl overflow-hidden xl:sticky xl:top-0"
             >
                 <CardHeader
                     class="p-5 pb-3.5 border-b border-zinc-100 flex flex-row items-center justify-between gap-2 space-y-0"
