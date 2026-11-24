@@ -1,446 +1,613 @@
 <template>
-    <div class="p-6 max-w-7xl mx-auto">
-        <h1 class="text-3xl font-extrabold mb-6 text-gray-800 tracking-tight">
-            Gym Management Dashboard
-        </h1>
-
-        <div>
-            <button
-                @click="goToAttendance"
-                class="bg-blue-500 text-white font-semibold rounded-lg shadow hover:bg-red-600 transition"
+    <div class="space-y-6">
+        <!-- Toolbar: Search, Status Filter & Reset -->
+        <Card class="bg-white border-zinc-200/80 shadow-2xs rounded-xl">
+            <CardContent
+                class="p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3"
             >
-                Click here for Attendance
-            </button>
-
-            <button
-                @click="goToPaymentHistory"
-                class="bg-blue-500 text-white font-semibold rounded-lg shadow hover:bg-red-600 transition"
-            >
-                Click here for Payment
-            </button>
-
-            <button
-                @click="goToDashboard"
-                class="bg-blue-500 text-white font-semibold rounded-lg shadow hover:bg-red-600 transition"
-            >
-                Click here for Dashboard
-            </button>
-
-            <button
-                @click="goToUserProfile"
-                class="bg-blue-500 text-white font-semibold rounded-lg shadow hover:bg-red-600 transition"
-            >
-                Click here for User Profile
-            </button>
-
-            <!-- Reset Button -->
-            <button
-                @click="handleResetFilters"
-                class="px-3 py-2 text-xs font-semibold text-gray-600 hover:text-gray-900 border rounded-lg hover:bg-gray-50 transition"
-            >
-                Reset Filters
-            </button>
-        </div>
-        <div class="w-50 mt-5">
-            <Input
-                v-model="searchQuery"
-                type="text"
-                placeholder="Search member..."
-                class="w-full pl-9 pr-4 py-2 text-sm border border-slate-200 rounded-lg focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none bg-white transition-all text-slate-700 placeholder:text-slate-400/90 shadow-inner"
-            />
-            <!-- Status Filter Dropdown -->
-            <select
-                v-model="memberStore.statusFilter"
-                @change="onFilterChange"
-                class="px-3 py-2 bg-white border border-gray-300 rounded-lg text-sm font-medium text-gray-700 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
-            >
-                <option value="">All Statuses</option>
-                <option value="active">Active Members</option>
-                <option value="expiring_soon">
-                    Expiring Soon (Next 7 Days)
-                </option>
-                <option value="expired">Expired Members</option>
-            </select>
-        </div>
-        <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
-            <div
-                class="lg:col-span-1 bg-white p-5 rounded-xl shadow-sm border border-gray-100"
-            >
-                <h2
-                    class="font-bold text-lg mb-4"
-                    :class="isEditing ? 'text-amber-600' : 'text-indigo-600'"
+                <div
+                    class="flex flex-1 flex-col sm:flex-row items-stretch sm:items-center gap-2.5"
                 >
-                    {{ isEditing ? "📝 Edit Profile" : "👤 Register Member" }}
-                </h2>
-
-                <form @submit.prevent="submitForm" class="space-y-4">
-                    <input
-                        v-model="memberForm.first_name"
-                        placeholder="First Name"
-                        class="w-full border p-2.5 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500"
-                        required
-                    />
-                    <span
-                        v-if="memberStore.errors?.first_name"
-                        class="error-msg"
-                    >
-                        {{ memberStore.errors.first_name[0] }}
-                    </span>
-                    <input
-                        v-model="memberForm.last_name"
-                        placeholder="Last Name"
-                        class="w-full border p-2.5 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500"
-                        required
-                    />
-                    <span
-                        v-if="memberStore.errors?.last_name"
-                        class="error-msg"
-                    >
-                        {{ memberStore.errors.last_name[0] }}
-                    </span>
-                    <input
-                        v-model="memberForm.contact_number"
-                        placeholder="Contact Number"
-                        class="w-full border p-2.5 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500"
-                        required
-                    />
-                    <input
-                        v-model="memberForm.emergency_contact_number"
-                        placeholder="Emergency Contact"
-                        class="w-full border p-2.5 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500"
-                        required
-                    />
-                    <input
-                        v-model="memberForm.email"
-                        placeholder="Email"
-                        class="w-full border p-2.5 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500"
-                        required
-                    />
-                    <input
-                        v-model="memberForm.address"
-                        placeholder="Residential Address"
-                        class="w-full border p-2.5 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500"
-                        required
-                    />
-
-                    <div>
-                        <label
-                            class="block text-xs font-semibold text-gray-500 mb-1"
-                            >Date of Birth</label
-                        >
-                        <input
-                            type="date"
-                            v-model="memberForm.date_of_birth"
-                            class="w-full border p-2.5 rounded-lg text-sm text-gray-700"
-                            required
+                    <div class="relative flex-1 max-w-md">
+                        <Search
+                            class="w-4 h-4 text-zinc-400 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none"
                         />
-                        <span
-                            v-if="memberStore.errors?.date_of_birth"
-                            class="error-msg"
-                        >
-                            {{ memberStore.errors.date_of_birth[0] }}
-                        </span>
+                        <Input
+                            v-model="searchQuery"
+                            type="text"
+                            placeholder="Search member by name, ID, or email..."
+                            class="pl-9 h-9 bg-zinc-50/60 border-zinc-200/90 text-xs text-[#0F1115] placeholder:text-zinc-400 focus-visible:ring-[#F8313B]/20 focus-visible:border-[#F8313B]"
+                        />
                     </div>
 
                     <select
-                        v-model="memberForm.gender"
-                        class="w-full border p-2.5 rounded-lg text-sm text-gray-700"
-                        required
+                        v-model="memberStore.statusFilter"
+                        @change="onFilterChange"
+                        aria-label="Filter members by status"
+                        class="h-9 px-3 rounded-lg bg-zinc-50/60 border border-zinc-200/90 text-xs font-medium text-[#0F1115] focus:outline-none focus:ring-2 focus:ring-[#F8313B]/20 focus:border-[#F8313B] cursor-pointer"
                     >
-                        <option disabled value="">-- Select Gender --</option>
-                        <option value="male">Male</option>
-                        <option value="female">Female</option>
-                        <option value="other">Other</option>
+                        <option value="">All Statuses</option>
+                        <option value="active">Active Members</option>
+                        <option value="expiring_soon">
+                            Expiring Soon (Next 7 Days)
+                        </option>
+                        <option value="expired">Expired Members</option>
                     </select>
+                </div>
 
-                    <div>
-                        <label
-                            class="block text-xs font-semibold text-gray-500 mb-1"
-                            >Member Photo Profile</label
-                        >
-                        <input
-                            type="file"
-                            @change="handleFileUpload"
-                            accept="image/*"
-                            class="w-full text-xs text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100"
-                        />
-                    </div>
+                <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    @click="handleResetFilters"
+                    class="h-9 px-3 rounded-lg border-zinc-200/90 bg-white hover:bg-zinc-50 text-xs font-semibold text-zinc-600 hover:text-[#0F1115] gap-1.5 shrink-0 cursor-pointer"
+                >
+                    <RotateCcw class="w-3.5 h-3.5 text-zinc-500" />
+                    <span>Reset Filters</span>
+                </Button>
+            </CardContent>
+        </Card>
 
-                    <div class="flex flex-col space-y-2 pt-2">
-                        <button
-                            type="submit"
-                            :disabled="memberStore.loading"
-                            class="w-full py-2.5 px-4 text-sm font-medium text-white bg-indigo-600 rounded-lg hover:bg-indigo-700 transition disabled:opacity-50"
-                        >
-                            {{
-                                memberStore.loading
-                                    ? "Processing..."
-                                    : isEditing
-                                      ? "Update Profile"
-                                      : "Save Registration"
-                            }}
-                        </button>
-                        <button
-                            v-if="isEditing"
-                            type="button"
-                            @click="resetForm"
-                            class="w-full py-2 px-4 text-sm font-medium text-gray-600 bg-gray-100 rounded-lg hover:bg-gray-200 transition"
-                        >
-                            Cancel Modifications
-                        </button>
-                    </div>
-                </form>
-            </div>
-            <div
-                class="lg:col-span-3 bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden"
+        <!-- Main Workspace: Registration/Edit Form (4 Cols) + Directory Table (8 Cols) -->
+        <div class="grid grid-cols-1 xl:grid-cols-12 gap-6 items-start">
+            <!-- Left 4 Cols: Register / Edit Member Form -->
+            <Card
+                class="xl:col-span-4 bg-white border-zinc-200/80 shadow-2xs rounded-xl overflow-hidden"
             >
+                <CardHeader
+                    class="p-5 pb-3.5 border-b border-zinc-100 flex flex-row items-center justify-between gap-2 space-y-0"
+                >
+                    <div class="flex items-center gap-2.5">
+                        <div
+                            :class="[
+                                'w-8 h-8 rounded-lg flex items-center justify-center shrink-0',
+                                isEditing
+                                    ? 'bg-amber-50 text-amber-700 border border-amber-200/70'
+                                    : 'bg-[#F8313B]/10 text-[#F8313B]',
+                            ]"
+                        >
+                            <UserCog v-if="isEditing" class="w-4 h-4" />
+                            <UserPlus v-else class="w-4 h-4" />
+                        </div>
+                        <div>
+                            <CardTitle
+                                class="text-[13px] font-bold tracking-tight text-[#0F1115]"
+                            >
+                                {{
+                                    isEditing
+                                        ? "Edit Member"
+                                        : "Register Member"
+                                }}
+                            </CardTitle>
+                            <CardDescription class="text-[11px] text-zinc-500">
+                                {{
+                                    isEditing
+                                        ? "Update profile & contact details"
+                                        : "Enroll a new gym member"
+                                }}
+                            </CardDescription>
+                        </div>
+                    </div>
+                </CardHeader>
+
+                <CardContent class="p-5">
+                    <form @submit.prevent="submitForm" class="space-y-3.5">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                            <div class="space-y-1">
+                                <label
+                                    class="block text-[11px] font-semibold text-zinc-600"
+                                >
+                                    First Name
+                                </label>
+                                <Input
+                                    v-model="memberForm.first_name"
+                                    placeholder="First name"
+                                    required
+                                    class="h-9 text-xs border-zinc-200/90 focus-visible:ring-[#F8313B]/20 focus-visible:border-[#F8313B]"
+                                />
+                                <p
+                                    v-if="memberStore.errors?.first_name"
+                                    class="text-[11px] font-medium text-[#F8313B]"
+                                >
+                                    {{ memberStore.errors.first_name[0] }}
+                                </p>
+                            </div>
+
+                            <div class="space-y-1">
+                                <label
+                                    class="block text-[11px] font-semibold text-zinc-600"
+                                >
+                                    Last Name
+                                </label>
+                                <Input
+                                    v-model="memberForm.last_name"
+                                    placeholder="Last name"
+                                    required
+                                    class="h-9 text-xs border-zinc-200/90 focus-visible:ring-[#F8313B]/20 focus-visible:border-[#F8313B]"
+                                />
+                                <p
+                                    v-if="memberStore.errors?.last_name"
+                                    class="text-[11px] font-medium text-[#F8313B]"
+                                >
+                                    {{ memberStore.errors.last_name[0] }}
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                            <div class="space-y-1">
+                                <label
+                                    class="block text-[11px] font-semibold text-zinc-600"
+                                >
+                                    Contact Number
+                                </label>
+                                <Input
+                                    v-model="memberForm.contact_number"
+                                    placeholder="09XX XXX XXXX"
+                                    required
+                                    class="h-9 text-xs tabular-nums border-zinc-200/90 focus-visible:ring-[#F8313B]/20 focus-visible:border-[#F8313B]"
+                                />
+                            </div>
+
+                            <div class="space-y-1">
+                                <label
+                                    class="block text-[11px] font-semibold text-zinc-600"
+                                >
+                                    Emergency Contact
+                                </label>
+                                <Input
+                                    v-model="
+                                        memberForm.emergency_contact_number
+                                    "
+                                    placeholder="09XX XXX XXXX"
+                                    required
+                                    class="h-9 text-xs tabular-nums border-zinc-200/90 focus-visible:ring-[#F8313B]/20 focus-visible:border-[#F8313B]"
+                                />
+                            </div>
+                        </div>
+
+                        <div class="space-y-1">
+                            <label
+                                class="block text-[11px] font-semibold text-zinc-600"
+                            >
+                                Email Address
+                            </label>
+                            <Input
+                                v-model="memberForm.email"
+                                type="email"
+                                placeholder="member@example.com"
+                                required
+                                class="h-9 text-xs border-zinc-200/90 focus-visible:ring-[#F8313B]/20 focus-visible:border-[#F8313B]"
+                            />
+                        </div>
+
+                        <div class="space-y-1">
+                            <label
+                                class="block text-[11px] font-semibold text-zinc-600"
+                            >
+                                Residential Address
+                            </label>
+                            <Input
+                                v-model="memberForm.address"
+                                placeholder="Street, Barangay, City/Municipality"
+                                required
+                                class="h-9 text-xs border-zinc-200/90 focus-visible:ring-[#F8313B]/20 focus-visible:border-[#F8313B]"
+                            />
+                        </div>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                            <div class="space-y-1">
+                                <label
+                                    class="block text-[11px] font-semibold text-zinc-600"
+                                >
+                                    Date of Birth
+                                </label>
+                                <Input
+                                    type="date"
+                                    v-model="memberForm.date_of_birth"
+                                    required
+                                    class="h-9 text-xs text-[#0F1115] border-zinc-200/90 focus-visible:ring-[#F8313B]/20 focus-visible:border-[#F8313B]"
+                                />
+                                <p
+                                    v-if="memberStore.errors?.date_of_birth"
+                                    class="text-[11px] font-medium text-[#F8313B]"
+                                >
+                                    {{ memberStore.errors.date_of_birth[0] }}
+                                </p>
+                            </div>
+
+                            <div class="space-y-1">
+                                <label
+                                    class="block text-[11px] font-semibold text-zinc-600"
+                                >
+                                    Gender
+                                </label>
+                                <select
+                                    v-model="memberForm.gender"
+                                    required
+                                    class="w-full h-9 px-3 rounded-lg bg-white border border-zinc-200/90 text-xs text-[#0F1115] focus:outline-none focus:ring-2 focus:ring-[#F8313B]/20 focus:border-[#F8313B]"
+                                >
+                                    <option disabled value="">
+                                        Select gender
+                                    </option>
+                                    <option value="male">Male</option>
+                                    <option value="female">Female</option>
+                                    <option value="other">Other</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="space-y-1">
+                            <label
+                                class="block text-[11px] font-semibold text-zinc-600"
+                            >
+                                Member Photo Profile
+                            </label>
+                            <input
+                                type="file"
+                                @change="handleFileUpload"
+                                accept="image/*"
+                                class="w-full text-[11px] text-zinc-500 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border file:border-zinc-200 file:text-[11px] file:font-semibold file:bg-zinc-50 file:text-[#0F1115] hover:file:bg-zinc-100 cursor-pointer"
+                            />
+                        </div>
+
+                        <div class="flex flex-col gap-2 pt-2">
+                            <Button
+                                type="submit"
+                                :disabled="memberStore.loading"
+                                class="w-full h-9 rounded-lg bg-[#F8313B] hover:bg-[#e0242e] active:scale-[0.99] text-white text-xs font-bold shadow-sm shadow-[#F8313B]/20 transition-all cursor-pointer"
+                            >
+                                {{
+                                    memberStore.loading
+                                        ? "Saving..."
+                                        : isEditing
+                                          ? "Update Member"
+                                          : "Save Registration"
+                                }}
+                            </Button>
+
+                            <Button
+                                v-if="isEditing"
+                                type="button"
+                                variant="outline"
+                                @click="resetForm"
+                                class="w-full h-9 rounded-lg border-zinc-200 text-zinc-600 hover:text-[#0F1115] text-xs font-semibold cursor-pointer"
+                            >
+                                Cancel Edit
+                            </Button>
+                        </div>
+                    </form>
+                </CardContent>
+            </Card>
+
+            <!-- Right 8 Cols: Member Directory Table & Pagination -->
+            <Card
+                class="xl:col-span-8 bg-white border-zinc-200/80 shadow-2xs rounded-xl overflow-hidden"
+            >
+                <CardHeader
+                    class="p-5 pb-3.5 border-b border-zinc-100 flex flex-row items-center justify-between gap-2 space-y-0"
+                >
+                    <div>
+                        <CardTitle
+                            class="text-[13px] font-bold tracking-tight text-[#0F1115]"
+                        >
+                            Member Directory
+                        </CardTitle>
+                        <CardDescription
+                            class="text-[11px] text-zinc-500 mt-0.5"
+                        >
+                            Membership validity, renewals, and QR check-in
+                            passes
+                        </CardDescription>
+                    </div>
+                    <Badge
+                        variant="secondary"
+                        class="text-[10px] font-mono font-semibold bg-zinc-100 text-zinc-700 hover:bg-zinc-100 tabular-nums"
+                    >
+                        {{ totalItems }} total
+                    </Badge>
+                </CardHeader>
+
                 <div class="overflow-x-auto">
-                    <table class="w-full text-left text-sm border-collapse">
+                    <table class="w-full text-left text-xs border-collapse">
                         <thead
-                            class="bg-gray-50 text-gray-600 font-semibold border-b border-gray-100"
+                            class="bg-zinc-50/80 text-[11px] font-semibold uppercase tracking-wider text-zinc-500 border-b border-zinc-200/80"
                         >
                             <tr>
-                                <th class="p-4">Profile Info</th>
-                                <th class="p-4">Name</th>
-                                <th class="p-4 text-center">Age</th>
-                                <th class="p-4">Membership Window</th>
-                                <th class="p-4 text-center">Status</th>
-                                <th class="p-4 text-right">
-                                    Actions / Adjustment Controls
-                                </th>
-                                <th class="p-4 text-right">QR Code</th>
+                                <th class="py-3 px-4">Member</th>
+                                <th class="py-3 px-3 text-center">Age</th>
+                                <th class="py-3 px-3">Membership Window</th>
+                                <th class="py-3 px-3 text-center">Status</th>
+                                <th class="py-3 px-3 text-right">Actions</th>
+                                <th class="py-3 px-4 text-right">Pass</th>
                             </tr>
                         </thead>
-                        <tbody class="divide-y divide-gray-50">
-                            <tr
+
+                        <tbody class="divide-y divide-zinc-100">
+                            <!-- Loading Skeleton Rows -->
+                            <template
                                 v-if="
                                     memberStore.loading &&
                                     !memberStore.members.length
                                 "
                             >
-                                <td
-                                    colspan="6"
-                                    class="p-12 text-center text-gray-400 italic"
-                                >
-                                    Synchronizing database schedules...
-                                </td>
-                            </tr>
+                                <tr v-for="n in 5" :key="n">
+                                    <td colspan="6" class="p-4">
+                                        <div
+                                            class="flex items-center justify-between gap-4"
+                                        >
+                                            <div
+                                                class="flex items-center gap-3"
+                                            >
+                                                <Skeleton
+                                                    class="w-9 h-9 rounded-full bg-zinc-100"
+                                                />
+                                                <div class="space-y-1.5">
+                                                    <Skeleton
+                                                        class="h-3.5 w-32 bg-zinc-100"
+                                                    />
+                                                    <Skeleton
+                                                        class="h-3 w-20 bg-zinc-100"
+                                                    />
+                                                </div>
+                                            </div>
+                                            <Skeleton
+                                                class="h-4 w-24 bg-zinc-100"
+                                            />
+                                            <Skeleton
+                                                class="h-6 w-20 bg-zinc-100"
+                                            />
+                                        </div>
+                                    </td>
+                                </tr>
+                            </template>
+
+                            <!-- Empty State -->
                             <tr v-else-if="memberStore.members.length === 0">
                                 <td
                                     colspan="6"
-                                    class="p-12 text-center text-gray-400"
+                                    class="py-12 px-4 text-center text-xs text-zinc-500"
                                 >
-                                    No active operational registries matched
-                                    yet.
+                                    No members matched your current search or
+                                    filter.
                                 </td>
                             </tr>
+
+                            <!-- Member Rows -->
                             <tr
                                 v-for="member in memberStore.members"
                                 :key="member.id"
-                                class="hover:bg-gray-50/70 transition"
+                                class="hover:bg-zinc-50/80 transition-colors"
                             >
-                                <td class="p-4">
-                                    <div class="flex items-center space-x-3">
+                                <td class="py-3 px-4">
+                                    <div
+                                        class="flex items-center gap-3 min-w-0"
+                                    >
                                         <img
                                             :src="member.photo_url"
-                                            class="w-11 h-11 rounded-full border border-gray-100 object-cover bg-gray-50"
+                                            :alt="`${member.first_name} ${member.last_name}`"
+                                            class="w-9 h-9 rounded-full border border-zinc-200/80 object-cover bg-zinc-100 shrink-0"
                                         />
-                                        <div>
-                                            <div
-                                                class="font-mono text-xs font-bold text-gray-700"
+                                        <div class="min-w-0">
+                                            <p
+                                                class="font-semibold text-[#0F1115] truncate leading-tight"
                                             >
-                                                {{ member.membership_no }}
-                                            </div>
+                                                {{ member.first_name }}
+                                                {{ member.last_name }}
+                                            </p>
                                             <div
-                                                class="text-xs text-gray-400 capitalize"
+                                                class="flex items-center gap-1.5 mt-0.5"
                                             >
-                                                {{ member.gender }}
+                                                <span
+                                                    class="font-mono text-[11px] font-medium text-zinc-500 tabular-nums"
+                                                >
+                                                    {{ member.membership_no }}
+                                                </span>
+                                                <span class="text-zinc-300"
+                                                    >&middot;</span
+                                                >
+                                                <span
+                                                    class="text-[11px] text-zinc-400 capitalize"
+                                                >
+                                                    {{ member.gender }}
+                                                </span>
                                             </div>
                                         </div>
                                     </div>
                                 </td>
-                                <td class="p-4 font-semibold text-gray-800">
-                                    {{ member.first_name }}
-                                    {{ member.last_name }}
+
+                                <td
+                                    class="py-3 px-3 text-center text-zinc-600 tabular-nums font-medium"
+                                >
+                                    {{ member.age ?? "—" }}
                                 </td>
-                                <td class="p-4 text-center text-gray-600">
-                                    {{ member.age ?? "N/A" }}
-                                </td>
-                                <td class="p-4 text-xs space-y-0.5">
-                                    <div class="text-gray-600 font-medium">
-                                        <span class="text-gray-400"
+
+                                <td class="py-3 px-3 text-[11px] space-y-0.5">
+                                    <div class="text-zinc-500 tabular-nums">
+                                        <span class="text-zinc-400"
                                             >Start:</span
                                         >
                                         {{ member.membership_start }}
                                     </div>
                                     <div
-                                        class="font-semibold"
+                                        class="font-semibold tabular-nums"
                                         :class="
                                             isExpired(member.membership_end)
-                                                ? 'text-rose-500'
-                                                : 'text-emerald-600'
+                                                ? 'text-[#F8313B]'
+                                                : 'text-[#0F1115]'
                                         "
                                     >
-                                        <span class="text-gray-400 font-normal"
+                                        <span class="text-zinc-400 font-normal"
                                             >Ends:</span
                                         >
                                         {{ member.membership_end }}
                                     </div>
                                 </td>
-                                <td class="p-4 text-center">
+
+                                <td class="py-3 px-3 text-center">
                                     <span
-                                        :class="
+                                        :class="[
+                                            'inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-bold uppercase tracking-wider border select-none',
                                             member.is_active
-                                                ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
-                                                : 'bg-rose-50 text-rose-700 border-rose-200'
-                                        "
-                                        class="inline-block px-3 py-1 rounded-full text-xs font-bold border shadow-sm select-none"
+                                                ? 'bg-emerald-50 text-emerald-700 border-emerald-200/80'
+                                                : 'bg-[#F8313B]/[0.07] text-[#F8313B] border-[#F8313B]/20',
+                                        ]"
                                     >
                                         {{
                                             member.is_active
-                                                ? "ACTIVE"
-                                                : "INACTIVE"
+                                                ? "Active"
+                                                : "Inactive"
                                         }}
                                     </span>
                                 </td>
-                                <td class="p-4 text-right space-x-2">
-                                    <button
-                                        @click="editMember(member)"
-                                        class="text-indigo-600 hover:text-indigo-900 font-semibold text-xs tracking-wide"
-                                    >
-                                        EDIT
-                                    </button>
 
-                                    <button
-                                        @click="handleRenew(member.id)"
-                                        :disabled="!member.can_renew"
-                                        :class="
-                                            member.can_renew
-                                                ? 'text-emerald-600 hover:text-emerald-800 font-bold'
-                                                : 'text-gray-300 cursor-not-allowed font-medium'
-                                        "
-                                        class="text-xs tracking-wide uppercase transition"
-                                    >
-                                        RENEW
-                                    </button>
-
-                                    <span
-                                        class="inline-flex items-center rounded-md bg-gray-50 border border-gray-200 px-1 py-0.5 shadow-sm"
+                                <td class="py-3 px-3 text-right">
+                                    <div
+                                        class="inline-flex items-center justify-end gap-1.5"
                                     >
                                         <button
-                                            @click="
-                                                handleDayAdjustment(
-                                                    member.id,
-                                                    -1,
-                                                )
-                                            "
-                                            class="px-1 text-gray-400 hover:text-rose-600 font-bold text-xs"
-                                            title="Subtract 1 Day"
+                                            type="button"
+                                            @click="editMember(member)"
+                                            class="px-2 py-1 rounded-md text-[11px] font-semibold text-zinc-600 hover:text-[#0F1115] hover:bg-zinc-100 transition-colors cursor-pointer"
                                         >
-                                            -1d
+                                            Edit
                                         </button>
+
+                                        <button
+                                            type="button"
+                                            @click="handleRenew(member.id)"
+                                            :disabled="!member.can_renew"
+                                            :class="[
+                                                'px-2 py-1 rounded-md text-[11px] font-bold transition-colors',
+                                                member.can_renew
+                                                    ? 'text-[#F8313B] hover:bg-[#F8313B]/10 cursor-pointer'
+                                                    : 'text-zinc-300 cursor-not-allowed',
+                                            ]"
+                                        >
+                                            Renew
+                                        </button>
+
                                         <span
-                                            class="text-[10px] text-gray-300 px-0.5"
-                                            >|</span
+                                            class="inline-flex items-center rounded-md bg-zinc-50 border border-zinc-200/80 px-1 py-0.5"
                                         >
-                                        <button
-                                            @click="
-                                                handleDayAdjustment(
-                                                    member.id,
-                                                    1,
-                                                )
-                                            "
-                                            class="px-1 text-gray-500 hover:text-emerald-600 font-bold text-xs"
-                                            title="Add 1 Day for Closure Adjustments"
-                                        >
-                                            +1d
-                                        </button>
-                                    </span>
+                                            <button
+                                                type="button"
+                                                @click="
+                                                    handleDayAdjustment(
+                                                        member.id,
+                                                        -1,
+                                                    )
+                                                "
+                                                class="px-1 text-zinc-500 hover:text-[#F8313B] font-mono font-bold text-[11px] cursor-pointer"
+                                                title="Subtract 1 Day"
+                                            >
+                                                -1d
+                                            </button>
+                                            <span
+                                                class="text-[10px] text-zinc-300 px-0.5"
+                                                aria-hidden="true"
+                                                >|</span
+                                            >
+                                            <button
+                                                type="button"
+                                                @click="
+                                                    handleDayAdjustment(
+                                                        member.id,
+                                                        1,
+                                                    )
+                                                "
+                                                class="px-1 text-zinc-500 hover:text-[#0F1115] font-mono font-bold text-[11px] cursor-pointer"
+                                                title="Add 1 Day"
+                                            >
+                                                +1d
+                                            </button>
+                                        </span>
+                                    </div>
                                 </td>
-                                <button
-                                    @click="openQrModal(member)"
-                                    class="text-indigo-600 hover:text-indigo-900 font-bold text-xs tracking-wide uppercase transition"
-                                    title="View/Print Member QR Badge"
-                                >
-                                    QR BADGE
-                                </button>
+
+                                <td class="py-3 px-4 text-right">
+                                    <button
+                                        type="button"
+                                        @click="openQrModal(member)"
+                                        class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg border border-zinc-200/90 bg-white hover:bg-zinc-50 text-[11px] font-semibold text-[#0F1115] transition-colors cursor-pointer"
+                                        title="View or print member QR pass"
+                                    >
+                                        <QrCode
+                                            class="w-3.5 h-3.5 text-[#F8313B]"
+                                        />
+                                        <span>QR</span>
+                                    </button>
+                                </td>
                             </tr>
                         </tbody>
                     </table>
                 </div>
-                <!--pagination control-->
+
+                <!-- Pagination Footer -->
                 <div
-                    class="flex flex-col sm:flex-row items-center justify-between px-6 py-4 bg-slate-50/40 border-t border-slate-200/80 gap-4"
+                    class="flex flex-col sm:flex-row items-center justify-between px-5 py-3.5 bg-zinc-50/60 border-t border-zinc-200/80 gap-3"
                 >
                     <div
-                        class="text-xs text-slate-500 font-medium order-2 sm:order-1"
+                        class="text-[11px] text-zinc-500 font-medium tabular-nums order-2 sm:order-1"
                     >
                         Showing
-                        <span class="text-slate-800 font-semibold">{{
+                        <span class="text-[#0F1115] font-semibold">{{
                             rangeStart
                         }}</span>
                         to
-                        <span class="text-slate-800 font-semibold">{{
+                        <span class="text-[#0F1115] font-semibold">{{
                             rangeEnd
                         }}</span>
                         of
-                        <span class="text-slate-800 font-semibold">{{
+                        <span class="text-[#0F1115] font-semibold">{{
                             totalItems
                         }}</span>
-                        entries
+                        members
                     </div>
 
                     <div
                         class="flex items-center gap-1.5 order-1 sm:order-2 w-full sm:w-auto justify-end"
                     >
-                        <button
+                        <Button
+                            type="button"
+                            variant="outline"
+                            size="sm"
                             @click="prevPage"
                             :disabled="currentPage === 1 || memberStore.loading"
-                            class="inline-flex items-center justify-center min-w-8 h-8 px-2 rounded-lg border border-slate-200 bg-white text-slate-600 text-xs font-medium shadow-sm transition-all hover:bg-slate-50 disabled:opacity-40 disabled:hover:bg-white disabled:cursor-not-allowed cursor-pointer select-none"
+                            class="h-8 px-2.5 rounded-lg border-zinc-200/90 bg-white text-xs font-semibold text-zinc-700 gap-1 cursor-pointer"
                         >
-                            <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                class="w-3.5 h-3.5 mr-1"
-                                fill="none"
-                                viewBox="0 0 24 24"
-                                stroke="currentColor"
-                                stroke-width="2"
-                            >
-                                <path
-                                    stroke-linecap="round"
-                                    stroke-linejoin="round"
-                                    d="M15 19l-7-7 7-7"
-                                />
-                            </svg>
-                            Prev
-                        </button>
+                            <ChevronLeft class="w-3.5 h-3.5" />
+                            <span>Prev</span>
+                        </Button>
 
                         <div class="hidden md:flex items-center gap-1">
                             <button
                                 v-if="visiblePages[0] > 1"
+                                type="button"
                                 @click="goToPage(1)"
-                                :disabled="allowedEmailsStore.loading"
-                                class="w-8 h-8 rounded-lg text-xs font-semibold border bg-white text-slate-600 border-slate-200 hover:bg-slate-50 disabled:opacity-50"
+                                :disabled="memberStore.loading"
+                                class="w-8 h-8 rounded-lg text-xs font-semibold border bg-white text-zinc-600 border-zinc-200 hover:bg-zinc-50 disabled:opacity-50 tabular-nums cursor-pointer"
                             >
                                 1
                             </button>
 
                             <span
                                 v-if="visiblePages[0] > 2"
-                                class="text-slate-400 text-xs px-1"
+                                class="text-zinc-400 text-xs px-1"
                                 >...</span
                             >
 
                             <button
                                 v-for="page in visiblePages"
                                 :key="page"
+                                type="button"
                                 @click="goToPage(page)"
                                 :disabled="memberStore.loading"
                                 :class="[
-                                    'w-8 h-8 rounded-lg text-xs font-semibold border transition-all cursor-pointer select-none',
+                                    'w-8 h-8 rounded-lg text-xs font-semibold border transition-colors tabular-nums cursor-pointer',
                                     currentPage === page
-                                        ? 'bg-indigo-600 text-white border-indigo-600 shadow-sm shadow-indigo-500/10'
-                                        : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-50 disabled:opacity-50',
+                                        ? 'bg-[#F8313B] text-white border-[#F8313B]'
+                                        : 'bg-white text-zinc-600 border-zinc-200 hover:bg-zinc-50 disabled:opacity-50',
                                 ]"
                             >
                                 {{ page }}
@@ -451,7 +618,7 @@
                                     visiblePages[visiblePages.length - 1] <
                                     lastPage - 1
                                 "
-                                class="text-slate-400 text-xs px-1"
+                                class="text-zinc-400 text-xs px-1"
                                 >...</span
                             >
 
@@ -460,59 +627,50 @@
                                     visiblePages[visiblePages.length - 1] <
                                     lastPage
                                 "
+                                type="button"
                                 @click="goToPage(lastPage)"
                                 :disabled="memberStore.loading"
-                                class="w-8 h-8 rounded-lg text-xs font-semibold border bg-white text-slate-600 border-slate-200 hover:bg-slate-50 disabled:opacity-50"
+                                class="w-8 h-8 rounded-lg text-xs font-semibold border bg-white text-zinc-600 border-zinc-200 hover:bg-zinc-50 disabled:opacity-50 tabular-nums cursor-pointer"
                             >
                                 {{ lastPage }}
                             </button>
                         </div>
 
                         <span
-                            class="text-xs font-medium text-slate-500 md:hidden px-2"
+                            class="text-xs font-medium text-zinc-500 md:hidden px-2 tabular-nums"
                         >
                             Page {{ currentPage }} of {{ lastPage }}
                         </span>
 
-                        <button
+                        <Button
+                            type="button"
+                            variant="outline"
+                            size="sm"
                             @click="nextPage"
                             :disabled="
                                 currentPage === lastPage || memberStore.loading
                             "
-                            class="inline-flex items-center justify-center min-w-8 h-8 px-2 rounded-lg border border-slate-200 bg-white text-slate-600 text-xs font-medium shadow-sm transition-all hover:bg-slate-50 disabled:opacity-40 disabled:hover:bg-white disabled:cursor-not-allowed cursor-pointer select-none"
+                            class="h-8 px-2.5 rounded-lg border-zinc-200/90 bg-white text-xs font-semibold text-zinc-700 gap-1 cursor-pointer"
                         >
-                            Next
-                            <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                class="w-3.5 h-3.5 ml-1"
-                                fill="none"
-                                viewBox="0 0 24 24"
-                                stroke="currentColor"
-                                stroke-width="2"
-                            >
-                                <path
-                                    stroke-linecap="round"
-                                    stroke-linejoin="round"
-                                    d="M9 5l7 7-7 7"
-                                />
-                            </svg>
-                        </button>
+                            <span>Next</span>
+                            <ChevronRight class="w-3.5 h-3.5" />
+                        </Button>
                     </div>
                 </div>
-            </div>
+            </Card>
         </div>
-    </div>
 
-    <QrBadge
-        v-model="showQrModal"
-        :member="selectedQrMember"
-        :qr-data="memberStore.qrData"
-        :is-loading="memberStore.qrLoading"
-        :is-emailing="isEmailingQr"
-        @print="printQrBadge"
-        @email="handleSendQrEmail"
-        @regenerate="handleRegenerateQr"
-    />
+        <QrBadge
+            v-model="showQrModal"
+            :member="selectedQrMember"
+            :qr-data="memberStore.qrData"
+            :is-loading="memberStore.qrLoading"
+            :is-emailing="isEmailingQr"
+            @print="printQrBadge"
+            @email="handleSendQrEmail"
+            @regenerate="handleRegenerateQr"
+        />
+    </div>
 </template>
 <script setup>
 import { ref, computed, onMounted, watch, onUnmounted } from "vue";
@@ -523,6 +681,41 @@ import { storeToRefs } from "pinia";
 import { useRouter, useRoute } from "vue-router";
 import { Input } from "@/components/ui/input";
 import QrBadge from "../Components/QrBadge.vue";
+import { ref } from "vue";
+import { Card } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle,
+} from "@/components/ui/dialog";
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuLabel,
+    DropdownMenuSeparator,
+    DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import {
+    Search,
+    X,
+    RotateCcw,
+    UserPlus,
+    UserCog,
+    Users,
+    QrCode,
+    MoreHorizontal,
+    Pencil,
+    CalendarPlus,
+    CalendarMinus,
+    ChevronLeft,
+    ChevronRight,
+} from "lucide-vue-next";
 
 //navigation
 const router = useRouter();
@@ -549,6 +742,7 @@ const memberStore = useMemberStore();
 const isEditing = ref(false);
 const currentMemberId = ref(null);
 const searchQuery = ref("");
+const isMemberModalOpen = ref(false);
 
 //  QR Badge Modal States
 const showQrModal = ref(false);
@@ -618,6 +812,43 @@ watch(searchQuery, (newVal, oldVal) => {
 
     debouncedSearch(currentText);
 });
+
+const statusTabs = [
+    { label: "All", value: "" },
+    { label: "Active", value: "active" },
+    { label: "Expiring Soon", value: "expiring_soon" },
+    { label: "Expired", value: "expired" },
+];
+
+const selectStatusTab = (value) => {
+    memberStore.statusFilter = value;
+    onFilterChange();
+};
+
+const openCreateModal = () => {
+    resetForm();
+    isMemberModalOpen.value = true;
+};
+
+const openEditModal = (member) => {
+    editMember(member);
+    isMemberModalOpen.value = true;
+};
+
+const handleModalOpenChange = (open) => {
+    isMemberModalOpen.value = open;
+    if (!open) {
+        resetForm();
+    }
+};
+
+const handleModalSubmit = async () => {
+    await submitForm();
+    // Close modal automatically when validation succeeds (no errors in store)
+    if (!memberStore.errors || Object.keys(memberStore.errors).length === 0) {
+        isMemberModalOpen.value = false;
+    }
+};
 
 // ---------------------------------------------------
 // Mobile Number Validation
