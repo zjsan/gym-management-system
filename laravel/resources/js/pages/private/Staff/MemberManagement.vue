@@ -1,63 +1,61 @@
 <template>
     <div class="space-y-5">
-        <!-- Top Action & Search Header Bar -->
-        <div
-            class="flex flex-col sm:flex-row sm:items-center justify-between gap-3"
-        >
-            <!-- Search Input -->
-            <div class="relative flex-1 max-w-md">
-                <Search
-                    class="w-4 h-4 text-zinc-400 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none"
-                />
-                <Input
-                    v-model="searchQuery"
-                    type="text"
-                    placeholder="Search by name, membership ID, or email..."
-                    class="pl-9 pr-8 h-9 bg-white border-zinc-200/90 text-xs text-[#0F1115] placeholder:text-zinc-400 shadow-2xs focus-visible:ring-[#F8313B]/20 focus-visible:border-[#F8313B]"
-                />
-                <button
-                    v-if="searchQuery || memberStore.statusFilter"
-                    type="button"
-                    @click="handleResetFilters"
-                    title="Clear search and filters"
-                    class="absolute right-2.5 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-[#0F1115] transition-colors cursor-pointer"
-                >
-                    <X class="w-3.5 h-3.5" />
-                </button>
-            </div>
-
-            <!-- Primary CTA: Open Register Member Modal -->
-            <div class="flex items-center gap-2 self-start sm:self-auto">
-                <Button
-                    v-if="searchQuery || memberStore.statusFilter"
-                    type="button"
-                    variant="outline"
-                    size="sm"
-                    @click="handleResetFilters"
-                    class="h-9 px-3 rounded-lg border-zinc-200/90 bg-white hover:bg-zinc-50 text-xs font-semibold text-zinc-600 hover:text-[#0F1115] gap-1.5 cursor-pointer"
-                >
-                    <RotateCcw class="w-3.5 h-3.5 text-zinc-500" />
-                    <span>Reset</span>
-                </Button>
-
-                <Button
-                    type="button"
-                    @click="openCreateModal"
-                    class="h-9 px-3.5 rounded-lg bg-[#F8313B] hover:bg-[#e0242e] active:scale-[0.99] text-white text-xs font-bold shadow-sm shadow-[#F8313B]/20 gap-1.5 transition-all cursor-pointer"
-                >
-                    <UserPlus class="w-3.5 h-3.5 shrink-0" />
-                    <span>Register Member</span>
-                </Button>
-            </div>
-        </div>
-
-        <!-- Full-Width Member Directory Card (Stripe / Linear Table Pattern) -->
+        <!-- Single Self-Contained Member Directory Card -->
         <Card
             class="bg-white border-zinc-200/80 shadow-2xs rounded-xl overflow-hidden"
         >
-            <!-- Segmented Status Filter Bar + Total Count -->
+            <!-- Table Toolbar: Search + Register CTA -->
             <div
-                class="px-4 sm:px-5 py-3 border-b border-zinc-200/80 bg-zinc-50/40 flex flex-col sm:flex-row sm:items-center justify-between gap-3"
+                class="p-4 sm:px-5 border-b border-zinc-200/80 flex flex-col sm:flex-row sm:items-center justify-between gap-3"
+            >
+                <div class="relative flex-1 max-w-sm">
+                    <Search
+                        class="w-3.5 h-3.5 text-zinc-400 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none"
+                    />
+                    <Input
+                        v-model="searchQuery"
+                        type="text"
+                        placeholder="Search member by name, ID, or email..."
+                        class="pl-8.5 pr-8 h-9 bg-zinc-50/70 border-zinc-200/90 text-xs text-[#0F1115] placeholder:text-zinc-400 focus-visible:ring-[#F8313B]/20 focus-visible:border-[#F8313B]"
+                    />
+                    <button
+                        v-if="searchQuery || memberStore.statusFilter"
+                        type="button"
+                        @click="handleResetFilters"
+                        title="Clear search and filters"
+                        class="absolute right-2.5 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-[#0F1115] transition-colors cursor-pointer"
+                    >
+                        <X class="w-3.5 h-3.5" />
+                    </button>
+                </div>
+
+                <div class="flex items-center gap-2 self-start sm:self-auto">
+                    <Button
+                        v-if="searchQuery || memberStore.statusFilter"
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        @click="handleResetFilters"
+                        class="h-9 px-3 rounded-lg border-zinc-200/90 bg-white hover:bg-zinc-50 text-xs font-semibold text-zinc-600 hover:text-[#0F1115] gap-1.5 cursor-pointer"
+                    >
+                        <RotateCcw class="w-3.5 h-3.5 text-zinc-500" />
+                        <span>Reset</span>
+                    </Button>
+
+                    <Button
+                        type="button"
+                        @click="openCreateModal"
+                        class="h-9 px-3.5 rounded-lg bg-[#F8313B] hover:bg-[#e0242e] active:scale-[0.99] text-white text-xs font-bold shadow-sm shadow-[#F8313B]/20 gap-1.5 transition-all cursor-pointer"
+                    >
+                        <UserPlus class="w-3.5 h-3.5 shrink-0" />
+                        <span>Register Member</span>
+                    </Button>
+                </div>
+            </div>
+
+            <!-- Segmented Status Tabs + Count -->
+            <div
+                class="px-4 sm:px-5 py-2.5 border-b border-zinc-200/80 bg-zinc-50/50 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5"
             >
                 <div
                     role="tablist"
@@ -82,17 +80,15 @@
                     </button>
                 </div>
 
-                <div class="flex items-center gap-2 text-xs text-zinc-500">
-                    <span class="tabular-nums font-medium">
-                        <strong class="font-semibold text-[#0F1115]">{{
-                            totalItems
-                        }}</strong>
-                        {{ totalItems === 1 ? "member" : "members" }}
-                    </span>
-                </div>
+                <span class="text-xs text-zinc-500 tabular-nums font-medium">
+                    <strong class="font-semibold text-[#0F1115]">{{
+                        totalItems
+                    }}</strong>
+                    {{ totalItems === 1 ? "member" : "members" }}
+                </span>
             </div>
 
-            <!-- Spacious Data Table -->
+            <!-- Data Table -->
             <div class="overflow-x-auto">
                 <table class="w-full text-left text-xs border-collapse">
                     <thead
@@ -101,14 +97,9 @@
                         <tr>
                             <th class="py-3 px-5">Member</th>
                             <th class="py-3 px-4 hidden md:table-cell">
-                                Contact
+                                Contact &amp; Address
                             </th>
-                            <th
-                                class="py-3 px-4 text-center hidden sm:table-cell"
-                            >
-                                Age
-                            </th>
-                            <th class="py-3 px-4">Validity Period</th>
+                            <th class="py-3 px-4">Validity</th>
                             <th class="py-3 px-4 text-center">Status</th>
                             <th class="py-3 px-5 text-right">Actions</th>
                         </tr>
@@ -123,7 +114,7 @@
                             "
                         >
                             <tr v-for="n in 6" :key="n">
-                                <td colspan="6" class="py-3.5 px-5">
+                                <td colspan="5" class="py-3.5 px-5">
                                     <div
                                         class="flex items-center justify-between gap-4"
                                     >
@@ -141,10 +132,10 @@
                                             </div>
                                         </div>
                                         <Skeleton
-                                            class="h-3.5 w-28 bg-zinc-100 hidden md:block"
+                                            class="h-3.5 w-40 bg-zinc-100 hidden md:block"
                                         />
                                         <Skeleton
-                                            class="h-4 w-28 bg-zinc-100"
+                                            class="h-4 w-24 bg-zinc-100"
                                         />
                                         <Skeleton
                                             class="h-6 w-20 bg-zinc-100"
@@ -156,7 +147,7 @@
 
                         <!-- Empty State -->
                         <tr v-else-if="memberStore.members.length === 0">
-                            <td colspan="6" class="py-14 px-5 text-center">
+                            <td colspan="5" class="py-14 px-5 text-center">
                                 <div
                                     class="max-w-xs mx-auto flex flex-col items-center"
                                 >
@@ -171,8 +162,8 @@
                                     <p
                                         class="text-[11px] text-zinc-500 mt-1 leading-relaxed"
                                     >
-                                        Try adjusting your search or status
-                                        filter, or register a new gym member.
+                                        Try another search term or status tab,
+                                        or register a new member.
                                     </p>
                                     <Button
                                         type="button"
@@ -202,12 +193,14 @@
                                         class="w-9 h-9 rounded-full border border-zinc-200/80 object-cover bg-zinc-100 shrink-0"
                                     />
                                     <div class="min-w-0">
-                                        <p
-                                            class="font-semibold text-[#0F1115] truncate leading-tight"
+                                        <button
+                                            type="button"
+                                            @click="openDetailModal(member)"
+                                            class="font-semibold text-[#0F1115] hover:text-[#F8313B] truncate leading-tight text-left transition-colors cursor-pointer"
                                         >
                                             {{ member.first_name }}
                                             {{ member.last_name }}
-                                        </p>
+                                        </button>
                                         <div
                                             class="flex items-center gap-1.5 mt-0.5"
                                         >
@@ -220,16 +213,20 @@
                                                 >&middot;</span
                                             >
                                             <span
-                                                class="text-[11px] text-zinc-400 capitalize"
+                                                class="text-[11px] text-zinc-400 tabular-nums"
                                             >
-                                                {{ member.gender }}
+                                                {{
+                                                    member.age
+                                                        ? `${member.age}y`
+                                                        : "—"
+                                                }}
                                             </span>
                                         </div>
                                     </div>
                                 </div>
                             </td>
 
-                            <!-- Contact Info (Unlocked by Full-Width Layout) -->
+                            <!-- Contact & Address -->
                             <td class="py-3.5 px-4 hidden md:table-cell">
                                 <p
                                     class="text-xs font-medium text-[#0F1115] tabular-nums"
@@ -237,33 +234,27 @@
                                     {{ member.contact_number || "—" }}
                                 </p>
                                 <p
-                                    class="text-[11px] text-zinc-500 truncate max-w-[190px] mt-0.5"
+                                    :title="member.address"
+                                    class="text-[11px] text-zinc-500 truncate max-w-[220px] mt-0.5"
                                 >
-                                    {{ member.email || "No email" }}
+                                    {{ member.address || "No address on file" }}
                                 </p>
                             </td>
 
-                            <!-- Age -->
-                            <td
-                                class="py-3.5 px-4 text-center text-zinc-600 tabular-nums font-medium hidden sm:table-cell"
-                            >
-                                {{ member.age ?? "—" }}
-                            </td>
-
-                            <!-- Membership Window -->
+                            <!-- Validity Period -->
                             <td class="py-3.5 px-4 text-[11px]">
                                 <div
-                                    class="font-semibold tabular-nums flex items-center gap-1.5"
+                                    class="font-semibold tabular-nums"
                                     :class="
                                         isExpired(member.membership_end)
                                             ? 'text-[#F8313B]'
                                             : 'text-[#0F1115]'
                                     "
                                 >
-                                    <span>{{ member.membership_end }}</span>
+                                    Ends {{ member.membership_end }}
                                 </div>
                                 <div class="text-zinc-400 tabular-nums mt-0.5">
-                                    Started {{ member.membership_start }}
+                                    From {{ member.membership_start }}
                                 </div>
                             </td>
 
@@ -291,23 +282,24 @@
                                 </span>
                             </td>
 
-                            <!-- High-Craft SaaS Actions (Primary + Overflow Menu) -->
+                            <!-- Row Actions: View Card + QR Pass + Overflow -->
                             <td class="py-3.5 px-5 text-right">
                                 <div
                                     class="inline-flex items-center justify-end gap-1.5"
                                 >
-                                    <!-- Contextual Renew Action (Only prominent when eligible) -->
                                     <Button
-                                        v-if="member.can_renew"
                                         type="button"
+                                        variant="outline"
                                         size="sm"
-                                        @click="handleRenew(member.id)"
-                                        class="h-7 px-2.5 rounded-md bg-[#F8313B]/10 hover:bg-[#F8313B] text-[#F8313B] hover:text-white text-[11px] font-bold transition-colors cursor-pointer"
+                                        @click="openDetailModal(member)"
+                                        class="h-7 px-2.5 rounded-md border-zinc-200/90 bg-white hover:bg-zinc-50 text-[11px] font-semibold text-[#0F1115] gap-1 cursor-pointer"
                                     >
-                                        Renew
+                                        <Eye
+                                            class="w-3.5 h-3.5 text-zinc-500"
+                                        />
+                                        <span>View</span>
                                     </Button>
 
-                                    <!-- Quick QR Pass Trigger -->
                                     <Button
                                         type="button"
                                         variant="outline"
@@ -319,12 +311,9 @@
                                         <QrCode
                                             class="w-3.5 h-3.5 text-[#F8313B]"
                                         />
-                                        <span class="hidden sm:inline"
-                                            >QR Pass</span
-                                        >
+                                        <span class="hidden sm:inline">QR</span>
                                     </Button>
 
-                                    <!-- Secondary Actions Dropdown (Linear / Vercel Pattern) -->
                                     <DropdownMenu>
                                         <DropdownMenuTrigger as-child>
                                             <Button
@@ -352,16 +341,6 @@
                                                     class="w-3.5 h-3.5 text-zinc-500"
                                                 />
                                                 <span>Edit Profile</span>
-                                            </DropdownMenuItem>
-
-                                            <DropdownMenuItem
-                                                @click="openQrModal(member)"
-                                                class="text-xs font-medium text-[#0F1115] rounded-lg px-2.5 py-2 gap-2 cursor-pointer"
-                                            >
-                                                <QrCode
-                                                    class="w-3.5 h-3.5 text-zinc-500"
-                                                />
-                                                <span>View QR Badge</span>
                                             </DropdownMenuItem>
 
                                             <DropdownMenuSeparator
@@ -529,6 +508,194 @@
             </div>
         </Card>
 
+        <!-- Member Detail Card Dialog (with Renew Action) -->
+        <Dialog
+            :open="isDetailModalOpen"
+            @update:open="(val) => (isDetailModalOpen = val)"
+        >
+            <DialogContent
+                v-if="selectedMember"
+                class="sm:max-w-[460px] bg-white border border-zinc-200/90 rounded-xl p-0 shadow-xl overflow-hidden"
+            >
+                <DialogHeader
+                    class="p-5 pb-4 border-b border-zinc-100 text-left"
+                >
+                    <div class="flex items-center justify-between gap-3 pr-6">
+                        <div class="flex items-center gap-3 min-w-0">
+                            <img
+                                :src="selectedMember.photo_url"
+                                :alt="`${selectedMember.first_name} ${selectedMember.last_name}`"
+                                class="w-12 h-12 rounded-xl border border-zinc-200/80 object-cover bg-zinc-100 shrink-0"
+                            />
+                            <div class="min-w-0">
+                                <DialogTitle
+                                    class="text-sm font-bold tracking-tight text-[#0F1115] truncate"
+                                >
+                                    {{ selectedMember.first_name }}
+                                    {{ selectedMember.last_name }}
+                                </DialogTitle>
+                                <DialogDescription
+                                    class="text-xs font-mono text-zinc-500 mt-0.5 tabular-nums"
+                                >
+                                    {{ selectedMember.membership_no }}
+                                </DialogDescription>
+                            </div>
+                        </div>
+
+                        <span
+                            :class="[
+                                'inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-semibold border shrink-0',
+                                selectedMember.is_active
+                                    ? 'bg-emerald-50 text-emerald-700 border-emerald-200/80'
+                                    : 'bg-[#F8313B]/[0.07] text-[#F8313B] border-[#F8313B]/20',
+                            ]"
+                        >
+                            {{
+                                selectedMember.is_active ? "Active" : "Expired"
+                            }}
+                        </span>
+                    </div>
+                </DialogHeader>
+
+                <div class="p-5 space-y-4 text-xs">
+                    <!-- Membership Window Summary -->
+                    <div
+                        class="grid grid-cols-2 gap-3 p-3.5 rounded-xl bg-zinc-50/80 border border-zinc-200/70"
+                    >
+                        <div>
+                            <p
+                                class="text-[10px] font-semibold uppercase tracking-wider text-zinc-400"
+                            >
+                                Start Date
+                            </p>
+                            <p
+                                class="font-semibold text-[#0F1115] tabular-nums mt-0.5"
+                            >
+                                {{ selectedMember.membership_start || "—" }}
+                            </p>
+                        </div>
+                        <div>
+                            <p
+                                class="text-[10px] font-semibold uppercase tracking-wider text-zinc-400"
+                            >
+                                Expiration Date
+                            </p>
+                            <p
+                                class="font-bold tabular-nums mt-0.5"
+                                :class="
+                                    isExpired(selectedMember.membership_end)
+                                        ? 'text-[#F8313B]'
+                                        : 'text-[#0F1115]'
+                                "
+                            >
+                                {{ selectedMember.membership_end || "—" }}
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Profile & Contact Fields -->
+                    <dl class="divide-y divide-zinc-100">
+                        <div
+                            class="py-2 flex items-center justify-between gap-4"
+                        >
+                            <dt class="text-zinc-500 font-medium">Email</dt>
+                            <dd
+                                class="text-[#0F1115] font-semibold truncate text-right"
+                            >
+                                {{ selectedMember.email || "—" }}
+                            </dd>
+                        </div>
+                        <div
+                            class="py-2 flex items-center justify-between gap-4"
+                        >
+                            <dt class="text-zinc-500 font-medium">Contact</dt>
+                            <dd
+                                class="text-[#0F1115] font-semibold tabular-nums text-right"
+                            >
+                                {{ selectedMember.contact_number || "—" }}
+                            </dd>
+                        </div>
+                        <div
+                            class="py-2 flex items-center justify-between gap-4"
+                        >
+                            <dt class="text-zinc-500 font-medium">
+                                Emergency Contact
+                            </dt>
+                            <dd
+                                class="text-[#0F1115] font-semibold tabular-nums text-right"
+                            >
+                                {{
+                                    selectedMember.emergency_contact_number ||
+                                    "—"
+                                }}
+                            </dd>
+                        </div>
+                        <div
+                            class="py-2 flex items-center justify-between gap-4"
+                        >
+                            <dt class="text-zinc-500 font-medium">
+                                Age / Gender
+                            </dt>
+                            <dd
+                                class="text-[#0F1115] font-semibold capitalize tabular-nums text-right"
+                            >
+                                {{ selectedMember.age ?? "—" }} yrs &middot;
+                                {{ selectedMember.gender || "—" }}
+                            </dd>
+                        </div>
+                        <div
+                            class="py-2 flex items-start justify-between gap-4"
+                        >
+                            <dt class="text-zinc-500 font-medium shrink-0">
+                                Address
+                            </dt>
+                            <dd
+                                class="text-[#0F1115] font-medium text-right leading-relaxed"
+                            >
+                                {{ selectedMember.address || "—" }}
+                            </dd>
+                        </div>
+                    </dl>
+                </div>
+
+                <DialogFooter
+                    class="px-5 py-3.5 bg-zinc-50/60 border-t border-zinc-100 flex flex-row items-center justify-between gap-2"
+                >
+                    <Button
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        @click="
+                            isDetailModalOpen = false;
+                            openEditModal(selectedMember);
+                        "
+                        class="h-8 px-3 rounded-lg border-zinc-200 bg-white hover:bg-zinc-50 text-xs font-semibold text-zinc-700 gap-1.5 cursor-pointer"
+                    >
+                        <Pencil class="w-3.5 h-3.5" />
+                        <span>Edit</span>
+                    </Button>
+
+                    <Button
+                        type="button"
+                        size="sm"
+                        :disabled="
+                            selectedMember.is_active ||
+                            !selectedMember.can_renew
+                        "
+                        @click="handleDetailRenew(selectedMember.id)"
+                        class="h-8 px-3.5 rounded-lg bg-[#F8313B] hover:bg-[#e0242e] disabled:bg-zinc-200 disabled:text-zinc-400 disabled:shadow-none text-white text-xs font-bold shadow-sm shadow-[#F8313B]/20 gap-1.5 transition-all cursor-pointer disabled:cursor-not-allowed"
+                    >
+                        <RefreshCw class="w-3.5 h-3.5" />
+                        <span>{{
+                            selectedMember.is_active
+                                ? "Membership Active"
+                                : "Renew Membership"
+                        }}</span>
+                    </Button>
+                </DialogFooter>
+            </DialogContent>
+        </Dialog>
+
         <!-- Register / Edit Member Shadcn Dialog Modal -->
         <Dialog :open="isMemberModalOpen" @update:open="handleModalOpenChange">
             <DialogContent
@@ -582,7 +749,7 @@
                             </label>
                             <Input
                                 v-model="memberForm.first_name"
-                                placeholder="Juan"
+                                placeholder="First name"
                                 required
                                 class="h-9 text-xs border-zinc-200/90 focus-visible:ring-[#F8313B]/20 focus-visible:border-[#F8313B]"
                             />
@@ -602,7 +769,7 @@
                             </label>
                             <Input
                                 v-model="memberForm.last_name"
-                                placeholder="Dela Cruz"
+                                placeholder="Last name"
                                 required
                                 class="h-9 text-xs border-zinc-200/90 focus-visible:ring-[#F8313B]/20 focus-visible:border-[#F8313B]"
                             />
@@ -814,6 +981,8 @@ import {
     CalendarMinus,
     ChevronLeft,
     ChevronRight,
+    Eye,
+    RefreshCw,
 } from "lucide-vue-next";
 
 //navigation
