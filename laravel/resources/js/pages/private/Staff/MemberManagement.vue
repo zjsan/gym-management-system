@@ -1033,6 +1033,19 @@ const handleResetFilters = () => {
     searchQuery.value = "";
 };
 
+const isDetailModalOpen = ref(false);
+const selectedMember = ref(null);
+
+const openDetailModal = (member) => {
+    selectedMember.value = member;
+    isDetailModalOpen.value = true;
+};
+
+const handleDetailRenew = async (memberId) => {
+    await handleRenew(memberId);
+    isDetailModalOpen.value = false;
+};
+
 // ---------------------------------------------------
 // Search and Pagination Logic
 // ---------------------------------------------------
