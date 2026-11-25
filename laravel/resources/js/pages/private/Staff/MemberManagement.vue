@@ -4,102 +4,111 @@
         <Card
             class="bg-white border-zinc-200/80 shadow-2xs rounded-xl overflow-hidden"
         >
-            <!-- Table Toolbar: Search + Register CTA -->
+            <!-- Unified Toolbar: Status Tabs + Search + Reset + Register CTA -->
             <div
-                class="p-4 sm:px-5 border-b border-zinc-200/80 flex flex-col sm:flex-row sm:items-center justify-between gap-3"
+                class="p-4 sm:px-5 border-b border-zinc-200/80 bg-zinc-50/40 flex flex-col lg:flex-row lg:items-center justify-between gap-3"
             >
-                <div class="relative flex-1 max-w-sm">
-                    <Search
-                        class="w-3.5 h-3.5 text-zinc-400 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none"
-                    />
-                    <Input
-                        v-model="searchQuery"
-                        type="text"
-                        placeholder="Search member by name, ID, or email..."
-                        class="pl-8.5 pr-8 h-9 bg-zinc-50/70 border-zinc-200/90 text-xs text-[#0F1115] placeholder:text-zinc-400 focus-visible:ring-[#F8313B]/20 focus-visible:border-[#F8313B]"
-                    />
-                    <button
-                        v-if="searchQuery || memberStore.statusFilter"
-                        type="button"
-                        @click="handleResetFilters"
-                        title="Clear search and filters"
-                        class="absolute right-2.5 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-[#0F1115] transition-colors cursor-pointer"
+                <!-- Segmented Status Tabs -->
+                <div class="flex items-center gap-3 flex-wrap">
+                    <div
+                        role="tablist"
+                        aria-label="Filter members by status"
+                        class="inline-flex items-center p-1 rounded-lg bg-zinc-100/90 border border-zinc-200/70 overflow-x-auto max-w-full"
                     >
-                        <X class="w-3.5 h-3.5" />
-                    </button>
+                        <button
+                            v-for="tab in statusTabs"
+                            :key="tab.value"
+                            type="button"
+                            role="tab"
+                            :aria-selected="
+                                memberStore.statusFilter === tab.value
+                            "
+                            @click="selectStatusTab(tab.value)"
+                            :class="[
+                                'px-2.5 py-1 rounded-md text-xs font-semibold transition-all whitespace-nowrap cursor-pointer',
+                                memberStore.statusFilter === tab.value
+                                    ? 'bg-white text-[#0F1115] shadow-2xs ring-1 ring-zinc-200/80'
+                                    : 'text-zinc-500 hover:text-[#0F1115]',
+                            ]"
+                        >
+                            {{ tab.label }}
+                        </button>
+                    </div>
+
+                    <span
+                        class="hidden sm:inline text-xs text-zinc-500 tabular-nums font-medium"
+                    >
+                        <strong class="font-semibold text-[#0F1115]">{{
+                            totalItems
+                        }}</strong>
+                        {{ totalItems === 1 ? "member" : "members" }}
+                    </span>
                 </div>
 
-                <div class="flex items-center gap-2 self-start sm:self-auto">
-                    <Button
-                        v-if="searchQuery || memberStore.statusFilter"
-                        type="button"
-                        variant="outline"
-                        size="sm"
-                        @click="handleResetFilters"
-                        class="h-9 px-3 rounded-lg border-zinc-200/90 bg-white hover:bg-zinc-50 text-xs font-semibold text-zinc-600 hover:text-[#0F1115] gap-1.5 cursor-pointer"
-                    >
-                        <RotateCcw class="w-3.5 h-3.5 text-zinc-500" />
-                        <span>Reset</span>
-                    </Button>
-
-                    <Button
-                        type="button"
-                        @click="openCreateModal"
-                        class="h-9 px-3.5 rounded-lg bg-[#F8313B] hover:bg-[#e0242e] active:scale-[0.99] text-white text-xs font-bold shadow-sm shadow-[#F8313B]/20 gap-1.5 transition-all cursor-pointer"
-                    >
-                        <UserPlus class="w-3.5 h-3.5 shrink-0" />
-                        <span>Register Member</span>
-                    </Button>
-                </div>
-            </div>
-
-            <!-- Segmented Status Tabs + Count -->
-            <div
-                class="px-4 sm:px-5 py-2.5 border-b border-zinc-200/80 bg-zinc-50/50 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5"
-            >
+                <!-- Right Controls: Search Input + Reset + Register Member -->
                 <div
-                    role="tablist"
-                    aria-label="Filter members by status"
-                    class="inline-flex items-center p-1 rounded-lg bg-zinc-100/90 border border-zinc-200/70 self-start overflow-x-auto max-w-full"
+                    class="flex flex-col sm:flex-row sm:items-center gap-2 lg:justify-end"
                 >
-                    <button
-                        v-for="tab in statusTabs"
-                        :key="tab.value"
-                        type="button"
-                        role="tab"
-                        :aria-selected="memberStore.statusFilter === tab.value"
-                        @click="selectStatusTab(tab.value)"
-                        :class="[
-                            'px-2.5 py-1 rounded-md text-xs font-semibold transition-all whitespace-nowrap cursor-pointer',
-                            memberStore.statusFilter === tab.value
-                                ? 'bg-white text-[#0F1115] shadow-2xs ring-1 ring-zinc-200/80'
-                                : 'text-zinc-500 hover:text-[#0F1115]',
-                        ]"
-                    >
-                        {{ tab.label }}
-                    </button>
-                </div>
+                    <div class="relative w-full sm:w-64">
+                        <Search
+                            class="w-3.5 h-3.5 text-zinc-400 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none"
+                        />
+                        <Input
+                            v-model="searchQuery"
+                            type="text"
+                            placeholder="Search name, ID, or email..."
+                            class="pl-8.5 pr-8 h-9 bg-white border-zinc-200/90 text-xs text-[#0F1115] placeholder:text-zinc-400 focus-visible:ring-[#F8313B]/20 focus-visible:border-[#F8313B]"
+                        />
+                        <button
+                            v-if="searchQuery || memberStore.statusFilter"
+                            type="button"
+                            @click="handleResetFilters"
+                            title="Clear search and filters"
+                            class="absolute right-2.5 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-[#0F1115] transition-colors cursor-pointer"
+                        >
+                            <X class="w-3.5 h-3.5" />
+                        </button>
+                    </div>
 
-                <span class="text-xs text-zinc-500 tabular-nums font-medium">
-                    <strong class="font-semibold text-[#0F1115]">{{
-                        totalItems
-                    }}</strong>
-                    {{ totalItems === 1 ? "member" : "members" }}
-                </span>
+                    <div class="flex items-center gap-2">
+                        <Button
+                            v-if="searchQuery || memberStore.statusFilter"
+                            type="button"
+                            variant="outline"
+                            size="sm"
+                            @click="handleResetFilters"
+                            class="h-9 px-3 rounded-lg border-zinc-200/90 bg-white hover:bg-zinc-50 text-xs font-semibold text-zinc-600 hover:text-[#0F1115] gap-1.5 cursor-pointer"
+                        >
+                            <RotateCcw class="w-3.5 h-3.5 text-zinc-500" />
+                            <span>Reset</span>
+                        </Button>
+
+                        <Button
+                            type="button"
+                            @click="openCreateModal"
+                            class="h-9 px-3.5 rounded-lg bg-[#F8313B] hover:bg-[#e0242e] active:scale-[0.99] text-white text-xs font-bold shadow-sm shadow-[#F8313B]/20 gap-1.5 transition-all shrink-0 cursor-pointer"
+                        >
+                            <UserPlus class="w-3.5 h-3.5 shrink-0" />
+                            <span>Register Member</span>
+                        </Button>
+                    </div>
+                </div>
             </div>
 
             <!-- Data Table -->
             <div class="overflow-x-auto">
-                <table class="w-full text-left text-xs border-collapse">
+                <table class="w-full text-xs border-collapse">
                     <thead
                         class="bg-zinc-50/70 text-[11px] font-semibold uppercase tracking-wider text-zinc-500 border-b border-zinc-200/80"
                     >
                         <tr>
-                            <th class="py-3 px-5">Member</th>
-                            <th class="py-3 px-4 hidden md:table-cell">
+                            <th class="py-3 px-5 text-left">Member</th>
+                            <th
+                                class="py-3 px-4 text-left hidden md:table-cell"
+                            >
                                 Contact &amp; Address
                             </th>
-                            <th class="py-3 px-4">Validity</th>
+                            <th class="py-3 px-4 text-left">Validity</th>
                             <th class="py-3 px-4 text-center">Status</th>
                             <th class="py-3 px-5 text-right">Actions</th>
                         </tr>
@@ -185,7 +194,7 @@
                             class="group hover:bg-zinc-50/80 transition-colors"
                         >
                             <!-- Member Identity -->
-                            <td class="py-3.5 px-5">
+                            <td class="py-3.5 px-5 text-left align-middle">
                                 <div class="flex items-center gap-3 min-w-0">
                                     <img
                                         :src="member.photo_url"
@@ -217,7 +226,7 @@
                                             >
                                                 {{
                                                     member.age
-                                                        ? `${member.age}y`
+                                                        ? `${member.age} yrs`
                                                         : "—"
                                                 }}
                                             </span>
@@ -226,23 +235,33 @@
                                 </div>
                             </td>
 
-                            <!-- Contact & Address -->
-                            <td class="py-3.5 px-4 hidden md:table-cell">
+                            <!-- Contact, Email & Address -->
+                            <td
+                                class="py-3.5 px-4 text-left align-middle hidden md:table-cell"
+                            >
                                 <p
-                                    class="text-xs font-medium text-[#0F1115] tabular-nums"
+                                    class="text-xs font-medium text-[#0F1115] tabular-nums leading-tight"
                                 >
                                     {{ member.contact_number || "—" }}
                                 </p>
                                 <p
+                                    :title="member.email"
+                                    class="text-[11px] text-zinc-600 truncate max-w-[230px] mt-0.5"
+                                >
+                                    {{ member.email || "No email" }}
+                                </p>
+                                <p
                                     :title="member.address"
-                                    class="text-[11px] text-zinc-500 truncate max-w-[220px] mt-0.5"
+                                    class="text-[11px] text-zinc-400 truncate max-w-[230px] mt-0.5"
                                 >
                                     {{ member.address || "No address on file" }}
                                 </p>
                             </td>
 
                             <!-- Validity Period -->
-                            <td class="py-3.5 px-4 text-[11px]">
+                            <td
+                                class="py-3.5 px-4 text-left align-middle text-[11px]"
+                            >
                                 <div
                                     class="font-semibold tabular-nums"
                                     :class="
@@ -258,19 +277,19 @@
                                 </div>
                             </td>
 
-                            <!-- Status Pill -->
-                            <td class="py-3.5 px-4 text-center">
+                            <!-- Refined High-Craft Status Pill (Centered) -->
+                            <td class="py-3.5 px-4 text-center align-middle">
                                 <span
                                     :class="[
-                                        'inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-semibold border select-none',
+                                        'inline-flex items-center justify-center gap-1.5 px-2.5 py-1 rounded-md text-[11px] font-semibold border select-none',
                                         member.is_active
-                                            ? 'bg-emerald-50/80 text-emerald-700 border-emerald-200/80'
-                                            : 'bg-[#F8313B]/[0.07] text-[#F8313B] border-[#F8313B]/20',
+                                            ? 'bg-zinc-50 text-[#0F1115] border-zinc-200/90'
+                                            : 'bg-[#F8313B]/[0.06] text-[#F8313B] border-[#F8313B]/20',
                                     ]"
                                 >
                                     <span
                                         :class="[
-                                            'w-1.5 h-1.5 rounded-full',
+                                            'w-1.5 h-1.5 rounded-full shrink-0',
                                             member.is_active
                                                 ? 'bg-emerald-500'
                                                 : 'bg-[#F8313B]',
@@ -283,7 +302,7 @@
                             </td>
 
                             <!-- Row Actions: View Card + QR Pass + Overflow -->
-                            <td class="py-3.5 px-5 text-right">
+                            <td class="py-3.5 px-5 text-right align-middle">
                                 <div
                                     class="inline-flex items-center justify-end gap-1.5"
                                 >
@@ -544,15 +563,23 @@
 
                         <span
                             :class="[
-                                'inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-semibold border shrink-0',
+                                'inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-md text-[11px] font-semibold border shrink-0',
                                 selectedMember.is_active
-                                    ? 'bg-emerald-50 text-emerald-700 border-emerald-200/80'
-                                    : 'bg-[#F8313B]/[0.07] text-[#F8313B] border-[#F8313B]/20',
+                                    ? 'bg-zinc-50 text-[#0F1115] border-zinc-200/90'
+                                    : 'bg-[#F8313B]/[0.06] text-[#F8313B] border-[#F8313B]/20',
                             ]"
                         >
-                            {{
+                            <span
+                                :class="[
+                                    'w-1.5 h-1.5 rounded-full',
+                                    selectedMember.is_active
+                                        ? 'bg-emerald-500'
+                                        : 'bg-[#F8313B]',
+                                ]"
+                            />
+                            <span>{{
                                 selectedMember.is_active ? "Active" : "Expired"
-                            }}
+                            }}</span>
                         </span>
                     </div>
                 </DialogHeader>
