@@ -6,7 +6,7 @@
         >
             <!-- Unified Toolbar: Status Tabs + Search + Reset + Register CTA -->
             <div
-                class="p-4 sm:px-5 border-b border-zinc-200/80 bg-zinc-50/40 flex flex-col lg:flex-row lg:items-center justify-between gap-3"
+                class="pt-1 p-3 sm:px-5 border-b border-zinc-200/80 bg-zinc-50/40 flex flex-col lg:flex-row lg:items-center justify-between gap-3"
             >
                 <!-- Segmented Status Tabs -->
                 <div class="flex items-center gap-3 flex-wrap">
@@ -196,11 +196,17 @@
                             <!-- Member Identity -->
                             <td class="py-3.5 px-5 text-left align-middle">
                                 <div class="flex items-center gap-3 min-w-0">
-                                    <img
-                                        :src="member.photo_url"
-                                        :alt="`${member.first_name} ${member.last_name}`"
-                                        class="w-9 h-9 rounded-full border border-zinc-200/80 object-cover bg-zinc-100 shrink-0"
-                                    />
+                                    <button
+                                        type="button"
+                                        @click="openDetailModal(member)"
+                                        class="flex-shrink-0"
+                                    >
+                                        <img
+                                            :src="member.photo_url"
+                                            :alt="`${member.first_name} ${member.last_name}`"
+                                            class="w-9 h-9 rounded-full border border-zinc-200/80 object-cover bg-zinc-100 cursor-pointer hover:ring-1 hover:ring-[#F8313B]/80 transition-all"
+                                        />
+                                    </button>
                                     <div class="min-w-0">
                                         <button
                                             type="button"
