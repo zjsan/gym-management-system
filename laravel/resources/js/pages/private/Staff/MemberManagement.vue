@@ -236,6 +236,17 @@
                                                         : "—"
                                                 }}
                                             </span>
+                                            <span class="text-zinc-300"
+                                                >&middot;</span
+                                            >
+                                            <span
+                                                class="text-[11px] text-zinc-400 tabular-nums"
+                                            >
+                                                {{
+                                                    `${member.gender.charAt(0).toUpperCase() + member.gender.slice(1)}` ||
+                                                    "—"
+                                                }}
+                                            </span>
                                         </div>
                                     </div>
                                 </div>
