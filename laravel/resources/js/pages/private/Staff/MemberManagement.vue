@@ -308,36 +308,35 @@
                             </td>
 
                             <!-- Row Actions: View Card + QR Pass + Overflow -->
-                            <td class="py-3.5 px-5 text-right align-middle">
+                            <td
+                                class="py-3.5 px-5 text-right align-middle whitespace-nowrap"
+                            >
                                 <div
-                                    class="inline-flex items-center justify-end gap-1.5"
+                                    class="inline-flex items-center rounded-md border border-zinc-200/90 bg-white divide-x divide-zinc-200/80 shadow-2xs overflow-hidden"
                                 >
-                                    <Button
+                                    <button
                                         type="button"
-                                        variant="outline"
-                                        size="sm"
-                                        @click="openDetailModal(member)"
-                                        class="h-7 px-2.5 rounded-md border-zinc-200/90 bg-white hover:bg-zinc-50 text-[11px] font-semibold text-[#0F1115] gap-1 cursor-pointer"
+                                        @click="openEditModal(member)"
+                                        title="Edit member profile"
+                                        class="inline-flex items-center gap-1.5 h-7 px-2.5 text-[11px] font-semibold text-zinc-700 hover:text-[#0F1115] hover:bg-zinc-50 transition-colors cursor-pointer"
                                     >
-                                        <Eye
-                                            class="w-3.5 h-3.5 text-zinc-500"
-                                        />
-                                        <span>View</span>
-                                    </Button>
+                                        <Pencil class="w-3 h-3 text-zinc-500" />
+                                        <span class="hidden sm:inline"
+                                            >Edit</span
+                                        >
+                                    </button>
 
-                                    <Button
+                                    <button
                                         type="button"
-                                        variant="outline"
-                                        size="sm"
                                         @click="openQrModal(member)"
                                         title="View or print member QR pass"
-                                        class="h-7 px-2.5 rounded-md border-zinc-200/90 bg-white hover:bg-zinc-50 text-[11px] font-semibold text-[#0F1115] gap-1 cursor-pointer"
+                                        class="inline-flex items-center gap-1.5 h-7 px-2.5 text-[11px] font-semibold text-[#0F1115] hover:bg-zinc-50 transition-colors cursor-pointer"
                                     >
                                         <QrCode
                                             class="w-3.5 h-3.5 text-[#F8313B]"
                                         />
                                         <span class="hidden sm:inline">QR</span>
-                                    </Button>
+                                    </button>
 
                                     <DropdownMenu>
                                         <DropdownMenuTrigger as-child>
@@ -359,13 +358,13 @@
                                             class="w-48 bg-white border-zinc-200/90 shadow-lg rounded-xl p-1"
                                         >
                                             <DropdownMenuItem
-                                                @click="openEditModal(member)"
+                                                @click="openDetailModal(member)"
                                                 class="text-xs font-medium text-[#0F1115] rounded-lg px-2.5 py-2 gap-2 cursor-pointer"
                                             >
-                                                <Pencil
+                                                <Eye
                                                     class="w-3.5 h-3.5 text-zinc-500"
                                                 />
-                                                <span>Edit Profile</span>
+                                                <span>View Details</span>
                                             </DropdownMenuItem>
 
                                             <DropdownMenuSeparator
