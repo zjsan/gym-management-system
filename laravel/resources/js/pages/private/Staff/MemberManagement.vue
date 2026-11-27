@@ -1043,22 +1043,6 @@ import {
 const router = useRouter();
 const route = useRoute();
 
-const goToAttendance = () => {
-    router.push({ name: "attendance" });
-};
-
-const goToPaymentHistory = () => {
-    router.push({ name: "payment" });
-};
-
-const goToDashboard = () => {
-    router.push({ name: "DashboardView" });
-};
-
-const goToUserProfile = () => {
-    router.push({ name: "UserProfile" });
-};
-
 // Local states
 const memberStore = useMemberStore();
 const isEditing = ref(false);
