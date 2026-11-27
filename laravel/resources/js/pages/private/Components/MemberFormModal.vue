@@ -387,15 +387,15 @@ const syncFormFromProps = () => {
 };
 
 watch(
-    () => [props.open, props.initialData, props.isEditing],
-    ([isOpen]) => {
+    () => props.open,
+    (isOpen) => {
         if (isOpen) {
             syncFormFromProps();
         } else {
             revokeObjectPreview();
         }
     },
-    { immediate: true, deep: true },
+    { immediate: true },
 );
 
 const previewSrc = computed(
