@@ -799,233 +799,15 @@
         </Dialog>
 
         <!-- Register / Edit Member Shadcn Dialog Modal -->
-        <Dialog :open="isMemberModalOpen" @update:open="handleModalOpenChange">
-            <DialogContent
-                class="sm:max-w-[520px] bg-white border border-zinc-200/90 rounded-xl p-0 shadow-xl overflow-hidden"
-            >
-                <DialogHeader
-                    class="p-5 pb-4 border-b border-zinc-100 text-left"
-                >
-                    <div class="flex items-center gap-2.5">
-                        <div
-                            :class="[
-                                'w-8 h-8 rounded-lg flex items-center justify-center shrink-0',
-                                isEditing
-                                    ? 'bg-amber-50 text-amber-700 border border-amber-200/70'
-                                    : 'bg-[#F8313B]/10 text-[#F8313B]',
-                            ]"
-                        >
-                            <UserCog v-if="isEditing" class="w-4 h-4" />
-                            <UserPlus v-else class="w-4 h-4" />
-                        </div>
-                        <div>
-                            <DialogTitle
-                                class="text-sm font-bold tracking-tight text-[#0F1115]"
-                            >
-                                {{
-                                    isEditing
-                                        ? "Edit Member Profile"
-                                        : "Register New Member"
-                                }}
-                            </DialogTitle>
-                            <DialogDescription
-                                class="text-xs text-zinc-500 mt-0.5"
-                            >
-                                {{
-                                    isEditing
-                                        ? "Update personal details, emergency contact, or photo."
-                                        : "Create a member profile and generate their QR check-in pass."
-                                }}
-                            </DialogDescription>
-                        </div>
-                    </div>
-                </DialogHeader>
-
-                <form @submit.prevent="handleModalSubmit" class="p-5 space-y-4">
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
-                        <div class="space-y-1">
-                            <label
-                                class="block text-[11px] font-semibold text-zinc-600"
-                            >
-                                First Name
-                            </label>
-                            <Input
-                                v-model="memberForm.first_name"
-                                placeholder="First name"
-                                required
-                                class="h-9 text-xs border-zinc-200/90 focus-visible:ring-[#F8313B]/20 focus-visible:border-[#F8313B]"
-                            />
-                            <p
-                                v-if="memberStore.errors?.first_name"
-                                class="text-[11px] font-medium text-[#F8313B]"
-                            >
-                                {{ memberStore.errors.first_name[0] }}
-                            </p>
-                        </div>
-
-                        <div class="space-y-1">
-                            <label
-                                class="block text-[11px] font-semibold text-zinc-600"
-                            >
-                                Last Name
-                            </label>
-                            <Input
-                                v-model="memberForm.last_name"
-                                placeholder="Last name"
-                                required
-                                class="h-9 text-xs border-zinc-200/90 focus-visible:ring-[#F8313B]/20 focus-visible:border-[#F8313B]"
-                            />
-                            <p
-                                v-if="memberStore.errors?.last_name"
-                                class="text-[11px] font-medium text-[#F8313B]"
-                            >
-                                {{ memberStore.errors.last_name[0] }}
-                            </p>
-                        </div>
-                    </div>
-
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
-                        <div class="space-y-1">
-                            <label
-                                class="block text-[11px] font-semibold text-zinc-600"
-                            >
-                                Contact Number
-                            </label>
-                            <Input
-                                v-model="memberForm.contact_number"
-                                placeholder="09XX XXX XXXX"
-                                required
-                                class="h-9 text-xs tabular-nums border-zinc-200/90 focus-visible:ring-[#F8313B]/20 focus-visible:border-[#F8313B]"
-                            />
-                        </div>
-
-                        <div class="space-y-1">
-                            <label
-                                class="block text-[11px] font-semibold text-zinc-600"
-                            >
-                                Emergency Contact
-                            </label>
-                            <Input
-                                v-model="memberForm.emergency_contact_number"
-                                placeholder="09XX XXX XXXX"
-                                required
-                                class="h-9 text-xs tabular-nums border-zinc-200/90 focus-visible:ring-[#F8313B]/20 focus-visible:border-[#F8313B]"
-                            />
-                        </div>
-                    </div>
-
-                    <div class="space-y-1">
-                        <label
-                            class="block text-[11px] font-semibold text-zinc-600"
-                        >
-                            Email Address
-                        </label>
-                        <Input
-                            v-model="memberForm.email"
-                            type="email"
-                            placeholder="member@example.com"
-                            required
-                            class="h-9 text-xs border-zinc-200/90 focus-visible:ring-[#F8313B]/20 focus-visible:border-[#F8313B]"
-                        />
-                    </div>
-
-                    <div class="space-y-1">
-                        <label
-                            class="block text-[11px] font-semibold text-zinc-600"
-                        >
-                            Residential Address
-                        </label>
-                        <Input
-                            v-model="memberForm.address"
-                            placeholder="Barangay, City / Municipality"
-                            required
-                            class="h-9 text-xs border-zinc-200/90 focus-visible:ring-[#F8313B]/20 focus-visible:border-[#F8313B]"
-                        />
-                    </div>
-
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
-                        <div class="space-y-1">
-                            <label
-                                class="block text-[11px] font-semibold text-zinc-600"
-                            >
-                                Date of Birth
-                            </label>
-                            <Input
-                                type="date"
-                                v-model="memberForm.date_of_birth"
-                                required
-                                class="h-9 text-xs text-[#0F1115] border-zinc-200/90 focus-visible:ring-[#F8313B]/20 focus-visible:border-[#F8313B]"
-                            />
-                            <p
-                                v-if="memberStore.errors?.date_of_birth"
-                                class="text-[11px] font-medium text-[#F8313B]"
-                            >
-                                {{ memberStore.errors.date_of_birth[0] }}
-                            </p>
-                        </div>
-
-                        <div class="space-y-1">
-                            <label
-                                class="block text-[11px] font-semibold text-zinc-600"
-                            >
-                                Gender
-                            </label>
-                            <select
-                                v-model="memberForm.gender"
-                                required
-                                class="w-full h-9 px-3 rounded-lg bg-white border border-zinc-200/90 text-xs text-[#0F1115] focus:outline-none focus:ring-2 focus:ring-[#F8313B]/20 focus:border-[#F8313B]"
-                            >
-                                <option disabled value="">Select gender</option>
-                                <option value="male">Male</option>
-                                <option value="female">Female</option>
-                                <option value="other">Other</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <div class="space-y-1">
-                        <label
-                            class="block text-[11px] font-semibold text-zinc-600"
-                        >
-                            Member Photo Profile
-                        </label>
-                        <input
-                            type="file"
-                            @change="handleFileUpload"
-                            accept="image/*"
-                            class="w-full text-[11px] text-zinc-500 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border file:border-zinc-200 file:text-[11px] file:font-semibold file:bg-zinc-50 file:text-[#0F1115] hover:file:bg-zinc-100 cursor-pointer"
-                        />
-                    </div>
-
-                    <DialogFooter
-                        class="pt-3 border-t border-zinc-100 flex flex-row justify-end gap-2"
-                    >
-                        <Button
-                            type="button"
-                            variant="outline"
-                            @click="handleModalOpenChange(false)"
-                            :disabled="memberStore.loading"
-                            class="h-9 px-3.5 rounded-lg border-zinc-200 bg-white hover:bg-zinc-50 text-xs font-semibold text-zinc-700 cursor-pointer"
-                        >
-                            Cancel
-                        </Button>
-                        <Button
-                            type="submit"
-                            :disabled="memberStore.loading"
-                            class="h-9 px-4 rounded-lg bg-[#F8313B] hover:bg-[#e0242e] active:scale-[0.98] text-white text-xs font-bold shadow-sm shadow-[#F8313B]/20 transition-all cursor-pointer"
-                        >
-                            {{
-                                memberStore.loading
-                                    ? "Saving..."
-                                    : isEditing
-                                      ? "Save Changes"
-                                      : "Complete Registration"
-                            }}
-                        </Button>
-                    </DialogFooter>
-                </form>
-            </DialogContent>
-        </Dialog>
+        <MemberFormModal
+            v-model:open="isMemberModalOpen"
+            :is-editing="isEditing"
+            :initial-data="memberForm"
+            :loading="memberStore.loading"
+            :errors="memberStore.errors"
+            @file-change="handleModalFileChange"
+            @submit="handleModalSubmit"
+        />
 
         <!-- QR Badge Modal -->
         <QrBadge
@@ -1046,7 +828,7 @@ import { ref, computed, onMounted, watch, onUnmounted } from "vue";
 import { useMemberStore } from "@/stores/memberStore";
 import debounce from "lodash.debounce";
 import { usePagination } from "@/composables/usePagination";
-import { storeToRefs } from "pinia";
+import MemberFormModal from "../Components/MemberFormModal.vue";
 import { useRouter, useRoute } from "vue-router";
 import { Input } from "@/components/ui/input";
 import QrBadge from "../Components/QrBadge.vue";
@@ -1217,9 +999,17 @@ const handleModalOpenChange = (open) => {
     }
 };
 
-const handleModalSubmit = async () => {
+const handleModalFileChange = (file, event) => {
+    // Assign `memberForm.photo = file`
+    // and call your existing file handler if needed:
+    if (typeof handleFileUpload === "function" && event) {
+        handleFileUpload(event);
+    }
+};
+
+const handleModalSubmit = async (formPayload) => {
+    Object.assign(memberForm, formPayload);
     await submitForm();
-    // Close modal automatically when validation succeeds (no errors in store)
     if (!memberStore.errors || Object.keys(memberStore.errors).length === 0) {
         isMemberModalOpen.value = false;
     }
