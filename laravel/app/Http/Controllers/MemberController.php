@@ -49,7 +49,9 @@ class MemberController extends Controller
                 $query->where(function (Builder $subQuery) use ($search) {
                     $subQuery->where('membership_no', 'LIKE', "%{$search}%")
                         ->orWhere('first_name', 'LIKE', "%{$search}%")
-                        ->orWhere('last_name', 'LIKE', "%{$search}%");
+                        ->orWhere('last_name', 'LIKE', "%{$search}%")
+                        ->orWhere('email', 'LIKE', "%{$search}%");
+                        
                 });
             }  
 
