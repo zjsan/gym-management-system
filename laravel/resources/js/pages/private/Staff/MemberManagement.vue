@@ -1001,6 +1001,7 @@ const handleModalOpenChange = (open) => {
 const handleModalFileChange = (file, event) => {
     // Assign `memberForm.photo = file`
     // and call your existing file handler if needed:
+    memberForm.value.photo = file;
     if (typeof handleFileUpload === "function" && event) {
         handleFileUpload(event);
     }
@@ -1014,6 +1015,8 @@ const handleModalSubmit = async (formPayload) => {
 
     await submitForm();
 
+    const hasErrors =
+        memberStore.errors && Object.keys(memberStore.errors).length > 0;
     if (!memberStore.errors || Object.keys(memberStore.errors).length === 0) {
         isMemberModalOpen.value = false;
     }
@@ -1106,20 +1109,28 @@ const handleFileUpload = (event) => {
 // Form Submission
 // ---------------------------------------------------
 const submitForm = async () => {
+    if (memberStore.loading) return;
+
     if (!isContactInfoValid.value) {
         alert("Please provide valid Philippine mobile numbers.");
         return;
     }
 
+    const form = memberForm.value;
+    const hasNewPhoto = form.photo instanceof File;
     const data = new FormData();
-    Object.keys(memberForm.value).forEach((key) => {
-        if (key !== "photo" && memberForm.value[key] !== null) {
-            data.append(key, memberForm.value[key]);
-        }
+
+    Object.entries(form).forEach(([key, value]) => {
+        if (value === null || value === undefined) return;
+        if (key === "photo") return;
+        if (key === "photo_url" && hasNewPhoto) return;
+        if (key === "_method") return;
+
+        data.append(key, value);
     });
 
-    if (memberForm.value.photo instanceof File) {
-        data.append("photo", memberForm.value.photo);
+    if (hasNewPhoto) {
+        data.append("photo", form.photo);
     }
 
     try {
@@ -1140,7 +1151,7 @@ const submitForm = async () => {
                 ? "Member updated successfully!"
                 : "Member added successfully!";
             resetForm();
-            loadPage(currentPage.value); // Hot-reload current dataset view
+            await loadPage(currentPage.value); // Hot-reload current dataset view
         } else {
             alert(
                 result?.message ||
