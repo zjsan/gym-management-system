@@ -96,36 +96,44 @@
             </div>
 
             <!-- Data Table -->
-            <div class="overflow-x-auto">
-                <Table class="w-full table-fixed text-xs border-collapse">
+            <div class="w-full overflow-x-auto">
+                <Table
+                    class="w-full min-w-[780px] md:min-w-[920px] table-fixed text-xs border-collapse"
+                >
                     <TableHeader
                         class="bg-zinc-50/70 border-b border-zinc-200/80 [&_tr]:border-b-0"
                     >
                         <TableRow class="hover:bg-transparent border-none">
                             <TableHead
-                                class="h-auto py-3 px-5 text-left text-[11px] font-semibold uppercase tracking-wider text-zinc-500 w-[28%] min-w-[210px]"
+                                class="h-auto py-2.5 sm:py-3 px-3 sm:px-4 md:px-5 text-left text-[11px] font-semibold uppercase tracking-wider text-zinc-500 w-[26%]"
                             >
                                 Member
                             </TableHead>
+
                             <TableHead
-                                class="h-auto py-3 px-4 text-left text-[11px] font-semibold uppercase tracking-wider text-zinc-500 hidden md:table-cell w-[28%] min-w-[220px]"
+                                class="h-auto py-2.5 sm:py-3 px-3 sm:px-4 text-left text-[11px] font-semibold uppercase tracking-wider text-zinc-500 w-[28%]"
                             >
                                 Contact &amp; Address
                             </TableHead>
+
                             <TableHead
-                                class="h-auto py-3 px-4 text-left text-[11px] font-semibold uppercase tracking-wider text-zinc-500 w-[16%] min-w-[130px]"
+                                class="h-auto py-2.5 sm:py-3 px-2.5 sm:px-4 text-left text-[11px] font-semibold uppercase tracking-wider text-zinc-500 w-[16%]"
                             >
                                 Validity
                             </TableHead>
+
                             <TableHead
-                                class="h-auto py-3 px-4 text-center text-[11px] font-semibold uppercase tracking-wider text-zinc-500 w-[12%] min-w-[100px]"
+                                class="h-auto py-2.5 sm:py-3 px-2 sm:px-4 text-center text-[11px] font-semibold uppercase tracking-wider text-zinc-500 w-[12%]"
                             >
                                 Status
                             </TableHead>
+
                             <TableHead
-                                class="h-auto py-3 px-5 text-right text-[11px] font-semibold uppercase tracking-wider text-zinc-500 w-[16%] min-w-[150px]"
+                                class="h-auto py-2.5 sm:py-3 px-3 sm:px-4 md:px-5 text-[11px] font-semibold uppercase tracking-wider text-zinc-500 w-[18%]"
                             >
-                                <span class="inline-block pr-1">Actions</span>
+                                <div class="flex items-center justify-end">
+                                    <span>Actions</span>
+                                </div>
                             </TableHead>
                         </TableRow>
                     </TableHeader>
@@ -145,31 +153,39 @@
                                 :key="n"
                                 class="border-zinc-100 hover:bg-transparent"
                             >
-                                <TableCell colspan="5" class="py-3.5 px-5">
+                                <TableCell
+                                    colspan="5"
+                                    class="py-3 px-3 sm:px-4 md:px-5"
+                                >
                                     <div
                                         class="flex items-center justify-between gap-4"
                                     >
-                                        <div class="flex items-center gap-3">
+                                        <div
+                                            class="flex items-center gap-3 min-w-0"
+                                        >
                                             <Skeleton
-                                                class="w-9 h-9 rounded-full bg-zinc-100"
+                                                class="w-9 h-9 rounded-full bg-zinc-100 shrink-0"
                                             />
                                             <div class="space-y-1.5">
                                                 <Skeleton
-                                                    class="h-3.5 w-36 bg-zinc-100"
+                                                    class="h-3.5 w-32 sm:w-36 bg-zinc-100"
                                                 />
                                                 <Skeleton
-                                                    class="h-3 w-24 bg-zinc-100"
+                                                    class="h-3 w-20 sm:w-24 bg-zinc-100"
                                                 />
                                             </div>
                                         </div>
                                         <Skeleton
-                                            class="h-3.5 w-40 bg-zinc-100 hidden md:block"
+                                            class="h-3.5 w-44 bg-zinc-100"
                                         />
                                         <Skeleton
                                             class="h-4 w-24 bg-zinc-100"
                                         />
                                         <Skeleton
                                             class="h-6 w-20 bg-zinc-100"
+                                        />
+                                        <Skeleton
+                                            class="h-7 w-28 bg-zinc-100"
                                         />
                                     </div>
                                 </TableCell>
@@ -183,7 +199,7 @@
                         >
                             <TableCell
                                 colspan="5"
-                                class="py-14 px-5 text-center"
+                                class="py-14 px-4 sm:px-5 text-center"
                             >
                                 <div
                                     class="max-w-xs mx-auto flex flex-col items-center"
@@ -221,11 +237,13 @@
                             :key="member.id"
                             class="group border-zinc-100 hover:bg-zinc-50/80 transition-colors"
                         >
-                            <!-- Member Identity -->
+                            <!-- 1. Member Identity -->
                             <TableCell
-                                class="py-3.5 px-5 text-left align-middle"
+                                class="py-3 sm:py-3.5 px-3 sm:px-4 md:px-5 text-left align-middle"
                             >
-                                <div class="flex items-center gap-3 min-w-0">
+                                <div
+                                    class="flex items-center gap-2.5 sm:gap-3 min-w-0"
+                                >
                                     <button
                                         type="button"
                                         @click="openDetailModal(member)"
@@ -234,31 +252,31 @@
                                         <img
                                             :src="member.photo_url"
                                             :alt="`${member.first_name} ${member.last_name}`"
-                                            class="w-9 h-9 rounded-full border border-zinc-200/80 object-cover bg-zinc-100 hover:ring-1 hover:ring-[#F8313B]/80 transition-all"
+                                            class="w-8 h-8 sm:w-9 sm:h-9 rounded-full border border-zinc-200/80 object-cover bg-zinc-100 hover:ring-1 hover:ring-[#F8313B]/80 transition-all"
                                         />
                                     </button>
-                                    <div class="min-w-0">
+                                    <div class="min-w-0 flex-1">
                                         <button
                                             type="button"
                                             @click="openDetailModal(member)"
-                                            class="font-semibold text-[#0F1115] hover:text-[#F8313B] truncate leading-tight text-left transition-colors cursor-pointer"
+                                            class="block max-w-full font-semibold text-[#0F1115] hover:text-[#F8313B] truncate leading-tight text-left transition-colors cursor-pointer"
                                         >
                                             {{ member.first_name }}
                                             {{ member.last_name }}
                                         </button>
                                         <div
-                                            class="flex items-center gap-1.5 mt-0.5"
+                                            class="flex items-center gap-1 sm:gap-1.5 mt-0.5 min-w-0"
                                         >
                                             <span
-                                                class="font-mono text-[11px] font-medium text-zinc-500 tabular-nums"
+                                                class="font-mono text-[11px] font-medium text-zinc-500 tabular-nums truncate"
                                             >
                                                 {{ member.membership_no }}
                                             </span>
-                                            <span class="text-zinc-300"
+                                            <span class="text-zinc-300 shrink-0"
                                                 >&middot;</span
                                             >
                                             <span
-                                                class="text-[11px] text-zinc-400 tabular-nums"
+                                                class="text-[11px] text-zinc-400 tabular-nums shrink-0"
                                             >
                                                 {{
                                                     member.age
@@ -266,11 +284,11 @@
                                                         : "—"
                                                 }}
                                             </span>
-                                            <span class="text-zinc-300"
+                                            <span class="text-zinc-300 shrink-0"
                                                 >&middot;</span
                                             >
                                             <span
-                                                class="text-[11px] text-zinc-400 capitalize"
+                                                class="text-[11px] text-zinc-400 capitalize truncate"
                                             >
                                                 {{ member.gender || "—" }}
                                             </span>
@@ -279,35 +297,35 @@
                                 </div>
                             </TableCell>
 
-                            <!-- Contact, Email & Address -->
+                            <!-- 2. Contact, Email & Address -->
                             <TableCell
-                                class="py-3.5 px-4 text-left align-middle hidden md:table-cell"
+                                class="py-3 sm:py-3.5 px-3 sm:px-4 text-left align-middle"
                             >
                                 <p
-                                    class="text-xs font-medium text-[#0F1115] tabular-nums leading-tight"
+                                    class="text-xs font-medium text-[#0F1115] tabular-nums leading-tight truncate"
                                 >
                                     {{ member.contact_number || "—" }}
                                 </p>
                                 <p
                                     :title="member.email"
-                                    class="text-[11px] text-zinc-600 truncate max-w-[230px] mt-0.5"
+                                    class="text-[11px] text-zinc-600 truncate mt-0.5"
                                 >
                                     {{ member.email || "No email" }}
                                 </p>
                                 <p
                                     :title="member.address"
-                                    class="text-[11px] text-zinc-400 truncate max-w-[230px] mt-0.5"
+                                    class="text-[11px] text-zinc-400 truncate mt-0.5"
                                 >
                                     {{ member.address || "No address on file" }}
                                 </p>
                             </TableCell>
 
-                            <!-- Validity Period -->
+                            <!-- 3. Validity Period -->
                             <TableCell
-                                class="py-3.5 px-4 text-left align-middle text-[11px]"
+                                class="py-3 sm:py-3.5 px-2.5 sm:px-4 text-left align-middle text-[11px] whitespace-nowrap"
                             >
                                 <div
-                                    class="font-semibold tabular-nums"
+                                    class="font-semibold tabular-nums truncate"
                                     :class="
                                         isExpired(member.membership_end)
                                             ? 'text-[#F8313B]'
@@ -316,18 +334,20 @@
                                 >
                                     Ends {{ member.membership_end }}
                                 </div>
-                                <div class="text-zinc-400 tabular-nums mt-0.5">
+                                <div
+                                    class="text-zinc-400 tabular-nums mt-0.5 truncate"
+                                >
                                     From {{ member.membership_start }}
                                 </div>
                             </TableCell>
 
-                            <!-- Status Pill (Centered) -->
+                            <!-- 4. Status Pill (Centered) -->
                             <TableCell
-                                class="py-3.5 px-4 text-center align-middle"
+                                class="py-3 sm:py-3.5 px-2 sm:px-4 text-center align-middle whitespace-nowrap"
                             >
                                 <span
                                     :class="[
-                                        'inline-flex items-center justify-center gap-1.5 px-2.5 py-1 rounded-md text-[11px] font-semibold border select-none',
+                                        'inline-flex items-center justify-center gap-1.5 px-2 sm:px-2.5 py-1 rounded-md text-[11px] font-semibold border select-none',
                                         member.is_active
                                             ? 'bg-zinc-50 text-[#0F1115] border-zinc-200/90'
                                             : 'bg-[#F8313B]/[0.06] text-[#F8313B] border-[#F8313B]/20',
@@ -347,12 +367,12 @@
                                 </span>
                             </TableCell>
 
-                            <!-- Aligned Actions Cell: Split Pill (Edit + QR) + Overflow (•••) -->
+                            <!-- 5. Actions Cell -->
                             <TableCell
-                                class="py-3.5 px-5 text-right align-middle whitespace-nowrap"
+                                class="py-3 sm:py-3.5 px-3 sm:px-4 md:px-5 text-right align-middle whitespace-nowrap"
                             >
                                 <div
-                                    class="inline-flex items-center justify-end gap-1.5 align-middle"
+                                    class="inline-flex items-center justify-end gap-1 sm:gap-1.5"
                                 >
                                     <div
                                         class="inline-flex items-center h-7 rounded-md border border-zinc-200/90 bg-white divide-x divide-zinc-200/80 shadow-2xs shrink-0"
@@ -361,7 +381,7 @@
                                             type="button"
                                             @click="openEditModal(member)"
                                             title="Edit member profile"
-                                            class="inline-flex items-center justify-center gap-1.5 h-full px-2.5 text-[11px] font-semibold text-zinc-700 hover:text-[#0F1115] hover:bg-zinc-50 rounded-l-md transition-colors cursor-pointer"
+                                            class="inline-flex items-center justify-center gap-1 h-full px-2 sm:px-2.5 text-[11px] font-semibold text-zinc-700 hover:text-[#0F1115] hover:bg-zinc-50 rounded-l-md transition-colors cursor-pointer"
                                         >
                                             <Pencil
                                                 class="w-3 h-3 text-zinc-500 shrink-0"
@@ -375,7 +395,7 @@
                                             type="button"
                                             @click="openQrModal(member)"
                                             title="View or print member QR pass"
-                                            class="inline-flex items-center justify-center gap-1.5 h-full px-2.5 text-[11px] font-semibold text-[#0F1115] hover:bg-zinc-50 rounded-r-md transition-colors cursor-pointer"
+                                            class="inline-flex items-center justify-center gap-1 h-full px-2 sm:px-2.5 text-[11px] font-semibold text-[#0F1115] hover:bg-zinc-50 rounded-r-md transition-colors cursor-pointer"
                                         >
                                             <QrCode
                                                 class="w-3.5 h-3.5 text-[#F8313B] shrink-0"
