@@ -97,24 +97,42 @@
 
             <!-- Data Table -->
             <div class="overflow-x-auto">
-                <table class="w-full text-xs border-collapse">
-                    <thead
-                        class="bg-zinc-50/70 text-[11px] font-semibold uppercase tracking-wider text-zinc-500 border-b border-zinc-200/80"
+                <Table class="w-full table-fixed text-xs border-collapse">
+                    <TableHeader
+                        class="bg-zinc-50/70 border-b border-zinc-200/80 [&_tr]:border-b-0"
                     >
-                        <tr>
-                            <th class="py-3 px-5 text-left">Member</th>
-                            <th
-                                class="py-3 px-4 text-left hidden md:table-cell"
+                        <TableRow class="hover:bg-transparent border-none">
+                            <TableHead
+                                class="h-auto py-3 px-5 text-left text-[11px] font-semibold uppercase tracking-wider text-zinc-500 w-[28%] min-w-[210px]"
+                            >
+                                Member
+                            </TableHead>
+                            <TableHead
+                                class="h-auto py-3 px-4 text-left text-[11px] font-semibold uppercase tracking-wider text-zinc-500 hidden md:table-cell w-[28%] min-w-[220px]"
                             >
                                 Contact &amp; Address
-                            </th>
-                            <th class="py-3 px-4 text-left">Validity</th>
-                            <th class="py-3 px-4 text-center">Status</th>
-                            <th class="py-3 px-5 text-right">Actions</th>
-                        </tr>
-                    </thead>
+                            </TableHead>
+                            <TableHead
+                                class="h-auto py-3 px-4 text-left text-[11px] font-semibold uppercase tracking-wider text-zinc-500 w-[16%] min-w-[130px]"
+                            >
+                                Validity
+                            </TableHead>
+                            <TableHead
+                                class="h-auto py-3 px-4 text-center text-[11px] font-semibold uppercase tracking-wider text-zinc-500 w-[12%] min-w-[100px]"
+                            >
+                                Status
+                            </TableHead>
+                            <TableHead
+                                class="h-auto py-3 px-5 text-right text-[11px] font-semibold uppercase tracking-wider text-zinc-500 w-[16%] min-w-[150px]"
+                            >
+                                <span class="inline-block pr-1">Actions</span>
+                            </TableHead>
+                        </TableRow>
+                    </TableHeader>
 
-                    <tbody class="divide-y divide-zinc-100">
+                    <TableBody
+                        class="divide-y divide-zinc-100 [&_tr:last-child]:border-0"
+                    >
                         <!-- Loading Skeletons -->
                         <template
                             v-if="
@@ -122,8 +140,12 @@
                                 !memberStore.members.length
                             "
                         >
-                            <tr v-for="n in 6" :key="n">
-                                <td colspan="5" class="py-3.5 px-5">
+                            <TableRow
+                                v-for="n in 6"
+                                :key="n"
+                                class="border-zinc-100 hover:bg-transparent"
+                            >
+                                <TableCell colspan="5" class="py-3.5 px-5">
                                     <div
                                         class="flex items-center justify-between gap-4"
                                     >
@@ -150,13 +172,19 @@
                                             class="h-6 w-20 bg-zinc-100"
                                         />
                                     </div>
-                                </td>
-                            </tr>
+                                </TableCell>
+                            </TableRow>
                         </template>
 
                         <!-- Empty State -->
-                        <tr v-else-if="memberStore.members.length === 0">
-                            <td colspan="5" class="py-14 px-5 text-center">
+                        <TableRow
+                            v-else-if="memberStore.members.length === 0"
+                            class="hover:bg-transparent"
+                        >
+                            <TableCell
+                                colspan="5"
+                                class="py-14 px-5 text-center"
+                            >
                                 <div
                                     class="max-w-xs mx-auto flex flex-col items-center"
                                 >
@@ -184,17 +212,19 @@
                                         <span>Register Member</span>
                                     </Button>
                                 </div>
-                            </td>
-                        </tr>
+                            </TableCell>
+                        </TableRow>
 
                         <!-- Member Rows -->
-                        <tr
+                        <TableRow
                             v-for="member in memberStore.members"
                             :key="member.id"
-                            class="group hover:bg-zinc-50/80 transition-colors"
+                            class="group border-zinc-100 hover:bg-zinc-50/80 transition-colors"
                         >
                             <!-- Member Identity -->
-                            <td class="py-3.5 px-5 text-left align-middle">
+                            <TableCell
+                                class="py-3.5 px-5 text-left align-middle"
+                            >
                                 <div class="flex items-center gap-3 min-w-0">
                                     <button
                                         type="button"
@@ -247,10 +277,10 @@
                                         </div>
                                     </div>
                                 </div>
-                            </td>
+                            </TableCell>
 
                             <!-- Contact, Email & Address -->
-                            <td
+                            <TableCell
                                 class="py-3.5 px-4 text-left align-middle hidden md:table-cell"
                             >
                                 <p
@@ -270,10 +300,10 @@
                                 >
                                     {{ member.address || "No address on file" }}
                                 </p>
-                            </td>
+                            </TableCell>
 
                             <!-- Validity Period -->
-                            <td
+                            <TableCell
                                 class="py-3.5 px-4 text-left align-middle text-[11px]"
                             >
                                 <div
@@ -289,10 +319,12 @@
                                 <div class="text-zinc-400 tabular-nums mt-0.5">
                                     From {{ member.membership_start }}
                                 </div>
-                            </td>
+                            </TableCell>
 
                             <!-- Status Pill (Centered) -->
-                            <td class="py-3.5 px-4 text-center align-middle">
+                            <TableCell
+                                class="py-3.5 px-4 text-center align-middle"
+                            >
                                 <span
                                     :class="[
                                         'inline-flex items-center justify-center gap-1.5 px-2.5 py-1 rounded-md text-[11px] font-semibold border select-none',
@@ -313,17 +345,17 @@
                                         member.is_active ? "Active" : "Expired"
                                     }}</span>
                                 </span>
-                            </td>
+                            </TableCell>
 
                             <!-- Aligned Actions Cell: Split Pill (Edit + QR) + Overflow (•••) -->
-                            <td
+                            <TableCell
                                 class="py-3.5 px-5 text-right align-middle whitespace-nowrap"
                             >
                                 <div
-                                    class="inline-flex items-center justify-end gap-1.5"
+                                    class="inline-flex items-center justify-end gap-1.5 align-middle"
                                 >
                                     <div
-                                        class="inline-flex items-center h-7 rounded-md border border-zinc-200/90 bg-white divide-x divide-zinc-200/80 shadow-2xs"
+                                        class="inline-flex items-center h-7 rounded-md border border-zinc-200/90 bg-white divide-x divide-zinc-200/80 shadow-2xs shrink-0"
                                     >
                                         <button
                                             type="button"
@@ -359,7 +391,7 @@
                                             <button
                                                 type="button"
                                                 aria-label="More member actions"
-                                                class="inline-flex items-center justify-center h-7 w-7 rounded-md text-zinc-500 hover:text-[#0F1115] hover:bg-zinc-100 transition-colors cursor-pointer"
+                                                class="inline-flex items-center justify-center h-7 w-7 shrink-0 rounded-md text-zinc-500 hover:text-[#0F1115] hover:bg-zinc-100 transition-colors cursor-pointer"
                                             >
                                                 <MoreHorizontal
                                                     class="w-4 h-4"
@@ -425,10 +457,10 @@
                                         </DropdownMenuContent>
                                     </DropdownMenu>
                                 </div>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
+                            </TableCell>
+                        </TableRow>
+                    </TableBody>
+                </Table>
             </div>
 
             <!-- Pagination Footer -->
