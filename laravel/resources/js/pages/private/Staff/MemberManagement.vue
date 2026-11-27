@@ -878,7 +878,6 @@ import {
 } from "lucide-vue-next";
 
 //navigation
-const router = useRouter();
 const route = useRoute();
 
 // Local states
@@ -1008,8 +1007,13 @@ const handleModalFileChange = (file, event) => {
 };
 
 const handleModalSubmit = async (formPayload) => {
-    Object.assign(memberForm, formPayload);
+    memberForm.value = {
+        ...memberForm.value,
+        ...formPayload,
+    };
+
     await submitForm();
+
     if (!memberStore.errors || Object.keys(memberStore.errors).length === 0) {
         isMemberModalOpen.value = false;
     }
