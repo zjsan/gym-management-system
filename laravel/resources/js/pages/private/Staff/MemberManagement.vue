@@ -199,12 +199,12 @@
                                     <button
                                         type="button"
                                         @click="openDetailModal(member)"
-                                        class="flex-shrink-0"
+                                        class="shrink-0 cursor-pointer"
                                     >
                                         <img
                                             :src="member.photo_url"
                                             :alt="`${member.first_name} ${member.last_name}`"
-                                            class="w-9 h-9 rounded-full border border-zinc-200/80 object-cover bg-zinc-100 cursor-pointer hover:ring-1 hover:ring-[#F8313B]/80 transition-all"
+                                            class="w-9 h-9 rounded-full border border-zinc-200/80 object-cover bg-zinc-100 hover:ring-1 hover:ring-[#F8313B]/80 transition-all"
                                         />
                                     </button>
                                     <div class="min-w-0">
@@ -240,12 +240,9 @@
                                                 >&middot;</span
                                             >
                                             <span
-                                                class="text-[11px] text-zinc-400 tabular-nums"
+                                                class="text-[11px] text-zinc-400 capitalize"
                                             >
-                                                {{
-                                                    `${member.gender.charAt(0).toUpperCase() + member.gender.slice(1)}` ||
-                                                    "—"
-                                                }}
+                                                {{ member.gender || "—" }}
                                             </span>
                                         </div>
                                     </div>
@@ -294,7 +291,7 @@
                                 </div>
                             </td>
 
-                            <!-- Refined High-Craft Status Pill (Centered) -->
+                            <!-- Status Pill (Centered) -->
                             <td class="py-3.5 px-4 text-center align-middle">
                                 <span
                                     :class="[
@@ -318,50 +315,56 @@
                                 </span>
                             </td>
 
-                            <!-- Row Actions: View Card + QR Pass + Overflow -->
+                            <!-- Aligned Actions Cell: Split Pill (Edit + QR) + Overflow (•••) -->
                             <td
                                 class="py-3.5 px-5 text-right align-middle whitespace-nowrap"
                             >
                                 <div
-                                    class="inline-flex items-center rounded-md border border-zinc-200/90 bg-white divide-x divide-zinc-200/80 shadow-2xs overflow-hidden"
+                                    class="inline-flex items-center justify-end gap-1.5"
                                 >
-                                    <button
-                                        type="button"
-                                        @click="openEditModal(member)"
-                                        title="Edit member profile"
-                                        class="inline-flex items-center gap-1.5 h-7 px-2.5 text-[11px] font-semibold text-zinc-700 hover:text-[#0F1115] hover:bg-zinc-50 transition-colors cursor-pointer"
+                                    <div
+                                        class="inline-flex items-center h-7 rounded-md border border-zinc-200/90 bg-white divide-x divide-zinc-200/80 shadow-2xs"
                                     >
-                                        <Pencil class="w-3 h-3 text-zinc-500" />
-                                        <span class="hidden sm:inline"
-                                            >Edit</span
+                                        <button
+                                            type="button"
+                                            @click="openEditModal(member)"
+                                            title="Edit member profile"
+                                            class="inline-flex items-center justify-center gap-1.5 h-full px-2.5 text-[11px] font-semibold text-zinc-700 hover:text-[#0F1115] hover:bg-zinc-50 rounded-l-md transition-colors cursor-pointer"
                                         >
-                                    </button>
+                                            <Pencil
+                                                class="w-3 h-3 text-zinc-500 shrink-0"
+                                            />
+                                            <span class="hidden sm:inline"
+                                                >Edit</span
+                                            >
+                                        </button>
 
-                                    <button
-                                        type="button"
-                                        @click="openQrModal(member)"
-                                        title="View or print member QR pass"
-                                        class="inline-flex items-center gap-1.5 h-7 px-2.5 text-[11px] font-semibold text-[#0F1115] hover:bg-zinc-50 transition-colors cursor-pointer"
-                                    >
-                                        <QrCode
-                                            class="w-3.5 h-3.5 text-[#F8313B]"
-                                        />
-                                        <span class="hidden sm:inline">QR</span>
-                                    </button>
+                                        <button
+                                            type="button"
+                                            @click="openQrModal(member)"
+                                            title="View or print member QR pass"
+                                            class="inline-flex items-center justify-center gap-1.5 h-full px-2.5 text-[11px] font-semibold text-[#0F1115] hover:bg-zinc-50 rounded-r-md transition-colors cursor-pointer"
+                                        >
+                                            <QrCode
+                                                class="w-3.5 h-3.5 text-[#F8313B] shrink-0"
+                                            />
+                                            <span class="hidden sm:inline"
+                                                >QR</span
+                                            >
+                                        </button>
+                                    </div>
 
                                     <DropdownMenu>
                                         <DropdownMenuTrigger as-child>
-                                            <Button
+                                            <button
                                                 type="button"
-                                                variant="ghost"
-                                                size="sm"
                                                 aria-label="More member actions"
-                                                class="h-7 w-7 p-0 rounded-md text-zinc-500 hover:text-[#0F1115] hover:bg-zinc-100 cursor-pointer"
+                                                class="inline-flex items-center justify-center h-7 w-7 rounded-md text-zinc-500 hover:text-[#0F1115] hover:bg-zinc-100 transition-colors cursor-pointer"
                                             >
                                                 <MoreHorizontal
                                                     class="w-4 h-4"
                                                 />
-                                            </Button>
+                                            </button>
                                         </DropdownMenuTrigger>
 
                                         <DropdownMenuContent
@@ -1010,6 +1013,14 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import {
+    Table,
+    TableBody,
+    TableCell,
+    TableHead,
+    TableHeader,
+    TableRow,
+} from "@/components/ui/table";
 import {
     Search,
     X,
