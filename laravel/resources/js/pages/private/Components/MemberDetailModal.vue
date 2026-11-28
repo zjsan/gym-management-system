@@ -2,254 +2,266 @@
     <Dialog :open="open" @update:open="$emit('update:open', $event)">
         <DialogContent
             v-if="member"
-            class="w-[calc(100vw-1.5rem)] sm:max-w-[500px] max-h-[90dvh] flex flex-col bg-white border border-zinc-200/90 rounded-xl p-0 shadow-2xl overflow-hidden"
+            class="w-[calc(100vw-1.5rem)] sm:max-w-[460px] max-h-[90dvh] flex flex-col bg-white border border-zinc-200 rounded-xl p-0 shadow-xl overflow-hidden"
         >
-            <!-- Pinned Identity Header -->
+            <!-- Pinned Modal Top Bar -->
             <DialogHeader
-                class="px-5 sm:px-6 py-4 border-b border-zinc-100 bg-zinc-50/40 text-left shrink-0"
+                class="px-5 sm:px-6 py-3.5 border-b border-zinc-200/80 bg-white text-left shrink-0"
             >
-                <div class="flex items-start justify-between gap-3 pr-7">
-                    <div class="flex items-center gap-3.5 min-w-0">
-                        <img
-                            :src="member.photo_url"
-                            :alt="`${member.first_name} ${member.last_name}`"
-                            class="w-14 h-14 rounded-xl border border-zinc-200/90 object-cover bg-zinc-100 shrink-0"
-                        />
-                        <div class="min-w-0">
-                            <DialogTitle
-                                class="text-base font-bold tracking-tight text-[#0F1115] truncate leading-snug"
-                            >
-                                {{ member.first_name }} {{ member.last_name }}
-                            </DialogTitle>
-                            <DialogDescription
-                                class="flex items-center gap-2 mt-1"
-                            >
-                                <span
-                                    class="px-2 py-0.5 rounded bg-zinc-100 border border-zinc-200/80 font-mono text-[11px] font-semibold text-zinc-700 tabular-nums"
-                                >
-                                    {{ member.membership_no }}
-                                </span>
-                                <span
-                                    :class="[
-                                        'inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md text-[11px] font-semibold border select-none',
-                                        member.is_active
-                                            ? 'bg-white text-[#0F1115] border-zinc-200/90'
-                                            : 'bg-[#F8313B]/[0.06] text-[#F8313B] border-[#F8313B]/20',
-                                    ]"
-                                >
-                                    <span
-                                        :class="[
-                                            'w-1.5 h-1.5 rounded-full shrink-0',
-                                            member.is_active
-                                                ? 'bg-emerald-500'
-                                                : 'bg-[#F8313B]',
-                                        ]"
-                                    />
-                                    <span>{{
-                                        member.is_active ? "Active" : "Expired"
-                                    }}</span>
-                                </span>
-                            </DialogDescription>
-                        </div>
-                    </div>
+                <div class="flex items-center justify-between gap-3 pr-7">
+                    <DialogTitle
+                        class="text-sm font-semibold tracking-tight text-zinc-900 truncate"
+                    >
+                        Member ID Pass
+                    </DialogTitle>
+                    <DialogDescription class="sr-only">
+                        Member identification pass and contact details for
+                        {{ member.first_name }} {{ member.last_name }}.
+                    </DialogDescription>
                 </div>
             </DialogHeader>
 
-            <!-- Scrollable Body -->
+            <!-- Scrollable Content -->
             <div
-                class="flex-1 overflow-y-auto px-5 sm:px-6 py-4 space-y-5 text-xs"
+                class="flex-1 overflow-y-auto px-5 sm:px-6 py-5 space-y-5 text-xs"
             >
-                <!-- Membership Validity Strip -->
-                <div
-                    class="grid grid-cols-3 divide-x divide-zinc-200/80 rounded-xl bg-zinc-50/70 border border-zinc-200/80 overflow-hidden"
+                <!-- Centered Digital ID Card -->
+                <section
+                    class="rounded-2xl border border-zinc-200/90 bg-zinc-50/60 overflow-hidden shadow-2xs"
                 >
-                    <div class="p-3">
-                        <p
-                            class="text-[10px] font-semibold uppercase tracking-wider text-zinc-400"
-                        >
-                            Started
-                        </p>
-                        <p
-                            class="font-semibold text-[#0F1115] tabular-nums mt-1"
-                        >
-                            {{ member.membership_start || "—" }}
-                        </p>
-                    </div>
-
-                    <div class="p-3">
-                        <p
-                            class="text-[10px] font-semibold uppercase tracking-wider text-zinc-400"
-                        >
-                            Expires
-                        </p>
-                        <p
-                            class="font-bold tabular-nums mt-1"
-                            :class="
-                                isExpiredDate
-                                    ? 'text-[#F8313B]'
-                                    : 'text-[#0F1115]'
-                            "
-                        >
-                            {{ member.membership_end || "—" }}
-                        </p>
-                    </div>
-
-                    <div class="p-3">
-                        <p
-                            class="text-[10px] font-semibold uppercase tracking-wider text-zinc-400"
-                        >
-                            Standing
-                        </p>
-                        <p
-                            class="font-semibold tabular-nums mt-1"
-                            :class="
-                                isExpiredDate
-                                    ? 'text-[#F8313B]'
-                                    : 'text-emerald-700'
-                            "
-                        >
-                            {{ standingLabel }}
-                        </p>
-                    </div>
-                </div>
-
-                <!-- Contact & Personal Details -->
-                <div class="space-y-1.5">
-                    <span
-                        class="block text-[10px] font-bold uppercase tracking-wider text-zinc-400"
+                    <!-- Subtle Lanyard / Header Band -->
+                    <div
+                        class="h-16 bg-gradient-to-b from-zinc-100 to-zinc-100/40 border-b border-zinc-200/60 flex items-start justify-between px-4 pt-3"
                     >
-                        Contact &amp; Profile Details
-                    </span>
+                        <span
+                            class="inline-flex items-center px-2 py-0.5 rounded-md bg-white/90 border border-zinc-200/90 font-mono text-[11px] font-semibold text-zinc-700 tabular-nums select-all"
+                        >
+                            {{ member.membership_no }}
+                        </span>
 
-                    <dl
-                        class="divide-y divide-zinc-100 rounded-xl border border-zinc-200/80 bg-white px-3.5"
+                        <span
+                            :class="[
+                                'inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-semibold border bg-white select-none',
+                                member.is_active
+                                    ? 'text-emerald-700 border-emerald-200/90'
+                                    : 'text-[#F8313B] border-[#F8313B]/25',
+                            ]"
+                        >
+                            <span
+                                :class="[
+                                    'w-1.5 h-1.5 rounded-full shrink-0',
+                                    member.is_active
+                                        ? 'bg-emerald-500'
+                                        : 'bg-[#F8313B]',
+                                ]"
+                            />
+                            <span>{{
+                                member.is_active ? "Active" : "Expired"
+                            }}</span>
+                        </span>
+                    </div>
+
+                    <!-- Centered Portrait & Identity Stack -->
+                    <div
+                        class="px-5 pb-5 -mt-10 flex flex-col items-center text-center"
                     >
+                        <!-- Large Centered Portrait Frame -->
                         <div
-                            class="py-2.5 flex items-center justify-between gap-4"
+                            class="w-36 h-40 rounded-2xl border-4 border-white ring-1 ring-zinc-200/90 bg-white shadow-sm overflow-hidden shrink-0"
                         >
-                            <dt
-                                class="flex items-center gap-2 text-zinc-500 font-medium shrink-0"
+                            <img
+                                v-if="member.photo_url && !imageFailed"
+                                :src="member.photo_url"
+                                :alt="`${member.first_name} ${member.last_name}`"
+                                @error="imageFailed = true"
+                                class="w-full h-full object-cover object-center"
+                            />
+                            <div
+                                v-else
+                                class="w-full h-full flex flex-col items-center justify-center bg-zinc-100 text-zinc-400 gap-1.5"
                             >
-                                <Phone class="w-3.5 h-3.5 text-zinc-400" />
-                                <span>Phone</span>
-                            </dt>
-                            <dd
-                                class="text-[#0F1115] font-semibold tabular-nums text-right"
-                            >
-                                {{ member.contact_number || "—" }}
-                            </dd>
+                                <User class="w-9 h-9 stroke-[1.5]" />
+                                <span class="text-[11px] font-medium">
+                                    No Photo
+                                </span>
+                            </div>
                         </div>
 
-                        <div
-                            class="py-2.5 flex items-center justify-between gap-4"
-                        >
-                            <dt
-                                class="flex items-center gap-2 text-zinc-500 font-medium shrink-0"
+                        <!-- Name & Demographics Beneath Photo -->
+                        <div class="mt-3.5 space-y-1 max-w-full">
+                            <h2
+                                class="text-lg font-semibold tracking-tight text-zinc-900 leading-snug break-words"
                             >
-                                <HeartPulse class="w-3.5 h-3.5 text-zinc-400" />
-                                <span>Emergency</span>
-                            </dt>
-                            <dd
-                                class="text-[#0F1115] font-semibold tabular-nums text-right"
+                                {{ member.first_name }} {{ member.last_name }}
+                            </h2>
+
+                            <p
+                                class="text-xs text-zinc-500 capitalize tabular-nums"
                             >
-                                {{ member.emergency_contact_number || "—" }}
-                            </dd>
+                                {{ member.gender || "—" }}
+                                <span v-if="member.age">
+                                    &middot; {{ member.age }} yrs
+                                </span>
+                                <span v-if="member.date_of_birth">
+                                    &middot;
+                                    {{ formatBirthdate(member.date_of_birth) }}
+                                </span>
+                            </p>
                         </div>
 
+                        <!-- Clean 2-Column Membership Window -->
                         <div
-                            class="py-2.5 flex items-center justify-between gap-4"
+                            class="w-full mt-4 grid grid-cols-2 divide-x divide-zinc-200/80 rounded-xl bg-white border border-zinc-200/80 overflow-hidden text-left"
                         >
-                            <dt
+                            <div class="px-3.5 py-2.5">
+                                <p
+                                    class="text-[10px] font-semibold uppercase tracking-wider text-zinc-400"
+                                >
+                                    Started
+                                </p>
+                                <p
+                                    class="text-xs font-semibold text-zinc-900 tabular-nums mt-0.5"
+                                >
+                                    {{ member.membership_start || "—" }}
+                                </p>
+                            </div>
+
+                            <div class="px-3.5 py-2.5">
+                                <p
+                                    class="text-[10px] font-semibold uppercase tracking-wider text-zinc-400"
+                                >
+                                    Expires
+                                </p>
+                                <p
+                                    class="text-xs font-semibold tabular-nums mt-0.5"
+                                    :class="
+                                        isExpiredDate
+                                            ? 'text-[#F8313B]'
+                                            : 'text-zinc-900'
+                                    "
+                                >
+                                    {{ member.membership_end || "—" }}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Structured Contact & Address Section -->
+                <section class="space-y-2">
+                    <h3
+                        class="text-[11px] font-semibold uppercase tracking-wider text-zinc-400"
+                    >
+                        Contact &amp; Address
+                    </h3>
+
+                    <div
+                        class="rounded-xl border border-zinc-200/80 bg-white divide-y divide-zinc-100 overflow-hidden"
+                    >
+                        <!-- Phone & Emergency (2-Col Bento Row) -->
+                        <div
+                            class="grid grid-cols-1 sm:grid-cols-2 divide-y sm:divide-y-0 sm:divide-x divide-zinc-100"
+                        >
+                            <div class="p-3.5">
+                                <div
+                                    class="flex items-center gap-1.5 text-[11px] font-medium text-zinc-500"
+                                >
+                                    <Phone
+                                        class="w-3.5 h-3.5 text-zinc-400 shrink-0"
+                                    />
+                                    <span>Phone Number</span>
+                                </div>
+                                <p
+                                    class="text-xs font-semibold text-zinc-900 tabular-nums mt-1 select-all"
+                                >
+                                    {{ member.contact_number || "—" }}
+                                </p>
+                            </div>
+
+                            <div class="p-3.5">
+                                <div
+                                    class="flex items-center gap-1.5 text-[11px] font-medium text-zinc-500"
+                                >
+                                    <HeartPulse
+                                        class="w-3.5 h-3.5 text-zinc-400 shrink-0"
+                                    />
+                                    <span>Emergency Contact</span>
+                                </div>
+                                <p
+                                    class="text-xs font-semibold text-zinc-900 tabular-nums mt-1 select-all"
+                                >
+                                    {{ member.emergency_contact_number || "—" }}
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- Email -->
+                        <div
+                            class="px-3.5 py-3 flex items-center justify-between gap-4"
+                        >
+                            <div
                                 class="flex items-center gap-2 text-zinc-500 font-medium shrink-0"
                             >
-                                <Mail class="w-3.5 h-3.5 text-zinc-400" />
+                                <Mail
+                                    class="w-3.5 h-3.5 text-zinc-400 shrink-0"
+                                />
                                 <span>Email</span>
-                            </dt>
-                            <dd
-                                class="text-[#0F1115] font-semibold truncate text-right"
+                            </div>
+                            <p
+                                class="text-zinc-900 font-medium truncate text-right select-all"
                             >
                                 {{ member.email || "—" }}
-                            </dd>
+                            </p>
                         </div>
 
+                        <!-- Residential Address -->
                         <div
-                            class="py-2.5 flex items-center justify-between gap-4"
+                            class="px-3.5 py-3 flex items-start justify-between gap-4"
                         >
-                            <dt
-                                class="flex items-center gap-2 text-zinc-500 font-medium shrink-0"
-                            >
-                                <User class="w-3.5 h-3.5 text-zinc-400" />
-                                <span>Demographics</span>
-                            </dt>
-                            <dd
-                                class="text-[#0F1115] font-semibold capitalize tabular-nums text-right"
-                            >
-                                {{ formatBirthdate(member.date_of_birth) }}
-                                &middot;
-                                {{ member.age ? `${member.age} yrs` : "—" }}
-                                &middot;
-                                {{ member.gender || "—" }}
-                            </dd>
-                        </div>
-
-                        <div
-                            class="py-2.5 flex items-start justify-between gap-4"
-                        >
-                            <dt
+                            <div
                                 class="flex items-center gap-2 text-zinc-500 font-medium shrink-0 mt-0.5"
                             >
-                                <MapPin class="w-3.5 h-3.5 text-zinc-400" />
+                                <MapPin
+                                    class="w-3.5 h-3.5 text-zinc-400 shrink-0"
+                                />
                                 <span>Address</span>
-                            </dt>
-                            <dd
-                                class="text-[#0F1115] font-medium text-right leading-relaxed max-w-[260px]"
+                            </div>
+                            <p
+                                class="text-zinc-900 font-medium text-right leading-relaxed max-w-[260px]"
                             >
                                 {{ member.address || "—" }}
-                            </dd>
+                            </p>
                         </div>
-                    </dl>
-                </div>
+                    </div>
+                </section>
             </div>
 
-            <!-- Pinned Action Footer -->
+            <!-- Pinned Footer -->
             <DialogFooter
-                class="px-5 sm:px-6 py-3.5 bg-zinc-50/70 border-t border-zinc-100 flex flex-col-reverse sm:flex-row sm:items-center sm:justify-between gap-2 shrink-0"
+                class="px-5 sm:px-6 py-3.5 bg-zinc-50 border-t border-zinc-200/80 flex flex-col-reverse sm:flex-row sm:items-center sm:justify-end gap-2 shrink-0"
             >
-                <!-- Left Secondary Utilities: Edit + QR Pass -->
-                <div class="flex items-center gap-2 w-full sm:w-auto">
-                    <Button
-                        type="button"
-                        variant="outline"
-                        size="sm"
-                        @click="handleEdit"
-                        class="flex-1 sm:flex-initial h-9 px-3 rounded-lg border-zinc-200 bg-white hover:bg-zinc-50 text-xs font-semibold text-zinc-700 gap-1.5 cursor-pointer"
-                    >
-                        <Pencil class="w-3.5 h-3.5 text-zinc-500" />
-                        <span>Edit</span>
-                    </Button>
+                <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    @click="$emit('update:open', false)"
+                    class="w-full sm:w-auto h-9 px-4 rounded-lg border-zinc-200 bg-white hover:bg-zinc-100/70 text-xs font-medium text-zinc-700 cursor-pointer"
+                >
+                    Close
+                </Button>
 
-                    <Button
-                        type="button"
-                        variant="outline"
-                        size="sm"
-                        @click="handleOpenQr"
-                        class="flex-1 sm:flex-initial h-9 px-3 rounded-lg border-zinc-200 bg-white hover:bg-zinc-50 text-xs font-semibold text-[#0F1115] gap-1.5 cursor-pointer"
-                    >
-                        <QrCode class="w-3.5 h-3.5 text-[#F8313B]" />
-                        <span>QR Pass</span>
-                    </Button>
-                </div>
-
-                <!-- Right Primary Action: Renew (Disabled when Active) -->
                 <Button
                     type="button"
                     size="sm"
                     :disabled="isRenewDisabled"
                     @click="$emit('renew', member.id)"
-                    class="w-full sm:w-auto h-9 px-4 rounded-lg bg-[#F8313B] hover:bg-[#e0242e] disabled:bg-zinc-200/90 disabled:text-zinc-500 disabled:shadow-none text-white text-xs font-bold shadow-sm shadow-[#F8313B]/20 gap-1.5 transition-all cursor-pointer disabled:cursor-not-allowed"
+                    class="w-full sm:w-auto h-9 px-4 rounded-lg bg-[#F8313B] hover:bg-[#df202a] active:scale-[0.99] disabled:bg-zinc-200 disabled:text-zinc-500 disabled:shadow-none text-white text-xs font-medium shadow-xs gap-1.5 transition-all cursor-pointer disabled:cursor-not-allowed"
                 >
                     <RefreshCw
-                        :class="['w-3.5 h-3.5', loading ? 'animate-spin' : '']"
+                        :class="[
+                            'w-3.5 h-3.5 shrink-0',
+                            loading ? 'animate-spin' : '',
+                        ]"
                     />
                     <span>{{ renewButtonLabel }}</span>
                 </Button>
@@ -320,17 +332,6 @@ const isExpiredDate = computed(() => {
     return daysDelta.value !== null && daysDelta.value < 0;
 });
 
-const standingLabel = computed(() => {
-    if (daysDelta.value === null) {
-        return props.member?.is_active ? "Good standing" : "Expired";
-    }
-    if (daysDelta.value > 1) return `${daysDelta.value} days left`;
-    if (daysDelta.value === 1) return "1 day left";
-    if (daysDelta.value === 0) return "Expires today";
-    const overdue = Math.abs(daysDelta.value);
-    return overdue === 1 ? "1 day overdue" : `${overdue} days overdue`;
-});
-
 const isRenewDisabled = computed(() => {
     if (!props.member || props.loading) return true;
     return Boolean(props.member.is_active || !props.member.can_renew);
@@ -341,14 +342,4 @@ const renewButtonLabel = computed(() => {
     if (props.member?.is_active) return "Membership Active";
     return "Renew Membership";
 });
-
-const handleEdit = () => {
-    emit("update:open", false);
-    emit("edit", props.member);
-};
-
-const handleOpenQr = () => {
-    emit("update:open", false);
-    emit("open-qr", props.member);
-};
 </script>
