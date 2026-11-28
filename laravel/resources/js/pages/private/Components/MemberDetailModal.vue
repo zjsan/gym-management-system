@@ -184,6 +184,8 @@
                             <dd
                                 class="text-[#0F1115] font-semibold capitalize tabular-nums text-right"
                             >
+                                {{ member.date_of_birth }}
+                                &middot;
                                 {{ member.age ? `${member.age} yrs` : "—" }}
                                 &middot;
                                 {{ member.gender || "—" }}
