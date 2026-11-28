@@ -603,200 +603,14 @@
         </Card>
 
         <!-- Member Detail Card Dialog (with Renew Action) -->
-        <Dialog
-            :open="isDetailModalOpen"
-            @update:open="(val) => (isDetailModalOpen = val)"
-        >
-            <DialogContent
-                v-if="selectedMember"
-                class="sm:max-w-[460px] bg-white border border-zinc-200/90 rounded-xl p-0 shadow-xl overflow-hidden"
-            >
-                <DialogHeader
-                    class="p-5 pb-4 border-b border-zinc-100 text-left"
-                >
-                    <div class="flex items-center justify-between gap-3 pr-6">
-                        <div class="flex items-center gap-3 min-w-0">
-                            <img
-                                :src="selectedMember.photo_url"
-                                :alt="`${selectedMember.first_name} ${selectedMember.last_name}`"
-                                class="w-12 h-12 rounded-xl border border-zinc-200/80 object-cover bg-zinc-100 shrink-0"
-                            />
-                            <div class="min-w-0">
-                                <DialogTitle
-                                    class="text-sm font-bold tracking-tight text-[#0F1115] truncate"
-                                >
-                                    {{ selectedMember.first_name }}
-                                    {{ selectedMember.last_name }}
-                                </DialogTitle>
-                                <DialogDescription
-                                    class="text-xs font-mono text-zinc-500 mt-0.5 tabular-nums"
-                                >
-                                    {{ selectedMember.membership_no }}
-                                </DialogDescription>
-                            </div>
-                        </div>
-
-                        <span
-                            :class="[
-                                'inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-md text-[11px] font-semibold border shrink-0',
-                                selectedMember.is_active
-                                    ? 'bg-zinc-50 text-[#0F1115] border-zinc-200/90'
-                                    : 'bg-[#F8313B]/[0.06] text-[#F8313B] border-[#F8313B]/20',
-                            ]"
-                        >
-                            <span
-                                :class="[
-                                    'w-1.5 h-1.5 rounded-full',
-                                    selectedMember.is_active
-                                        ? 'bg-emerald-500'
-                                        : 'bg-[#F8313B]',
-                                ]"
-                            />
-                            <span>{{
-                                selectedMember.is_active ? "Active" : "Expired"
-                            }}</span>
-                        </span>
-                    </div>
-                </DialogHeader>
-
-                <div class="p-5 space-y-4 text-xs">
-                    <!-- Membership Window Summary -->
-                    <div
-                        class="grid grid-cols-2 gap-3 p-3.5 rounded-xl bg-zinc-50/80 border border-zinc-200/70"
-                    >
-                        <div>
-                            <p
-                                class="text-[10px] font-semibold uppercase tracking-wider text-zinc-400"
-                            >
-                                Start Date
-                            </p>
-                            <p
-                                class="font-semibold text-[#0F1115] tabular-nums mt-0.5"
-                            >
-                                {{ selectedMember.membership_start || "—" }}
-                            </p>
-                        </div>
-                        <div>
-                            <p
-                                class="text-[10px] font-semibold uppercase tracking-wider text-zinc-400"
-                            >
-                                Expiration Date
-                            </p>
-                            <p
-                                class="font-bold tabular-nums mt-0.5"
-                                :class="
-                                    isExpired(selectedMember.membership_end)
-                                        ? 'text-[#F8313B]'
-                                        : 'text-[#0F1115]'
-                                "
-                            >
-                                {{ selectedMember.membership_end || "—" }}
-                            </p>
-                        </div>
-                    </div>
-
-                    <!-- Profile & Contact Fields -->
-                    <dl class="divide-y divide-zinc-100">
-                        <div
-                            class="py-2 flex items-center justify-between gap-4"
-                        >
-                            <dt class="text-zinc-500 font-medium">Email</dt>
-                            <dd
-                                class="text-[#0F1115] font-semibold truncate text-right"
-                            >
-                                {{ selectedMember.email || "—" }}
-                            </dd>
-                        </div>
-                        <div
-                            class="py-2 flex items-center justify-between gap-4"
-                        >
-                            <dt class="text-zinc-500 font-medium">Contact</dt>
-                            <dd
-                                class="text-[#0F1115] font-semibold tabular-nums text-right"
-                            >
-                                {{ selectedMember.contact_number || "—" }}
-                            </dd>
-                        </div>
-                        <div
-                            class="py-2 flex items-center justify-between gap-4"
-                        >
-                            <dt class="text-zinc-500 font-medium">
-                                Emergency Contact
-                            </dt>
-                            <dd
-                                class="text-[#0F1115] font-semibold tabular-nums text-right"
-                            >
-                                {{
-                                    selectedMember.emergency_contact_number ||
-                                    "—"
-                                }}
-                            </dd>
-                        </div>
-                        <div
-                            class="py-2 flex items-center justify-between gap-4"
-                        >
-                            <dt class="text-zinc-500 font-medium">
-                                Age / Gender
-                            </dt>
-                            <dd
-                                class="text-[#0F1115] font-semibold capitalize tabular-nums text-right"
-                            >
-                                {{ selectedMember.age ?? "—" }} yrs &middot;
-                                {{ selectedMember.gender || "—" }}
-                            </dd>
-                        </div>
-                        <div
-                            class="py-2 flex items-start justify-between gap-4"
-                        >
-                            <dt class="text-zinc-500 font-medium shrink-0">
-                                Address
-                            </dt>
-                            <dd
-                                class="text-[#0F1115] font-medium text-right leading-relaxed"
-                            >
-                                {{ selectedMember.address || "—" }}
-                            </dd>
-                        </div>
-                    </dl>
-                </div>
-
-                <DialogFooter
-                    class="px-5 py-3.5 bg-zinc-50/60 border-t border-zinc-100 flex flex-row items-center justify-between gap-2"
-                >
-                    <Button
-                        type="button"
-                        variant="outline"
-                        size="sm"
-                        @click="
-                            isDetailModalOpen = false;
-                            openEditModal(selectedMember);
-                        "
-                        class="h-8 px-3 rounded-lg border-zinc-200 bg-white hover:bg-zinc-50 text-xs font-semibold text-zinc-700 gap-1.5 cursor-pointer"
-                    >
-                        <Pencil class="w-3.5 h-3.5" />
-                        <span>Edit</span>
-                    </Button>
-
-                    <Button
-                        type="button"
-                        size="sm"
-                        :disabled="
-                            selectedMember.is_active ||
-                            !selectedMember.can_renew
-                        "
-                        @click="handleDetailRenew(selectedMember.id)"
-                        class="h-8 px-3.5 rounded-lg bg-[#F8313B] hover:bg-[#e0242e] disabled:bg-zinc-200 disabled:text-zinc-400 disabled:shadow-none text-white text-xs font-bold shadow-sm shadow-[#F8313B]/20 gap-1.5 transition-all cursor-pointer disabled:cursor-not-allowed"
-                    >
-                        <RefreshCw class="w-3.5 h-3.5" />
-                        <span>{{
-                            selectedMember.is_active
-                                ? "Membership Active"
-                                : "Renew Membership"
-                        }}</span>
-                    </Button>
-                </DialogFooter>
-            </DialogContent>
-        </Dialog>
+        <MemberDetailModal
+            v-model:open="isDetailModalOpen"
+            :member="selectedMember"
+            :loading="memberStore.loading"
+            @edit="openEditModal"
+            @open-qr="openQrModal"
+            @renew="handleDetailRenew"
+        />
 
         <!-- Register / Edit Member Shadcn Dialog Modal -->
         <MemberFormModal
@@ -835,14 +649,7 @@ import QrBadge from "../Components/QrBadge.vue";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
-import {
-    Dialog,
-    DialogContent,
-    DialogDescription,
-    DialogFooter,
-    DialogHeader,
-    DialogTitle,
-} from "@/components/ui/dialog";
+import MemberDetailModal from "../Components/MemberDetailModal.vue";
 import {
     DropdownMenu,
     DropdownMenuContent,
