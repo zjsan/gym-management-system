@@ -184,7 +184,7 @@
                             <dd
                                 class="text-[#0F1115] font-semibold capitalize tabular-nums text-right"
                             >
-                                {{ member.date_of_birth }}
+                                {{ formatBirthdate(member.date_of_birth) }}
                                 &middot;
                                 {{ member.age ? `${member.age} yrs` : "—" }}
                                 &middot;
@@ -279,6 +279,7 @@ import {
     QrCode,
     RefreshCw,
 } from "lucide-vue-next";
+import { useDateFormat } from "@/composables/useDateFormat";
 
 const props = defineProps({
     open: {
@@ -310,6 +311,8 @@ const daysDelta = computed(() => {
         (end.getTime() - today.getTime()) / (1000 * 60 * 60 * 24),
     );
 });
+
+const { formatBirthdate } = useDateFormat();
 
 const isExpiredDate = computed(() => {
     if (!props.member) return false;
